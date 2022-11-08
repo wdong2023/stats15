@@ -1,0 +1,133 @@
+---
+title: "Stats 15 Project"
+author: "Wanyue Dong"
+date: "10/31/2022"
+output: pdf_document
+---
+
+```{r}
+library(readr)
+data <- read_csv("new.csv")
+test <- read.csv("new.csv", fileEncoding = "GBK", encoding = "GBK")
+```
+
+```{r}
+library(lubridate)
+library(dplyr)
+data$year <- year(data$tradeTime)
+data2 <- data %>%
+  filter(year == 2017)
+table(data2$year)
+
+data_test <- data2%>%
+  select(url, district) %>%
+  filter(district == 3)
+```
+
+1-DongCheng
+2-FengTai
+3-YiZhuang
+4-DaXing
+5-FangShan
+6-ChangPing
+7-ChaoYang
+8-HaiDian 
+9-ShiJingShan
+10-XiCheng
+11-TongZhou
+12-MenTouGou
+13-ShunYi
+
+# check for duplicate
+```{r}
+which(duplicated(data2)) # no duplicate
+```
+
+# NA values
+```{r}
+table(is.na(data2))
+data3 <- na.omit(data2)
+table(is.na(data$communityAverage))
+```
+
+
+# look at variable price
+```{r}
+hist(data2$price)
+summary(data2$price)
+
+data2 %>% 
+  filter(price<1000)
+
+# remove house with too low price
+data2 <- data2[data2$id != "101101646066", ] 
+```
+
+# look at variable square
+```{r}
+hist(data2$square)
+summary(data2$square)
+
+data2 %>% 
+  select(url,id,totalPrice, price, square, livingRoom, drawingRoom)%>%
+  filter(square>700)
+
+# remove houses more than 1000 square
+data2 <- data2[data2$square < 1000, ] 
+```
+
+# take a look at kitchen
+```{r}
+barplot(table(data2$kitchen))
+table(data2$kitchen)
+data2 %>% 
+  # select(url,totalPrice, price, square, livingRoom, drawingRoom)%>%
+  filter(kitchen>2) 
+
+# change house with 3 kitchens into 1
+data2[data2$id=="101101258012", 14] <- 1 
+
+# remove another house with 3 kitchens
+data2 <- data2[data2$id != "101101782929", ] 
+
+```
+
+
+# take a look at kitchen
+```{r}
+barplot(table(data2$subway))
+table(data2$subway)
+data2 %>% 
+  # select(url,totalPrice, price, square, livingRoom, drawingRoom)%>%
+  filter(kitchen>2) 
+
+# change house with 3 kitchens into 1
+data2[data2$id=="101101258012", 14] <- 1 
+
+# remove another house with 3 kitchens
+data2 <- data2[data2$id != "101101782929", ] 
+
+```
+
+
+# look at variable square
+```{r}
+hist(data2$ladderRatio)
+summary(data2$ladderRatio)
+
+data2 %>% 
+  select(url,id,totalPrice, price, square, livingRoom, drawingRoom, ladderRatio)%>%
+  filter(ladderRatio>5)
+
+# remove houses more than 1000 square
+data2 <- data2[data2$square < 1000, ] 
+```
+
+
+
+
+```{r}
+str_detect(`Hotel name`, "(Hilton|Marriot)")
+str_extract(`rooms`, ".{2}$")
+```
+
