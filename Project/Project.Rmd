@@ -131,3 +131,6 @@ str_detect(`Hotel name`, "(Hilton|Marriot)")
 str_extract(`rooms`, ".{2}$")
 ```
 
+
+blabla
+
