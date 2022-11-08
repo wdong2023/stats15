@@ -5,6 +5,8 @@ date: "10/31/2022"
 output: pdf_document
 ---
 
+michelle
+
 ```{r}
 library(readr)
 data <- read_csv("new.csv")
