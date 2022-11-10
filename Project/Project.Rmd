@@ -86,7 +86,7 @@ Now we have 42710 observations.
 
 ## 2.3 Outliers
 
-### 2.3.1 look at variable price
+### 2.3.1 variable price
 ```{r}
 hist(data2$price)
 summary(data2$price)
