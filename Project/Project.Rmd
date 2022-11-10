@@ -7,6 +7,25 @@ output: pdf_document
 
 # Section 1: Introduction
 
+```{r}
+library(readr)
+data <- read_csv("new.csv")
+test <- read.csv("new.csv", fileEncoding = "GBK", encoding = "GBK")
+```
+
+```{r}
+library(lubridate)
+library(dplyr)
+data$year <- year(data$tradeTime)
+data2 <- data %>%
+  filter(year == 2017)
+table(data2$year)
+
+data_test <- data2%>%
+  select(url, district) %>%
+  filter(district == 3)
+```
+
 Districts: 
 1-DongCheng
 2-FengTai
@@ -147,6 +166,5 @@ data2 <- data2[data2$square < 1000, ]
 str_detect(`Hotel name`, "(Hilton|Marriot)")
 str_extract(`rooms`, ".{2}$")
 ```
-
 
 
