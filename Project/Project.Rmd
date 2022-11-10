@@ -1,11 +1,11 @@
 ---
 title: "Stats 15 Project"
-author: "Wanyue Dong"
+author: "Team 13: Wanyue Dong, Michelle Pang, Liaohan Wang"
 date: "10/31/2022"
 output: pdf_document
 ---
 
-michelle
+# Section 1: Introduction
 
 ```{r}
 library(readr)
@@ -26,6 +26,7 @@ data_test <- data2%>%
   filter(district == 3)
 ```
 
+Districts: 
 1-DongCheng
 2-FengTai
 3-YiZhuang
@@ -40,20 +41,52 @@ data_test <- data2%>%
 12-MenTouGou
 13-ShunYi
 
-# check for duplicate
-```{r}
-which(duplicated(data2)) # no duplicate
+
+# Section 2: Data Cleaning
+```{r, message=FALSE, warning=FALSE}
+# loading libraries
+library(lubridate)
+library(dplyr)
+library(VIM)
 ```
 
-# NA values
 ```{r}
-table(is.na(data2))
-data3 <- na.omit(data2)
-table(is.na(data$communityAverage))
+# the following code is used to import dataset that includes Chinese character
+data <- read.csv("new.csv", fileEncoding = "GBK", encoding = "GBK")
 ```
 
 
-# look at variable price
+## 2.1 Cleaning Trade Time Variable
+The `r tradeTime` variable is in the format of y-m-d, we wanted to look at year, month, and day separately. Therefore, we created new variables `r year`, `r month`, `r day` based on `r tradeTime`. \newline
+Since the current data has 318851 rows, we decided to use part of the data where the trade time was in 2017.
+
+```{r, message=FALSE, warning=FALSE}
+data2017 <- data %>% 
+  mutate(year = year(tradeTime), month = month(tradeTime), day = day(tradeTime)) %>%
+  filter(year == 2017)
+head(data2017)
+```
+
+## 2.2 Missing Values
+```{r, message=FALSE, warning=FALSE}
+table(is.na(data2017))
+na_plot <- aggr(data2017, col=c('skyblue','red'), numbers=TRUE, sortVars=TRUE, 
+                labels=names(data2017), cex.axis=.4, gap=3, ylab=c("Missing data","Pattern"))
+```
+
+Our data had 507 missing values. All missing values are in variables building type and community average, and mostly in building type. The above graph shows the proportion of missing values in each variable with the highest being 0.011 for buildingType. \newline
+We decided to remove all missing values for two reasons. First, 507 missing values is a relatively small amount of data compared to 43217 observations we have. Second, we did not plan to use the variable buildingType, which had the most missing values. 
+
+```{r}
+data2017 <- na.omit(data2017)
+```
+
+Now we have 42710 observations.
+
+
+## 2.3 Outliers
+
+### 2.3.1 look at variable price
 ```{r}
 hist(data2$price)
 summary(data2$price)
@@ -127,6 +160,7 @@ data2 <- data2[data2$square < 1000, ]
 
 
 
+## 2.4 Cleaning Floor Variable 
 
 ```{r}
 str_detect(`Hotel name`, "(Hilton|Marriot)")
@@ -134,5 +168,3 @@ str_extract(`rooms`, ".{2}$")
 ```
 
 
-blabla
-3rdddd
