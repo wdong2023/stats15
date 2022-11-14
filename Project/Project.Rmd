@@ -29,6 +29,8 @@ Districts:
 library(lubridate)
 library(dplyr)
 library(VIM)
+library(stringr)
+library(ggplot2)
 ```
 
 ```{r}
@@ -43,12 +45,33 @@ Since the current data has 318851 rows, we decided to use part of the data where
 
 ```{r, message=FALSE, warning=FALSE}
 data2017 <- data %>% 
-  mutate(year = year(tradeTime), month = month(tradeTime), day = day(tradeTime)) %>%
+  mutate(year = year(tradeTime), month = month.name[month(tradeTime)], day = day(tradeTime)) %>%
   filter(year == 2017)
-head(data2017)
 ```
 
-## 2.2 Missing Values
+
+## 2.2 Cleaning Floor Variable 
+
+```{r}
+data2017 %>% select(floor) %>% head(3)
+```
+
+The `r floor` variable two piece of information. The first part, which is in Chinese character, informs the floor range of the apartment/house. The second part, which is a number, tells us the total number of floors the building has. Therefore, we need to separate these two information into two new variables (` r totalFloor` and `r floorRange`) to better analyze them. At the same time, we converted Chinese characters into English. 
+
+```{r}
+data2017 <- data2017 %>% 
+  mutate(totalFloor = as.numeric(str_extract(floor, "(\\d)+")), 
+         floorRange = case_when(str_detect(floor, "顶") ~ "top", 
+                                str_detect(floor, "高") ~ "high", 
+                                str_detect(floor, "中") ~ "midium",
+                                str_detect(floor, "低") ~ "low",
+                                str_detect(floor, "底") ~ "bottom"))
+
+```
+
+
+
+## 2.3 Missing Values
 ```{r, message=FALSE, warning=FALSE}
 table(is.na(data2017))
 na_plot <- aggr(data2017, col=c('skyblue','red'), numbers=TRUE, sortVars=TRUE, 
@@ -64,88 +87,96 @@ data2017 <- na.omit(data2017)
 
 Now we have 42710 observations.
 
+## 2.4 Remove unnecessary variables
 
-## 2.3 Outliers
-
-### 2.3.1 variable price
+The final step of data cleaning is removing variables that we do not plan to use. 
 ```{r}
-hist(data2$price)
-summary(data2$price)
-
-data2 %>% 
-  filter(price<1000)
-
-# remove house with too low price
-data2 <- data2[data2$id != "101101646066", ] 
+data2017 <- data2017 %>%
+  select(-c(url, Lng, Lat, Cid, tradeTime, floor, buildingType, communityAverage))
 ```
 
-# look at variable square
+
+
+
+# Section 3: Exploratory Analysis
+
+## 3.1 Distribution of variables and outliers
+
+### 3.1.1 Price
 ```{r}
-hist(data2$square)
-summary(data2$square)
-
-data2 %>% 
-  select(url,id,totalPrice, price, square, livingRoom, drawingRoom)%>%
-  filter(square>700)
-
-# remove houses more than 1000 square
-data2 <- data2[data2$square < 1000, ] 
+summary(data2017$price)
 ```
 
-# take a look at kitchen
 ```{r}
-barplot(table(data2$kitchen))
-table(data2$kitchen)
-data2 %>% 
-  # select(url,totalPrice, price, square, livingRoom, drawingRoom)%>%
+data2017 <- data2017 %>% 
+  filter(price>1000)
+```
+
+### 3.1.2 Square
+
+A house with more 1745.5 square meter seems very unreasonable, so we decided houses that are less than 1000 square meters are plausible. 
+```{r}
+data2017 <- data2017 %>% 
+  filter(square < 1000)
+```
+
+### 3.1.3 Kitchen
+
+```{r}
+data2017 %>% 
   filter(kitchen>2) 
-
-# change house with 3 kitchens into 1
-data2[data2$id=="101101258012", 14] <- 1 
-
-# remove another house with 3 kitchens
-data2 <- data2[data2$id != "101101782929", ] 
-
 ```
 
-
-# take a look at kitchen
-```{r}
-barplot(table(data2$subway))
-table(data2$subway)
-data2 %>% 
-  # select(url,totalPrice, price, square, livingRoom, drawingRoom)%>%
-  filter(kitchen>2) 
-
-# change house with 3 kitchens into 1
-data2[data2$id=="101101258012", 14] <- 1 
-
-# remove another house with 3 kitchens
-data2 <- data2[data2$id != "101101782929", ] 
-
-```
-
-
-# look at variable square
-```{r}
-hist(data2$ladderRatio)
-summary(data2$ladderRatio)
-
-data2 %>% 
-  select(url,id,totalPrice, price, square, livingRoom, drawingRoom, ladderRatio)%>%
-  filter(ladderRatio>5)
-
-# remove houses more than 1000 square
-data2 <- data2[data2$square < 1000, ] 
-```
-
-
-
-## 2.4 Cleaning Floor Variable 
+There are two houses with more than 2 kitchens, which seem odd. Taking a closer look, both of these houses had less than 300 square meters, which is impossible to have 3 kitchens in fairly medium house size. Therefore, we removed these two outliers. 
 
 ```{r}
-str_detect(`Hotel name`, "(Hilton|Marriot)")
-str_extract(`rooms`, ".{2}$")
+data2017 <- data2017 %>%
+  filter(kitchen < 3)
 ```
 
+
+### Ladder Ratio
+```{r}
+data2017 <- data2017 %>% 
+  filter(ladderRatio < 5)
+```
+
+
+### Month
+```{r}
+ggplot(data2017, aes(x = month)) + 
+  geom_bar(fill = "light blue") + 
+  scale_x_discrete(limits = month.name)
+```
+
+The first three months of year 2017 had the most trading of houses, with March being the highest number of trading. 
+
+
+### Day
+```{r}
+ggplot(data2017, aes(x = day)) + 
+  geom_bar(fill = "purple")
+```
+
+There isn't a unique day of the month that people liked to buy houses, but people relatively like to buy houses in the middle of the month. Few trades happened in the beginning of the month. 
+
+### Total Floor
+```{r}
+ggplot(data2017, aes(x = totalFloor)) + geom_histogram(color = "black", fill = "blue") 
+summary(data2017$totalFloor)
+
+data2017 %>% arrange(desc(totalFloor)) %>% select(id, totalFloor, floorRange) %>% head()
+data2017 <- data2017 %>%
+  filter(totalFloor < 60)
+```
+The distribution of total floor is skewed to the right. There are quite a few very tall buildings, but such high numbers could be an error in data recording. The url for the apartment located in a building with 63 floors is invalid; however, we checked the apartment located in the building with 57 floors using url and, surprisingly, the building does exist and is called Yu Jin Tai. Therefore, we only removed the trade with total floor of 63. 
+
+
+### Floor Range
+```{r}
+ggplot(data2017, aes(x = floorRange)) + 
+  geom_bar(fill = "green") +
+  scale_x_discrete(limits = c("bottom", "low", "midium", "high", "top")) 
+```
+Apartments located in the middle of a building were traded the most in 2017. 
 
