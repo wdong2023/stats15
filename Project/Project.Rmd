@@ -180,3 +180,137 @@ ggplot(data2017, aes(x = floorRange)) +
 ```
 Apartments located in the middle of a building were traded the most in 2017. 
 
+
+## DOM
+
+The graph of number of days on market is heavily skewed to the right. 
+
+```{r DOM}
+library(ggplot2)
+ggplot(data2017, aes(x=DOM))+
+  geom_histogram(fill='lightblue', color='black') +
+  xlab("DOM")+ylab("Count")+ggtitle("Active Days on Market Histogram")
+```
+
+## followers
+
+This graph heavily skewed to the right. More than 97% of houses have less than 300 followers. Most houses have number of followers below 300. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among them, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
+
+```{r followers}
+library(ggplot2)
+ggplot(data2017, aes(x=followers))+
+  geom_histogram(fill='lightblue', color='black') +
+  xlab("followers")+ylab("Count")+
+  ggtitle("followers Histogram")
+```
+
+```{r followers}
+data2017 %>% 
+  select(id,followers,totalPrice,price,square,district) %>%
+  slice_max(followers,n=10) 
+
+data2017 %>% 
+  filter(followers==0) %>%
+  select(id,followers,totalPrice,price,square,district) 
+
+lessthan300 <- data2017 %>%
+  filter(followers<=300)
+nrow(lessthan300)
+
+portion_lessthan300 = nrow(lessthan300)/43217
+portion_lessthan300
+```
+
+
+## totalPrice
+
+This graph skews to the right.
+
+```{r totalPrice}
+library(ggplot2)
+ggplot(data2017, aes(x=totalPrice))+
+  geom_histogram(fill='lightblue', color='black') +
+  xlab("totalPrice")+ylab("Count")+ggtitle("Total price (in 10,000yuan) Histogram")
+```
+
+## price
+
+
+
+```{r}
+library(ggplot2)
+ggplot(data2017, aes(x=price))+
+  geom_histogram(fill='lightblue', color='black') +
+  xlab("price")+ylab("Count")+ggtitle("Average price per square (in yuan) Histogram")
+```
+
+
+## square
+
+This graph skews to the right.
+
+```{r square}
+library(ggplot2)
+ggplot(data2017, aes(x=square))+
+  geom_histogram(fill='lightblue', color='black') +
+  xlab("square")+ylab("Count")+ggtitle("square of the House Histogram") 
+```
+
+## livingRoom
+
+One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedrooms' in the US. Most of the houses have 2 living rooms.
+
+```{r livingRoom}
+library(ggplot2)
+ggplot(data2017, aes(x=livingRoom))+
+  geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
+  xlab("livingRoom")+ylab("Count")+ggtitle("Number of Living room Histogram")
+
+# 1 house with 0 living room
+livingRoom0 <- data2017 %>%
+  filter(livingRoom==0)
+nrow(livingRoom0)
+#
+
+```
+
+## drawingRoom
+
+The number of drawing rooms for all houses is between 0 to 4. Most houses sold in 2017 have 0 to 2 drawing rooms and nearly 78% of houses sold in 2017 have 1 drawing room. Houses with 0 drawing room is the third greatest choice, and it is reasonable for a house to have no drawing room, especially in the city.
+
+```{r drawingRoom}
+library(ggplot2)
+ggplot(data2017, aes(x=drawingRoom))+
+  geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
+  # scale_y_continuous(trans="log10") +
+  xlab("drawingRoom")+
+  ylab("Count")+
+  ggtitle("Number of Drawing Rooms Histogram")
+```
+
+```{r drawingRoom}
+drawingRoom1 <- data2017 %>%
+  filter(drawingRoom==1) %>%
+  nrow()
+portion_dr1 = drawingRoom1 / 43217
+portion_dr1
+```
+
+## district (Categorical Variable)
+I want to change the numbers into district names on the axis
+
+```{r district}
+library(ggplot2)
+ggplot(data2017, aes(x=district))+
+  geom_bar(fill='lightblue', color='black') +
+  xlab("district")+
+    ylab("Count")+
+  ggtitle("District the House located Histogram") 
+
+# display all x labels
+#district_text <- c("DongCheng", "FengTai", "YiZhuang", "DaXing", "FangShan", "ChangPing", "ChaoYang", "HaiDian" , "ShiJingShan", "XiCheng", "TongZhou", "MenTouGou", "ShunYi")
+```
+
+
+
+
