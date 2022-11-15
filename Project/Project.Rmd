@@ -315,68 +315,75 @@ ggplot(data2017, aes(x=district))+
 
 summary statistics and distributional shape
 - construction time
+Construction time would be the year that the property is built
 ```{r}
-table(data2$constructionTime)
+table(data2017$constructionTime)
 
-barplot(table(data2$constructionTime))
+barplot(table(data2017$constructionTime))
 ```
 - renovation condition
+Renovation Condition refers to the readiness for the next property owner to move in with 4 being the most to move in and 1 being the least ready to move in
 ``` {r}
-table(data2$renovationCondition)
+table(data2017$renovationCondition)
 
-barplot(table(data2$renovationCondition))
+barplot(table(data2017$renovationCondition))
 ```
 - building structure
+Building Structure would be the main material that the building is made out of 
 ``` {r}
-table(data2$buildingStructure)
+table(data2017$buildingStructure)
 
-barplot(table(data2$buildingStructure))
+barplot(table(data2017$buildingStructure))
 ```
 - ladder ratio
 ```{r}
-table(data2$ladderRatio)
+table(data2017$ladderRatio)
 
-barplot(table(data2$ladderRatio))
+barplot(table(data2017$ladderRatio))
 ```
 - elevator
 ```{r}
-table(data2$elevator)
+table(data2017$elevator)
 
-barplot(table(data2$elevator))
+barplot(table(data2017$elevator))
 ```
 - five years property
 ```{r}
-table(data2$fiveYearsProperty)
+table(data2017$fiveYearsProperty)
 
-barplot(table(data2$fiveYearsProperty))
+barplot(table(data2017$fiveYearsProperty))
 ```
 - subway
 ```{r}
-table(data2$subway)
+table(data2017$subway)
 
-barplot(table(data2$subway))
+barplot(table(data2017$subway))
 ```
 - kitchen
+Kitchen would be the number of kitchens the property has, with 1 kitchen being the most popular
 ```{r}
-table(data2$kitchen)
+table(data2017$kitchen)
 
-barplot(table(data2$kitchen))
+barplot(table(data2017$kitchen))
 ```
 - bathroom
+Bathroom would be the number of bathrooms the property has, with 1 bathroom being the most popular
 ```{r}
-table(data2$bathRoom)
+table(data2017$bathRoom)
 
-barplot(table(data2$bathRoom))
+barplot(table(data2017$bathRoom))
 ```
 
 potential relationships that may exist in the data
 - construction time, renovation condition
 ```{r}
-table(data2$constructionTime, data2$renovationCondition, prob= T)
 
 ```
 
 - construction time, building structure
+```{r}
+
+```
 
 ## **Section 1 - Introduction**
 ### **1.1 - Motivating Questions and Scope of Analysis**
