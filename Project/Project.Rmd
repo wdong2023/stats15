@@ -256,39 +256,39 @@ ggplot(data2017, aes(x=square))+
   xlab("square")+ylab("Count")+ggtitle("square of the House Histogram") 
 ```
 
-## livingRoom
 
-One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedrooms' in the US. Most of the houses have 2 living rooms.
+## bedRoom
 
-```{r livingRoom}
+One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the US. Most of the houses have 2 bedrooms.
+
+```{r bedRoom}
 library(ggplot2)
 ggplot(data2017, aes(x=livingRoom))+
   geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
-  xlab("livingRoom")+ylab("Count")+ggtitle("Number of Living room Histogram")
+  xlab("bedRoom")+ylab("Count")+ggtitle("Number of bedroom Histogram")
 
 # 1 house with 0 living room
 livingRoom0 <- data2017 %>%
   filter(livingRoom==0)
 nrow(livingRoom0)
-#
 
 ```
 
-## drawingRoom
+## livingRoom
 
-The number of drawing rooms for all houses is between 0 to 4. Most houses sold in 2017 have 0 to 2 drawing rooms and nearly 78% of houses sold in 2017 have 1 drawing room. Houses with 0 drawing room is the third greatest choice, and it is reasonable for a house to have no drawing room, especially in the city.
+The number of living rooms for all houses is between 0 to 4. Most houses sold in 2017 have 0 to 2 living rooms and nearly 78% of houses sold in 2017 have 1 living room. Houses with 0 living room is the third greatest choice, and it is reasonable for a house to have no living room, especially in the city.
 
-```{r drawingRoom}
+```{r livingRoom}
 library(ggplot2)
 ggplot(data2017, aes(x=drawingRoom))+
   geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
   # scale_y_continuous(trans="log10") +
-  xlab("drawingRoom")+
+  xlab("livingRoom")+
   ylab("Count")+
-  ggtitle("Number of Drawing Rooms Histogram")
+  ggtitle("Number of Living Rooms Histogram")
 ```
 
-```{r drawingRoom}
+```{r livingRoom}
 drawingRoom1 <- data2017 %>%
   filter(drawingRoom==1) %>%
   nrow()
