@@ -313,4 +313,75 @@ ggplot(data2017, aes(x=district))+
 
 
 
+summary statistics and distributional shape
+- construction time
+```{r}
+table(data2$constructionTime)
+
+barplot(table(data2$constructionTime))
+```
+- renovation condition
+``` {r}
+table(data2$renovationCondition)
+
+barplot(table(data2$renovationCondition))
+```
+- building structure
+``` {r}
+table(data2$buildingStructure)
+
+barplot(table(data2$buildingStructure))
+```
+- ladder ratio
+```{r}
+table(data2$ladderRatio)
+
+barplot(table(data2$ladderRatio))
+```
+- elevator
+```{r}
+table(data2$elevator)
+
+barplot(table(data2$elevator))
+```
+- five years property
+```{r}
+table(data2$fiveYearsProperty)
+
+barplot(table(data2$fiveYearsProperty))
+```
+- subway
+```{r}
+table(data2$subway)
+
+barplot(table(data2$subway))
+```
+- kitchen
+```{r}
+table(data2$kitchen)
+
+barplot(table(data2$kitchen))
+```
+- bathroom
+```{r}
+table(data2$bathRoom)
+
+barplot(table(data2$bathRoom))
+```
+
+potential relationships that may exist in the data
+- construction time, renovation condition
+```{r}
+table(data2$constructionTime, data2$renovationCondition, prob= T)
+
+```
+
+- construction time, building structure
+
+## **Section 1 - Introduction**
+### **1.1 - Motivating Questions and Scope of Analysis**
+As one of the biggest cities in China, Beijing currently houses a population of 21.33 million residents. With the rapid rate of globalization, the movement of people selling and buying their property has risen as well. However, with the help of Lianjia, buyers and sellers are able to view and list properties with ease. In this project, we seek to answer the following motivating question: **what affects the price per square foot of a property?**
+
+### **1.2 - Background on Lianjia**
+***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list their properties all over China. In our data set, we narrowed down our listings to those that were traded in 2017, meaning that any property that was listed or marked as sold in 2017 will be included. We found our data set on Kaggle which is a dataset company 
 
