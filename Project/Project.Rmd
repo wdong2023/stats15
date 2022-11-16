@@ -386,9 +386,41 @@ potential relationships that may exist in the data
 ```
 
 ## **Section 1 - Introduction**
+
 ### **1.1 - Motivating Questions and Scope of Analysis**
+
 As one of the biggest cities in China, Beijing currently houses a population of 21.33 million residents. With the rapid rate of globalization, the movement of people selling and buying their property has risen as well. However, with the help of Lianjia, buyers and sellers are able to view and list properties with ease. In this project, we seek to answer the following motivating question: **what affects the price per square foot of a property?**
 
 ### **1.2 - Background on Lianjia**
-***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list their properties all over China. In our data set, we narrowed down our listings to those that were traded in 2017, meaning that any property that was listed or marked as sold in 2017 will be included. We found our data set on Kaggle which is a dataset company 
+
+***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list properties all over China on the Lianjia website. In our data set, we narrowed down our listings to those that were traded in 2017. This means that any property that was listed or sold in 2017 will be included and the others will be excluded. We found our data set on a website called Kaggle which is a data science company which provides a variety of public data sets. Before cleaning the data, our data set had 318,815 listings and 26 variables.
+
+***How a Seller can Post a Listing:*** To post a listing on Lianjia, the owner or the real estate agent of the property will have to follow the guidelines and steps provided by filling out the necessary information regarding the property such as price of listing, number of bathrooms, square footage of the entire property and more listed below in the explanatory variables. They will also need to provide accompanying photographs of the property.
+
+***How a Buyer can Purchase a Listing:*** To purchase a listing on Lianjia, the buyer can simply just reach out to the contact number or email of the real estate angent provided to arrange a viewing. After viewing the property and possible negotiations, both parties will agree on a price for the transaction and legal paperwork will be organized by the real estate agency to facilitate the payment process and finally legalize the change of ownership of the property.
+
+***Beijing Districts:*** There are a total of 13 districts within Beijing that we will be focusing on. These 13 districts include DongCheng, FengTai, YiZhuang, DaXing, FangShan, ChangPing, ChaoYang, HaiDian, ShiJingShan, XiCheng, TongZhou, MenTouGou and ShunYi. Each listing in our data set lies in one of these 13 districts.
+
+### **1.3 - Variable Explanation**
+
+#### **Explanatory Variables**
+
+1. ***DOM***: (*numerical*) The active days on market. The number of days since the property is posted until it is sold and removed from the website. 
+2. ***followers***: (*numerical*) The number of people who follow the transaction by bookmarking the property to revisit later on. This indicates the popularity of a property compared to the other listings.
+3. ***livingRoom***: (*numerical*) The number of bedrooms.
+4. ***drawingRoom***: (*numerical*) The number of living rooms.
+5. ***kitchen***: (*numerical*) The number of kitchens.
+6. ***bathRoom***: (*numerical*) The number of bathrooms.
+7. ***floor***: (*numerical*) The total number of floors the building has. This usually also refers to the height of the building.
+8. ***constructionTime***: (*categorical*) The year the building was constructed.
+9. ***renovationCondition***: (*categorical*) The quality of the renovation with 4 being the best and 1 being the worst.
+10. ***buildingStructure***: (*categorical*) The material that is used the most to construct the building. More specifically, the main material used to build the exterior of the building. In this case, 1 refers to the material being unknown, 2 refers to the material being a mix of more than 3 distinguishable materials, 3 refers to brick and wood, 4 refers to brick and concrete, 5 refers to steel and 6 refers to steel-concrete composite. 
+11. ***ladderRatio***: (*categorical*) The proportion between number of residents who live on the same floor to the number of elevators or ladders that particular floor has. It relates to the frequency of usage of the elevator per floor. In this case, 1.00 refers to the highest frequency of usage and 0.00 refers to lowest frequency of usage.
+12. ***elevator***: (*categorical*) The presence of an elevator or not. In this case, 1 refers to the presence of an elevator in the building and 0 refers to the absence of an elevator in the building.
+13. ***fiveYearsProperty***: (*categorical*) Refers to whether or not the previous owner has owned the property for less than five years. In this case, 1 refers to the property being owned by the previous owner for less than five years and 0 refers to the property being owned by the previous owner for more than five years. 
+14. ***subway***: (*categorical*) Based on the knowledge of the seller posting the listing, this variable shows if a subway is located near the property. In this case, 1 refers to the presence of a subway nearby and 0 refers to the absence of a subway nearby.
+15. ***district***: (*categorical*) There are 13 main districts in Beijing and each number from 1 to 13 refers to a different district in which the property lies in. In this case, 1 refers to DongCheng, 2 refers to FengTai, 3 refers to YiZhuang, 4 refers to DaXing, 5 refers to FangShan, 6 refers to ChangPing, 7 refers to ChaoYang, 8 refers to HaiDian, 9 refers to ShiJingShan, 10 refers to XiCheng, 11 refers to TongZhou, 12 refers to MenTouGou and 13 refers to ShunYi.
+
+#### **Response Variable**
+1. ***price***: (*integer*) The price per square foot of the property (price = totalPrice / square). To ensure that the price is a fair comparison across all the properties listed, we decided to compare the price per square foot of all properties instead of totalPrice. Since some properties may be bigger than others, comparing price per square foot provides us with a better understanding of how valuable a property is.
 
