@@ -5,7 +5,51 @@ date: "10/31/2022"
 output: pdf_document
 ---
 
-# Section 1: Introduction
+
+# **Section 1 - Introduction**
+
+## **1.1 - Motivating Questions and Scope of Analysis**
+
+As one of the biggest cities in China, Beijing currently houses a population of 21.33 million residents. With the rapid rate of globalization, the movement of people selling and buying their property has risen as well. However, with the help of Lianjia, buyers and sellers are able to view and list properties with ease. In this project, we seek to answer the following motivating question: **what affects the price per square foot of a property?**
+
+## **1.2 - Background on Lianjia**
+
+***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list properties all over China on the Lianjia website. In our data set, we narrowed down our listings to those that were traded in 2017. This means that any property that was listed or sold in 2017 will be included and the others will be excluded. We found our data set on a website called Kaggle which is a data science company which provides a variety of public data sets. Before cleaning the data, our data set had 318,815 listings and 26 variables.
+
+***How a Seller can Post a Listing:*** To post a listing on Lianjia, the owner or the real estate agent of the property will have to follow the guidelines and steps provided by filling out the necessary information regarding the property such as price of listing, number of bathrooms, square footage of the entire property and more listed below in the explanatory variables. They will also need to provide accompanying photographs of the property.
+
+***How a Buyer can Purchase a Listing:*** To purchase a listing on Lianjia, the buyer can simply just reach out to the contact number or email of the real estate angent provided to arrange a viewing. After viewing the property and possible negotiations, both parties will agree on a price for the transaction and legal paperwork will be organized by the real estate agency to facilitate the payment process and finally legalize the change of ownership of the property.
+
+***Beijing Districts:*** There are a total of 13 districts within Beijing that we will be focusing on. These 13 districts include DongCheng, FengTai, YiZhuang, DaXing, FangShan, ChangPing, ChaoYang, HaiDian, ShiJingShan, XiCheng, TongZhou, MenTouGou and ShunYi. Each listing in our data set lies in one of these 13 districts.
+
+## **1.3 - Variable Explanation**
+
+### **Explanatory Variables**
+
+1. ***DOM***: (*numerical*) The active days on market. The number of days since the property is posted until it is sold and removed from the website. 
+2. ***followers***: (*numerical*) The number of people who follow the transaction by bookmarking the property to revisit later on. This indicates the popularity of a property compared to the other listings.
+3. ***livingRoom***: (*numerical*) The number of bedrooms.
+4. ***drawingRoom***: (*numerical*) The number of living rooms.
+5. ***kitchen***: (*numerical*) The number of kitchens.
+6. ***bathRoom***: (*numerical*) The number of bathrooms.
+7. ***floor***: (*numerical*) The total number of floors the building has. This usually also refers to the height of the building.
+8. ***constructionTime***: (*categorical*) The year the building was constructed.
+9. ***renovationCondition***: (*categorical*) The quality of the renovation with 4 being the best and 1 being the worst.
+10. ***buildingStructure***: (*categorical*) The material that is used the most to construct the building. More specifically, the main material used to build the exterior of the building. In this case, 1 refers to the material being unknown, 2 refers to the material being a mix of more than 3 distinguishable materials, 3 refers to brick and wood, 4 refers to brick and concrete, 5 refers to steel and 6 refers to steel-concrete composite. 
+11. ***ladderRatio***: (*categorical*) The proportion between number of residents who live on the same floor to the number of elevators or ladders that particular floor has. It relates to the frequency of usage of the elevator per floor. In this case, 1.00 refers to the highest frequency of usage and 0.00 refers to lowest frequency of usage.
+12. ***elevator***: (*categorical*) The presence of an elevator or not. In this case, 1 refers to the presence of an elevator in the building and 0 refers to the absence of an elevator in the building.
+13. ***fiveYearsProperty***: (*categorical*) Refers to whether or not the previous owner has owned the property for less than five years. In this case, 1 refers to the property being owned by the previous owner for less than five years and 0 refers to the property being owned by the previous owner for more than five years. 
+14. ***subway***: (*categorical*) Based on the knowledge of the seller posting the listing, this variable shows if a subway is located near the property. In this case, 1 refers to the presence of a subway nearby and 0 refers to the absence of a subway nearby.
+
+```{r pressure, echo=FALSE, fig.cap="Beijing District Map", out.width = '50%'}
+knitr::include_graphics("beijing_map.jpeg")
+```
+
+15. ***district***: (*categorical*) There are 13 main districts in Beijing and each number from 1 to 13 refers to a different district in which the property lies in. In this case, 1 refers to DongCheng, 2 refers to FengTai, 3 refers to YiZhuang, 4 refers to DaXing, 5 refers to FangShan, 6 refers to ChangPing, 7 refers to ChaoYang, 8 refers to HaiDian, 9 refers to ShiJingShan, 10 refers to XiCheng, 11 refers to TongZhou, 12 refers to MenTouGou and 13 refers to ShunYi.
+
+### **Response Variable**
+1. ***price***: (*integer*) The price per square foot of the property (price = totalPrice / square). To ensure that the price is a fair comparison across all the properties listed, we decided to compare the price per square foot of all properties instead of totalPrice. Since some properties may be bigger than others, comparing price per square foot provides us with a better understanding of how valuable a property is.
+
 
 Districts: 
 1-DongCheng
@@ -31,6 +75,7 @@ library(dplyr)
 library(VIM)
 library(stringr)
 library(ggplot2)
+library(naniar)
 ```
 
 ```{r}
@@ -40,7 +85,7 @@ data <- read.csv("new.csv", fileEncoding = "GBK", encoding = "GBK")
 
 
 ## 2.1 Cleaning Trade Time Variable
-The `r tradeTime` variable is in the format of y-m-d, we wanted to look at year, month, and day separately. Therefore, we created new variables `r year`, `r month`, `r day` based on `r tradeTime`. \newline
+The `tradeTime` variable is in the format of y-m-d, we wanted to look at year, month, and day separately. Therefore, we created new variables `year`, `month`, `day` based on `tradeTime`. \newline
 Since the current data has 318851 rows, we decided to use part of the data where the trade time was in 2017.
 
 ```{r, message=FALSE, warning=FALSE}
@@ -52,13 +97,9 @@ data2017 <- data %>%
 
 ## 2.2 Cleaning Floor Variable 
 
-```{r}
-data2017 %>% select(floor) %>% head(3)
-```
+The `floor` variable two piece of information. The first part, which is in Chinese character, informs the floor range of the apartment/house. The second part, which is a number, tells us the total number of floors the building has. Therefore, we need to separate these two information into two new variables (` totalFloor` and `floorRange`) to better analyze them. At the same time, we converted Chinese characters into English. 
 
-The `r floor` variable two piece of information. The first part, which is in Chinese character, informs the floor range of the apartment/house. The second part, which is a number, tells us the total number of floors the building has. Therefore, we need to separate these two information into two new variables (` r totalFloor` and `r floorRange`) to better analyze them. At the same time, we converted Chinese characters into English. 
-
-```{r}
+```{r, echo=FALSE}
 data2017 <- data2017 %>% 
   mutate(totalFloor = as.numeric(str_extract(floor, "(\\d)+")), 
          floorRange = case_when(str_detect(floor, "顶") ~ "top", 
@@ -69,17 +110,23 @@ data2017 <- data2017 %>%
 
 ```
 
+## 2.3 Recoding District Variable 
+
 
 
 ## 2.3 Missing Values
+```{r echo = FALSE}
+data2017 <- data2017 %>% replace_with_na(replace = list(constructionTime = '未知'))
+```
+
 ```{r, message=FALSE, warning=FALSE}
 table(is.na(data2017))
 na_plot <- aggr(data2017, col=c('skyblue','red'), numbers=TRUE, sortVars=TRUE, 
                 labels=names(data2017), cex.axis=.4, gap=3, ylab=c("Missing data","Pattern"))
 ```
 
-Our data had 507 missing values. All missing values are in variables building type and community average, and mostly in building type. The above graph shows the proportion of missing values in each variable with the highest being 0.011 for buildingType. \newline
-We decided to remove all missing values for two reasons. First, 507 missing values is a relatively small amount of data compared to 43217 observations we have. Second, we did not plan to use the variable buildingType, which had the most missing values. 
+Our data had 1303 missing values. All missing values are in variables construction time, building type, community average, and floor range. The above graph shows the proportion of missing values in each variable with the highest being 0.018 for construction time. \newline
+We decided to remove all missing values for two reasons. First, 1303 missing values is a relatively small amount of data compared to 43217 observations we have. Second, we did not plan to use the variable buildingType and community average, which had a large portion of missing values. 
 
 ```{r}
 data2017 <- na.omit(data2017)
@@ -185,8 +232,7 @@ Apartments located in the middle of a building were traded the most in 2017.
 
 The graph of number of days on market is heavily skewed to the right. 
 
-```{r DOM}
-library(ggplot2)
+```{r}
 ggplot(data2017, aes(x=DOM))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("DOM")+ylab("Count")+ggtitle("Active Days on Market Histogram")
@@ -196,22 +242,17 @@ ggplot(data2017, aes(x=DOM))+
 
 This graph heavily skewed to the right. More than 97% of houses have less than 300 followers. Most houses have number of followers below 300. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among them, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
 
-```{r followers}
-library(ggplot2)
+```{r}
 ggplot(data2017, aes(x=followers))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("followers")+ylab("Count")+
   ggtitle("followers Histogram")
 ```
 
-```{r followers}
+```{r}
 data2017 %>% 
   select(id,followers,totalPrice,price,square,district) %>%
   slice_max(followers,n=10) 
-
-data2017 %>% 
-  filter(followers==0) %>%
-  select(id,followers,totalPrice,price,square,district) 
 
 lessthan300 <- data2017 %>%
   filter(followers<=300)
@@ -226,8 +267,7 @@ portion_lessthan300
 
 This graph skews to the right.
 
-```{r totalPrice}
-library(ggplot2)
+```{r}
 ggplot(data2017, aes(x=totalPrice))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("totalPrice")+ylab("Count")+ggtitle("Total price (in 10,000yuan) Histogram")
@@ -236,9 +276,7 @@ ggplot(data2017, aes(x=totalPrice))+
 ## price
 
 
-
 ```{r}
-library(ggplot2)
 ggplot(data2017, aes(x=price))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("price")+ylab("Count")+ggtitle("Average price per square (in yuan) Histogram")
@@ -249,8 +287,7 @@ ggplot(data2017, aes(x=price))+
 
 This graph skews to the right.
 
-```{r square}
-library(ggplot2)
+```{r}
 ggplot(data2017, aes(x=square))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("square")+ylab("Count")+ggtitle("square of the House Histogram") 
@@ -261,8 +298,7 @@ ggplot(data2017, aes(x=square))+
 
 One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the US. Most of the houses have 2 bedrooms.
 
-```{r bedRoom}
-library(ggplot2)
+```{r}
 ggplot(data2017, aes(x=livingRoom))+
   geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
   xlab("bedRoom")+ylab("Count")+ggtitle("Number of bedroom Histogram")
@@ -278,8 +314,7 @@ nrow(livingRoom0)
 
 The number of living rooms for all houses is between 0 to 4. Most houses sold in 2017 have 0 to 2 living rooms and nearly 78% of houses sold in 2017 have 1 living room. Houses with 0 living room is the third greatest choice, and it is reasonable for a house to have no living room, especially in the city.
 
-```{r livingRoom}
-library(ggplot2)
+```{r}
 ggplot(data2017, aes(x=drawingRoom))+
   geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
   # scale_y_continuous(trans="log10") +
@@ -288,7 +323,7 @@ ggplot(data2017, aes(x=drawingRoom))+
   ggtitle("Number of Living Rooms Histogram")
 ```
 
-```{r livingRoom}
+```{r}
 drawingRoom1 <- data2017 %>%
   filter(drawingRoom==1) %>%
   nrow()
@@ -299,7 +334,7 @@ portion_dr1
 ## district (Categorical Variable)
 I want to change the numbers into district names on the axis
 
-```{r district}
+```{r}
 library(ggplot2)
 ggplot(data2017, aes(x=district))+
   geom_bar(fill='lightblue', color='black') +
@@ -323,14 +358,14 @@ barplot(table(data2017$constructionTime))
 ```
 - renovation condition
 Renovation Condition refers to the readiness for the next property owner to move in with 4 being the most to move in and 1 being the least ready to move in
-``` {r}
+```{r}
 table(data2017$renovationCondition)
 
 barplot(table(data2017$renovationCondition))
 ```
 - building structure
 Building Structure would be the main material that the building is made out of 
-``` {r}
+```{r}
 table(data2017$buildingStructure)
 
 barplot(table(data2017$buildingStructure))
@@ -384,43 +419,4 @@ potential relationships that may exist in the data
 ```{r}
 
 ```
-
-## **Section 1 - Introduction**
-
-### **1.1 - Motivating Questions and Scope of Analysis**
-
-As one of the biggest cities in China, Beijing currently houses a population of 21.33 million residents. With the rapid rate of globalization, the movement of people selling and buying their property has risen as well. However, with the help of Lianjia, buyers and sellers are able to view and list properties with ease. In this project, we seek to answer the following motivating question: **what affects the price per square foot of a property?**
-
-### **1.2 - Background on Lianjia**
-
-***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list properties all over China on the Lianjia website. In our data set, we narrowed down our listings to those that were traded in 2017. This means that any property that was listed or sold in 2017 will be included and the others will be excluded. We found our data set on a website called Kaggle which is a data science company which provides a variety of public data sets. Before cleaning the data, our data set had 318,815 listings and 26 variables.
-
-***How a Seller can Post a Listing:*** To post a listing on Lianjia, the owner or the real estate agent of the property will have to follow the guidelines and steps provided by filling out the necessary information regarding the property such as price of listing, number of bathrooms, square footage of the entire property and more listed below in the explanatory variables. They will also need to provide accompanying photographs of the property.
-
-***How a Buyer can Purchase a Listing:*** To purchase a listing on Lianjia, the buyer can simply just reach out to the contact number or email of the real estate angent provided to arrange a viewing. After viewing the property and possible negotiations, both parties will agree on a price for the transaction and legal paperwork will be organized by the real estate agency to facilitate the payment process and finally legalize the change of ownership of the property.
-
-***Beijing Districts:*** There are a total of 13 districts within Beijing that we will be focusing on. These 13 districts include DongCheng, FengTai, YiZhuang, DaXing, FangShan, ChangPing, ChaoYang, HaiDian, ShiJingShan, XiCheng, TongZhou, MenTouGou and ShunYi. Each listing in our data set lies in one of these 13 districts.
-
-### **1.3 - Variable Explanation**
-
-#### **Explanatory Variables**
-
-1. ***DOM***: (*numerical*) The active days on market. The number of days since the property is posted until it is sold and removed from the website. 
-2. ***followers***: (*numerical*) The number of people who follow the transaction by bookmarking the property to revisit later on. This indicates the popularity of a property compared to the other listings.
-3. ***livingRoom***: (*numerical*) The number of bedrooms.
-4. ***drawingRoom***: (*numerical*) The number of living rooms.
-5. ***kitchen***: (*numerical*) The number of kitchens.
-6. ***bathRoom***: (*numerical*) The number of bathrooms.
-7. ***floor***: (*numerical*) The total number of floors the building has. This usually also refers to the height of the building.
-8. ***constructionTime***: (*categorical*) The year the building was constructed.
-9. ***renovationCondition***: (*categorical*) The quality of the renovation with 4 being the best and 1 being the worst.
-10. ***buildingStructure***: (*categorical*) The material that is used the most to construct the building. More specifically, the main material used to build the exterior of the building. In this case, 1 refers to the material being unknown, 2 refers to the material being a mix of more than 3 distinguishable materials, 3 refers to brick and wood, 4 refers to brick and concrete, 5 refers to steel and 6 refers to steel-concrete composite. 
-11. ***ladderRatio***: (*categorical*) The proportion between number of residents who live on the same floor to the number of elevators or ladders that particular floor has. It relates to the frequency of usage of the elevator per floor. In this case, 1.00 refers to the highest frequency of usage and 0.00 refers to lowest frequency of usage.
-12. ***elevator***: (*categorical*) The presence of an elevator or not. In this case, 1 refers to the presence of an elevator in the building and 0 refers to the absence of an elevator in the building.
-13. ***fiveYearsProperty***: (*categorical*) Refers to whether or not the previous owner has owned the property for less than five years. In this case, 1 refers to the property being owned by the previous owner for less than five years and 0 refers to the property being owned by the previous owner for more than five years. 
-14. ***subway***: (*categorical*) Based on the knowledge of the seller posting the listing, this variable shows if a subway is located near the property. In this case, 1 refers to the presence of a subway nearby and 0 refers to the absence of a subway nearby.
-15. ***district***: (*categorical*) There are 13 main districts in Beijing and each number from 1 to 13 refers to a different district in which the property lies in. In this case, 1 refers to DongCheng, 2 refers to FengTai, 3 refers to YiZhuang, 4 refers to DaXing, 5 refers to FangShan, 6 refers to ChangPing, 7 refers to ChaoYang, 8 refers to HaiDian, 9 refers to ShiJingShan, 10 refers to XiCheng, 11 refers to TongZhou, 12 refers to MenTouGou and 13 refers to ShunYi.
-
-#### **Response Variable**
-1. ***price***: (*integer*) The price per square foot of the property (price = totalPrice / square). To ensure that the price is a fair comparison across all the properties listed, we decided to compare the price per square foot of all properties instead of totalPrice. Since some properties may be bigger than others, comparing price per square foot provides us with a better understanding of how valuable a property is.
 
