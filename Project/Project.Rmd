@@ -275,11 +275,26 @@ ggplot(data2017, aes(x=totalPrice))+
 
 ## price
 
+<<<<<<< Updated upstream
+=======
+The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,369 yuan and median is 62599, which are relative close. Approximately 2.5% of values are above 127,274 yuan. Approximately 2.5% of values are below 1194 yuan. The house that has the lowest value has 1194 yuan per square meter. It is located in ChaoYang(7) district and the mean of houses in ChaoYang has around 67,509 yuan per square meter. Besides, this house also has 3 bedrooms, 1 livingroom, 1 bathroom and kitchen but 0 followers. Thus, this value might be considered as an outlier.
+>>>>>>> Stashed changes
 
 ```{r}
 ggplot(data2017, aes(x=price))+
   geom_histogram(fill='lightblue', color='black') +
-  xlab("price")+ylab("Count")+ggtitle("Average price per square (in yuan) Histogram")
+  xlab("price")+ylab("Count")+ggtitle("Average price per square meter (in yuan) Histogram")
+
+mean(data2017$price)
+median(data2017$price)
+quantile(data2017$price, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
+
+data2017 %>%
+  filter(price<=1194) # House with value 1194 yuan
+
+data2017 %>%
+  filter(district==7) %>%
+  summarize(ChaoYang_avg=mean(price)) # ChaoYang(7) mean square per meter
 ```
 
 
@@ -317,7 +332,6 @@ The number of living rooms for all houses is between 0 to 4. Most houses sold in
 ```{r}
 ggplot(data2017, aes(x=drawingRoom))+
   geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
-  # scale_y_continuous(trans="log10") +
   xlab("livingRoom")+
   ylab("Count")+
   ggtitle("Number of Living Rooms Histogram")
@@ -339,7 +353,9 @@ library(ggplot2)
 ggplot(data2017, aes(x=district))+
   geom_bar(fill='lightblue', color='black') +
   xlab("district")+
-    ylab("Count")+
+  ylab("Count")+
+  scale_x_discrete(limits = c("DongCheng", "FengTai", "YiZhuang", "DaXing", "FangShan", "ChangPing", "ChaoYang", "HaiDian" , "ShiJingShan", "XiCheng", "TongZhou", "MenTouGou", "ShunYi"))+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
   ggtitle("District the House located Histogram") 
 
 # display all x labels
@@ -420,3 +436,18 @@ potential relationships that may exist in the data
 
 ```
 
+<<<<<<< Updated upstream
+=======
+## **Section 1 - Introduction**
+### **1.1 - Motivating Questions and Scope of Analysis**
+As one of the biggest cities in China, Beijing currently houses a population of 21.33 million residents. With the rapid rate of globalization, the movement of people selling and buying their property has risen as well. However, with the help of Lianjia, buyers and sellers are able to view and list properties with ease. In this project, we seek to answer the following motivating question: **what affects the price per square foot of a property?**
+
+### **1.2 - Background on Lianjia**
+***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list their properties all over China. In our data set, we narrowed down our listings to those that were traded in 2017, meaning that any property that was listed or marked as sold in 2017 will be included. We found our data set on Kaggle which is a dataset company 
+
+
+### **Work Cited**
+## some online resources that I think might be helpful 
+1. It mentions the price drop on beijing houses in 2017 because of some regulations
+  http://www.xinhuanet.com/english/2018-01/29/c_136933533.htm
+>>>>>>> Stashed changes
