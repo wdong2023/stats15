@@ -14,13 +14,15 @@ As one of the biggest cities in China, Beijing currently houses a population of 
 
 ## **1.2 - Background on Lianjia**
 
-***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list properties all over China on the Lianjia website. In our data set, we narrowed down our listings to those that were traded in 2017. This means that any property that was listed or sold in 2017 will be included and the others will be excluded. We found our data set on a website called Kaggle which is a data science company which provides a variety of public data sets. Before cleaning the data, our data set had 318,815 listings and 26 variables.
+***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list properties all over China on the Lianjia website. In our data set, we narrowed down our listings to those that were traded in 2017 in the city of Beijing. This means that any property that was listed or sold in 2017 will be included and the others will be excluded. We found our data set on a website called Kaggle which is a data science company which provides a variety of public data sets. Before cleaning the data, our data set had 318,815 listings and 26 variables.
 
 ***How a Seller can Post a Listing:*** To post a listing on Lianjia, the owner or the real estate agent of the property will have to follow the guidelines and steps provided by filling out the necessary information regarding the property such as price of listing, number of bathrooms, square footage of the entire property and more listed below in the explanatory variables. They will also need to provide accompanying photographs of the property.
 
 ***How a Buyer can Purchase a Listing:*** To purchase a listing on Lianjia, the buyer can simply just reach out to the contact number or email of the real estate angent provided to arrange a viewing. After viewing the property and possible negotiations, both parties will agree on a price for the transaction and legal paperwork will be organized by the real estate agency to facilitate the payment process and finally legalize the change of ownership of the property.
 
 ***Beijing Districts:*** There are a total of 13 districts within Beijing that we will be focusing on. These 13 districts include DongCheng, FengTai, YiZhuang, DaXing, FangShan, ChangPing, ChaoYang, HaiDian, ShiJingShan, XiCheng, TongZhou, MenTouGou and ShunYi. Each listing in our data set lies in one of these 13 districts.
+
+There are a total of 16 districts in Beijing, but we mainly focuses on the listed 13 districts which are shown on the map as yellow, red, and purple. Yellow and red parts are considered the core districts. In other words, "the city". They contains the main functions of Beijing in political, cultural and economic ways. The yellow parts, DongCheng and XiCheng contain the most history of the city. They have a relative small area but most ancient buildings preserved. Thus, there are actually not that much area could be used for residency nor new structures. Among these red parts, ChaoYang and HaiDian are a bit special. ChaoYang is the largest among the core districts. It has the majority of foreign embassies and it is also the business center. HaiDian is famous for education. It contains the most education institutions. Purple parts are considered suburb areas where airports are located. Green parts are excluded from our data because these are relative rural that are mostly made up of mountains, Great Walls, manors for travelers, etc.
 
 ## **1.3 - Variable Explanation**
 
@@ -237,7 +239,7 @@ data2017 %>%
 
 ### 3.1.6 followers
 
-The graph of number of followers is unimodal and heavily skewed to the right. The mean and median number of followers is the same, which is around 49 people. Approximately 2.5% of values are below or equal to 0. Approximately 2.5% of values are above 216. More than 97% of houses have less than 300 followers. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among these houses with more than 1000 followers, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
+The graph of number of followers is unimodal and heavily skewed to the right. The mean and median number of followers is the same, which is around 49 people. Approximately 2.5% of values are below or equal to 0. Approximately 2.5% of values are above 216. However, the highest 2.5% are between 216 and 1143, which suggests that there are a few significantly popular houses. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among these houses with more than 1000 followers, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
 
 ```{r}
 ggplot(data2017, aes(x=followers))+
@@ -248,19 +250,8 @@ ggplot(data2017, aes(x=followers))+
 mean(data2017$followers)
 mean(data2017$followers)
 quantile(data2017$followers, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
-```
 
-```{r}
-data2017 %>% 
-  select(id,followers,totalPrice,price,square,district) %>%
-  slice_max(followers,n=10) 
-
-lessthan300 <- data2017 %>%
-  filter(followers<=300)
-nrow(lessthan300)
-
-portion_lessthan300 = nrow(lessthan300)/42004
-portion_lessthan300
+data2017 %>% filter(followers>1000)
 ```
 
 
@@ -278,28 +269,27 @@ ggplot(data2017, aes(x=totalPrice))+
   xlab("totalPrice")+ylab("Count")+ggtitle("Total price (in 10,000yuan) Histogram")
 
 mean(data2017$totalPrice)
-median(data2017$totalPrice)
 quantile(data2017$totalPrice, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
 # tried to compute percenatge of low&high 2.5% within each district to find out what affect DongCheng and XiCheng
 lower2_5 <- data2017 %>%
-  filter(totalPrice<=215) %>% # number of lower 2.5% houses in each district
-  count(district) #%>%
+  filter(totalPrice<=215) %>% 
+  group_by(district) %>% # number of lower 2.5% houses in each district
+  summarize(n()) #%>%
   #pull()
 lower2_5
 
 higher2_5 <- data2017 %>% # number of higher 2.5% houses in each district
-  filter(totalPrice>=1250) %>%
-  count(district) #%>%
+  
+  group_by(district) %>%
+   filter(totalPrice>=1250) %>%
+  summarise(n())
   #pull()
 higher2_5
 
-num_district_percentage <-district_percentage %>%
-  pull()
-num_district_percentage
-
-
-
+ggplot(data2017, aes(x=district,y=totalPrice))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 
 ```
 
@@ -323,6 +313,10 @@ data2017 <- data2017 %>%
   filter(price>1000)
 
 summary(data2017$price)
+
+ggplot(data2017, aes(x=district,y=price))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
 
 
@@ -512,21 +506,21 @@ potential relationships that may exist in the data
 
 ```
 
-<<<<<<< Updated upstream
-=======
-## **Section 1 - Introduction**
-### **1.1 - Motivating Questions and Scope of Analysis**
-As one of the biggest cities in China, Beijing currently houses a population of 21.33 million residents. With the rapid rate of globalization, the movement of people selling and buying their property has risen as well. However, with the help of Lianjia, buyers and sellers are able to view and list properties with ease. In this project, we seek to answer the following motivating question: **what affects the price per square foot of a property?**
 
-### **1.2 - Background on Lianjia**
-***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list their properties all over China. In our data set, we narrowed down our listings to those that were traded in 2017, meaning that any property that was listed or marked as sold in 2017 will be included. We found our data set on Kaggle which is a dataset company 
+## 3.2 Relationships between variables
+
+### 3.2.1 price vs. district
+
+### 3.2.2 price vs. DOM
+
+
 
 
 ### **Work Cited**
 ## some online resources that I think might be helpful 
 1. It mentions the price drop on beijing houses in 2017 because of some regulations
   http://www.xinhuanet.com/english/2018-01/29/c_136933533.htm
->>>>>>> Stashed changes
+
 
 
 
