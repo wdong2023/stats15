@@ -110,14 +110,32 @@ data2017 <- data2017 %>%
 
 ```
 
-## 2.3 Recoding District Variable 
+## 2.3 Cleaning variable format
 
+Some variables such as living room and bedroom  should be numerical variable, while other variables such as subway and elevator should be categorical variables. We also recoded the district variable into district names, which will be easier to see for later analysis. Finally, the living room in this dataset should be bedroom and drawing room in this dataset should be living room. 
+```{r, warning=FALSE, message=FALSE}
 
-
-## 2.3 Missing Values
-```{r echo = FALSE}
-data2017 <- data2017 %>% replace_with_na(replace = list(constructionTime = '未知'))
+data2017 <- data2017 %>% 
+  rename(livingRoom = drawingRoom, bedRoom = livingRoom) %>%
+  mutate(constructionTime = as.numeric(constructionTime), 
+         livingRoom = as.numeric(livingRoom),
+         bedRoom = as.numeric(bedRoom),
+         bathRoom = as.numeric(bathRoom),
+         kitchen = as.numeric(kitchen),
+         subway = as.factor(subway),
+         elevator = as.factor(elevator),
+         fiveYearsProperty = as.factor(fiveYearsProperty),
+         district = recode(district, "1" = "DongCheng",
+                           "2" = "FengTai", "3" = "YiZhuang", "4" = "DaXing", 
+                           "5" = "FangShan", "6" = "ChangPing", "7" = "ChaoYang",
+                           "8" = "HaiDian", "9" = "ShiJingShan", "10" = "XiCheng", 
+                           "11" = "TongZhou", "12" = "MenTouGou", "13" = "ShunYi"))
 ```
+
+
+
+
+## 2.4 Missing Values
 
 ```{r, message=FALSE, warning=FALSE}
 table(is.na(data2017))
@@ -134,12 +152,12 @@ data2017 <- na.omit(data2017)
 
 Now we have 42710 observations.
 
-## 2.4 Remove unnecessary variables
+## 2.5 Remove unnecessary variables
 
 The final step of data cleaning is removing variables that we do not plan to use. 
 ```{r}
 data2017 <- data2017 %>%
-  select(-c(url, Lng, Lat, Cid, tradeTime, floor, buildingType, communityAverage))
+  select(-c(url, Lng, Lat, Cid, tradeTime, floor, buildingType, communityAverage, year))
 ```
 
 
@@ -149,65 +167,24 @@ data2017 <- data2017 %>%
 
 ## 3.1 Distribution of variables and outliers
 
-### 3.1.1 Price
-```{r}
-summary(data2017$price)
-```
-
-```{r}
-data2017 <- data2017 %>% 
-  filter(price>1000)
-```
-
-### 3.1.2 Square
-
-A house with more 1745.5 square meter seems very unreasonable, so we decided houses that are less than 1000 square meters are plausible. 
-```{r}
-data2017 <- data2017 %>% 
-  filter(square < 1000)
-```
-
-### 3.1.3 Kitchen
-
-```{r}
-data2017 %>% 
-  filter(kitchen>2) 
-```
-
-There are two houses with more than 2 kitchens, which seem odd. Taking a closer look, both of these houses had less than 300 square meters, which is impossible to have 3 kitchens in fairly medium house size. Therefore, we removed these two outliers. 
-
-```{r}
-data2017 <- data2017 %>%
-  filter(kitchen < 3)
-```
-
-
-### Ladder Ratio
-```{r}
-data2017 <- data2017 %>% 
-  filter(ladderRatio < 5)
-```
-
-
-### Month
+### 3.1.1 Month
 ```{r}
 ggplot(data2017, aes(x = month)) + 
   geom_bar(fill = "light blue") + 
   scale_x_discrete(limits = month.name)
 ```
 
-The first three months of year 2017 had the most trading of houses, with March being the highest number of trading. 
+The first three months of year 2017 had the most trading of houses, with March being the highest number of trading, more than 8000 tradings. Apirl, May, and June each only had less than 1/4 of the number of trading compared to March. The amount of transactions for the rest of the year remained below 4000. 
 
 
-### Day
+### 3.1.2 Day
 ```{r}
 ggplot(data2017, aes(x = day)) + 
-  geom_bar(fill = "purple")
+  geom_bar(fill = "light blue", color = "black")
 ```
-
 There isn't a unique day of the month that people liked to buy houses, but people relatively like to buy houses in the middle of the month. Few trades happened in the beginning of the month. 
 
-### Total Floor
+### 3.1.3 Total Floor
 ```{r}
 ggplot(data2017, aes(x = totalFloor)) + geom_histogram(color = "black", fill = "blue") 
 summary(data2017$totalFloor)
@@ -216,19 +193,19 @@ data2017 %>% arrange(desc(totalFloor)) %>% select(id, totalFloor, floorRange) %>
 data2017 <- data2017 %>%
   filter(totalFloor < 60)
 ```
-The distribution of total floor is skewed to the right. There are quite a few very tall buildings, but such high numbers could be an error in data recording. The url for the apartment located in a building with 63 floors is invalid; however, we checked the apartment located in the building with 57 floors using url and, surprisingly, the building does exist and is called Yu Jin Tai. Therefore, we only removed the trade with total floor of 63. 
+The distribution of total floor is unimodel and skewed to the right. There are quite a few very tall buildings, but such high numbers could be an error in data recording. The url for the apartment located in a building with 63 floors is invalid; however, we checked the apartment located in the building with 57 floors using url and, surprisingly, the building does exist and is called Yu Jin Tai. Therefore, we only removed the trade with total floor of 63. 
 
 
-### Floor Range
+### 3.1.4 Floor Range
 ```{r}
 ggplot(data2017, aes(x = floorRange)) + 
-  geom_bar(fill = "green") +
+  geom_bar(fill = "light blue") +
   scale_x_discrete(limits = c("bottom", "low", "midium", "high", "top")) 
 ```
 Apartments located in the middle of a building were traded the most in 2017. 
 
 
-## DOM
+### 3.1.5 DOM
 
 The graph of number of days on market is unimodal and heavily skewed to the right. The mean number of days on market is around 51 and the median is 31 days. Approximately 2.5% of values are below 2. Approximately 2.5% of values are above 196. The longest day on market is 721. Whereas there are total of 474 houses have less or equal to 1 day on market until sold. A great portion of these houses are sold in March, which is the peak of house transaction in Beijing in 2017 as the previous 'month' variable section showed. And most of these houses are located in ChaoYang(7) district. According to the following 'district' variable section showed, ChaoYang indeed is the district that has the most transactions. The number of followers of these houses is between 0 to 9, which is not a great number. And nearly half of these houses have no followers. It shows that the number of followers is not necessarily indicating the "popularity" of the houses.
 
@@ -258,7 +235,7 @@ data2017 %>%
   count(followers) # Do houses sold fast have many followers?
 ```
 
-## followers
+### 3.1.6 followers
 
 The graph of number of followers is unimodal and heavily skewed to the right. The mean and median number of followers is the same, which is around 49 people. Approximately 2.5% of values are below or equal to 0. Approximately 2.5% of values are above 216. More than 97% of houses have less than 300 followers. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among these houses with more than 1000 followers, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
 
@@ -287,7 +264,7 @@ portion_lessthan300
 ```
 
 
-## totalPrice
+### 3.1.7 totalPrice
 ## problem: some districts do not have high or low 2.5% houses and are not shown on the tibbles. So the numbers do not match. Replace missing values with 0?
 
 The graph of total price is diamond-shaped, unimodal, and skews right. The average total price of a house in Beijing in 2017 is 526x10,000 yuan (around 750~810 thousands dollars depend on inflation) and the median is 460x10,000 yuan (around 660~710 thousands dollars). 
@@ -327,9 +304,9 @@ num_district_percentage
 ```
 
 
-## price
+### 3.1.8 price
 
-The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,369 yuan and median is 62599, which are relative close. Approximately 2.5% of values are above 127,274 yuan. Approximately 2.5% of values are below 1194 yuan. The house that has the lowest value has 1194 yuan per square meter. It is located in ChaoYang(7) district and the mean of houses in ChaoYang has around 67,509 yuan per square meter. Besides, this house also has 3 bedrooms, 1 livingroom, 1 bathroom and kitchen but 0 followers. Thus, this value might be considered as an outlier.
+The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,430 yuan and median is 62670, which are relative close. Approximately 2.5% of values are above 127,359 yuan. Approximately 2.5% of values are below 33035 yuan. The house that has the lowest value has 136 yuan per square meter, which is about 20 dollars per square meter. Such low price doesn't make sense in any part of Beijing. Therefore, we decided to remove this outlier. 
 
 ```{r}
 ggplot(data2017, aes(x=price))+
@@ -337,19 +314,19 @@ ggplot(data2017, aes(x=price))+
   xlab("price")+ylab("Count")+ggtitle("Average price per square meter (in yuan) Histogram")
 
 mean(data2017$price)
-median(data2017$price)
 quantile(data2017$price, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
 data2017 %>%
-  filter(price<=1194) # House with value 1194 yuan
+  filter(price<=1000) 
 
-data2017 %>%
-  filter(district==7) %>%
-  summarize(ChaoYang_avg=mean(price)) # ChaoYang(7) mean square per meter
+data2017 <- data2017 %>% 
+  filter(price>1000)
+
+summary(data2017$price)
 ```
 
 
-## square
+### 3.1.9 square
 
 This graph skews to the right.
 
@@ -358,30 +335,32 @@ ggplot(data2017, aes(x=square))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("square")+ylab("Count")+ggtitle("square of the House Histogram") 
 ```
+A house with more 1745.5 square meter seems very unreasonable, so we decided houses that are less than 1000 square meters are plausible. 
+```{r}
+data2017 <- data2017 %>% 
+  filter(square < 1000)
+```
 
-
-## bedRoom
+### 3.1.10 bedRoom
 
 One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the US. Most of the houses have 2 bedrooms.
 
 ```{r}
-ggplot(data2017, aes(x=livingRoom))+
+ggplot(data2017, aes(x=bedRoom))+
   geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
   xlab("bedRoom")+ylab("Count")+ggtitle("Number of bedroom Histogram")
 
-# 1 house with 0 living room
-livingRoom0 <- data2017 %>%
-  filter(livingRoom==0)
-nrow(livingRoom0)
+# 1 house with 0 bed room
+table(data2017$bedRoom)
 
 ```
 
-## livingRoom
+### 3.1.11 livingRoom
 
 The number of living rooms for all houses is between 0 to 4. Most houses sold in 2017 have 0 to 2 living rooms and nearly 78% of houses sold in 2017 have 1 living room. Houses with 0 living room is the third greatest choice, and it is reasonable for a house to have no living room, especially in the city.
 
 ```{r}
-ggplot(data2017, aes(x=drawingRoom))+
+ggplot(data2017, aes(x=livingRoom))+
   geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
   xlab("livingRoom")+
   ylab("Count")+
@@ -389,23 +368,16 @@ ggplot(data2017, aes(x=drawingRoom))+
 ```
 
 ```{r}
-drawingRoom1 <- data2017 %>%
-  filter(drawingRoom==1) %>%
-  nrow()
-portion_dr1 = drawingRoom1 / 42004
-portion_dr1
+table(data2017$livingRoom)/length(data2017$livingRoom)
 ```
 
-## district (Categorical Variable)
-
+### 3.1.12 district 
 
 ```{r}
-library(ggplot2)
 ggplot(data2017, aes(x=district))+
   geom_bar(fill='lightblue', color='black') +
   xlab("district")+
   ylab("Count")+
-  scale_x_discrete(limits = c("DongCheng", "FengTai", "YiZhuang", "DaXing", "FangShan", "ChangPing", "ChaoYang", "HaiDian" , "ShiJingShan", "XiCheng", "TongZhou", "MenTouGou", "ShunYi"))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
   ggtitle("District the House located Histogram") 
 
@@ -416,8 +388,6 @@ district_percentage <- data2017 %>%
   arrange(desc(n))
 district_percentage
 
-# display all x labels
-#district_text <- c("DongCheng", "FengTai", "YiZhuang", "DaXing", "FangShan", "ChangPing", "ChaoYang", "HaiDian" , "ShiJingShan", "XiCheng", "TongZhou", "MenTouGou", "ShunYi")
 ```
 
 
@@ -450,6 +420,12 @@ table(data2017$ladderRatio)
 
 barplot(table(data2017$ladderRatio))
 ```
+The maximum value for ladderRatio is 10009400, which seems like a typo, so we decided to remove this observation. 
+```{r}
+data2017 <- data2017 %>% 
+  filter(ladderRatio < 5)
+```
+
 - elevator
 ```{r}
 table(data2017$elevator)
@@ -475,6 +451,19 @@ table(data2017$kitchen)
 
 barplot(table(data2017$kitchen))
 ```
+
+```{r}
+data2017 %>% 
+  filter(kitchen>2) 
+```
+
+There are two houses with more than 2 kitchens, which seem odd. Taking a closer look, both of these houses had less than 300 square meters, which is impossible to have 3 kitchens in fairly medium house size. Therefore, we removed these two outliers. 
+
+```{r}
+data2017 <- data2017 %>%
+  filter(kitchen < 3)
+```
+
 - bathroom
 Bathroom would be the number of bathrooms the property has, with 1 bathroom being the most popular
 ```{r}
@@ -509,3 +498,42 @@ As one of the biggest cities in China, Beijing currently houses a population of 
 1. It mentions the price drop on beijing houses in 2017 because of some regulations
   http://www.xinhuanet.com/english/2018-01/29/c_136933533.htm
 >>>>>>> Stashed changes
+
+
+
+
+
+# 4 Model 
+## 4.1 Split data into train and test
+```{r}
+set.seed(428)
+index <- sample(nrow(data2017),21002,replace = FALSE)
+train <- data2017[index,c(2,3,5:22)] # exclude total price 
+test <- data2017[-index,c(2,3,5:22)] # exclude total price
+```
+I splited the data in half, into train and test data. Train data is used to train the model, while test data is used to test the accuracy of prediction from the model. 
+
+## 4.2 Linear Model
+```{r}
+linear_model <- lm(price~., data = train)
+summary(linear_model)
+```
+Based on the results of linear model, all the variables are important except for five year property and the day of month being sold.
+
+```{r}
+# training MSE
+pred_train_lm <- predict(linear_model, train, type="response")
+mean((pred_train_lm-train$price)^2)
+# testing MSE
+pred_test_lm <- predict(linear_model, test, type="response")
+mean((pred_test_lm-test$price)^2)
+```
+For now, the MSE looks pretty big. Let's take a look at other models. 
+
+
+## 4.2 Random Forest
+
+
+
+
+
