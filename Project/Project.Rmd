@@ -230,23 +230,47 @@ Apartments located in the middle of a building were traded the most in 2017.
 
 ## DOM
 
-The graph of number of days on market is heavily skewed to the right. 
+The graph of number of days on market is unimodal and heavily skewed to the right. The mean number of days on market is around 51 and the median is 31 days. Approximately 2.5% of values are below 2. Approximately 2.5% of values are above 196. The longest day on market is 721. Whereas there are total of 474 houses have less or equal to 1 day on market until sold. A great portion of these houses are sold in March, which is the peak of house transaction in Beijing in 2017 as the previous 'month' variable section showed. And most of these houses are located in ChaoYang(7) district. According to the following 'district' variable section showed, ChaoYang indeed is the district that has the most transactions. The number of followers of these houses is between 0 to 9, which is not a great number. And nearly half of these houses have no followers. It shows that the number of followers is not necessarily indicating the "popularity" of the houses.
 
 ```{r}
 ggplot(data2017, aes(x=DOM))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("DOM")+ylab("Count")+ggtitle("Active Days on Market Histogram")
+
+mean(data2017$DOM)
+median(data2017$DOM)
+quantile(data2017$DOM, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
+
+data2017 %>%
+  filter(DOM<=1) %>%
+  nrow()  # number of houses have less than 1 day on market
+
+data2017 %>%
+  filter(DOM<=1) %>%
+  count(month) # In which months are these houses sold
+
+data2017 %>%
+  filter(DOM<=1) %>%
+  count(district) # In which districts are these houses sold
+
+data2017 %>%
+  filter(DOM<=1) %>%
+  count(followers) # Do houses sold fast have many followers?
 ```
 
 ## followers
 
-This graph heavily skewed to the right. More than 97% of houses have less than 300 followers. Most houses have number of followers below 300. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among them, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
+The graph of number of followers is unimodal and heavily skewed to the right. The mean and median number of followers is the same, which is around 49 people. Approximately 2.5% of values are below or equal to 0. Approximately 2.5% of values are above 216. More than 97% of houses have less than 300 followers. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among these houses with more than 1000 followers, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
 
 ```{r}
 ggplot(data2017, aes(x=followers))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("followers")+ylab("Count")+
   ggtitle("followers Histogram")
+
+mean(data2017$followers)
+mean(data2017$followers)
+quantile(data2017$followers, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 ```
 
 ```{r}
@@ -258,27 +282,54 @@ lessthan300 <- data2017 %>%
   filter(followers<=300)
 nrow(lessthan300)
 
-portion_lessthan300 = nrow(lessthan300)/43217
+portion_lessthan300 = nrow(lessthan300)/42004
 portion_lessthan300
 ```
 
 
 ## totalPrice
+## problem: some districts do not have high or low 2.5% houses and are not shown on the tibbles. So the numbers do not match. Replace missing values with 0?
 
-This graph skews to the right.
+The graph of total price is diamond-shaped, unimodal, and skews right. The average total price of a house in Beijing in 2017 is 526x10,000 yuan (around 750~810 thousands dollars depend on inflation) and the median is 460x10,000 yuan (around 660~710 thousands dollars). 
+Approximately 2.5% of values are below 215x10,000 yuan. Among these houses, ChangPing(6) has significantly higher amounts of these. ChangPing is the northern suburb of Beijing. And the second one is ChaoYang(7).
+Approximately  2.5% of values are above 1250x10,000 yuan. Among these houses, ChangPing(6) has none of these whereas ChaoYang(7) has significantly highest amounts of these. It seems like ChaoYang has houses with big ranges of prices. Even though XiCheng(10) and DongCheng(1) are the most central part of Beijing and close to each other, XiCheng has 85% more higher 2.5% percentile houses sold in 2017. XiCheng spans 32 square kilometers and DongCheng spans 40.6 square kilometers. DongCheng actually has larger area than XiCheng but XiCheng has more houses sold.
+
 
 ```{r}
 ggplot(data2017, aes(x=totalPrice))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("totalPrice")+ylab("Count")+ggtitle("Total price (in 10,000yuan) Histogram")
+
+mean(data2017$totalPrice)
+median(data2017$totalPrice)
+quantile(data2017$totalPrice, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
+
+# tried to compute percenatge of low&high 2.5% within each district to find out what affect DongCheng and XiCheng
+lower2_5 <- data2017 %>%
+  filter(totalPrice<=215) %>% # number of lower 2.5% houses in each district
+  count(district) #%>%
+  #pull()
+lower2_5
+
+higher2_5 <- data2017 %>% # number of higher 2.5% houses in each district
+  filter(totalPrice>=1250) %>%
+  count(district) #%>%
+  #pull()
+higher2_5
+
+num_district_percentage <-district_percentage %>%
+  pull()
+num_district_percentage
+
+
+
+
 ```
+
 
 ## price
 
-<<<<<<< Updated upstream
-=======
 The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,369 yuan and median is 62599, which are relative close. Approximately 2.5% of values are above 127,274 yuan. Approximately 2.5% of values are below 1194 yuan. The house that has the lowest value has 1194 yuan per square meter. It is located in ChaoYang(7) district and the mean of houses in ChaoYang has around 67,509 yuan per square meter. Besides, this house also has 3 bedrooms, 1 livingroom, 1 bathroom and kitchen but 0 followers. Thus, this value might be considered as an outlier.
->>>>>>> Stashed changes
 
 ```{r}
 ggplot(data2017, aes(x=price))+
@@ -341,12 +392,12 @@ ggplot(data2017, aes(x=drawingRoom))+
 drawingRoom1 <- data2017 %>%
   filter(drawingRoom==1) %>%
   nrow()
-portion_dr1 = drawingRoom1 / 43217
+portion_dr1 = drawingRoom1 / 42004
 portion_dr1
 ```
 
 ## district (Categorical Variable)
-I want to change the numbers into district names on the axis
+
 
 ```{r}
 library(ggplot2)
@@ -357,6 +408,13 @@ ggplot(data2017, aes(x=district))+
   scale_x_discrete(limits = c("DongCheng", "FengTai", "YiZhuang", "DaXing", "FangShan", "ChangPing", "ChaoYang", "HaiDian" , "ShiJingShan", "XiCheng", "TongZhou", "MenTouGou", "ShunYi"))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
   ggtitle("District the House located Histogram") 
+
+district_percentage <- data2017 %>%
+  group_by(district) %>%
+  count(district) %>%
+  mutate(percentage=n*100/42004) %>% # what percentage of sold houses are in each district
+  arrange(desc(n))
+district_percentage
 
 # display all x labels
 #district_text <- c("DongCheng", "FengTai", "YiZhuang", "DaXing", "FangShan", "ChangPing", "ChaoYang", "HaiDian" , "ShiJingShan", "XiCheng", "TongZhou", "MenTouGou", "ShunYi")
