@@ -306,7 +306,7 @@ num_district_percentage
 
 ### 3.1.8 price
 
-The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,430 yuan and median is 62670, which are relative close. Approximately 2.5% of values are above 127,359 yuan. Approximately 2.5% of values are below 33035 yuan. The house that has the lowest value has 136 yuan per square meter, which is about 20 dollars per square meter. Such low price doesn't make sense in any part of Beijing. Therefore, we decided to remove this outlier. 
+The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,430 yuan and median is 62670, which are relative close. Approximately 2.5% of values are above 127,359 yuan. Approximately 2.5% of values are below 33,035 yuan. The house that has the lowest value has 136 yuan per square meter, which is about 20 dollars per square meter. Such low price doesn't make sense in any part of Beijing. Therefore, we decided to remove this outlier. 
 
 ```{r}
 ggplot(data2017, aes(x=price))+
@@ -328,12 +328,23 @@ summary(data2017$price)
 
 ### 3.1.9 square
 
-This graph skews to the right.
+The graph of number of squares is diamond-shaped, unimodal, and skews right. The mean of houses sold in Beijing in 2017 have around 81 square meters. The median is 72 square meters. Approximately 2.5% of values are below 37 square meters. Approximately 2.5% of values are above 167 square meters. ChaoYang(7) has significantly highest amount of these. But one surprising observation is that ChangPing(6) has the second highest amounts of houses in the higher 2.5%. ChangPing indeed has a relative large area compared with other districts in Beijing but it is relative far from the core area of the city. Thus, it is reasonable to have great proportion of houses sold with large square meters with lower than average square meters price.
 
 ```{r}
 ggplot(data2017, aes(x=square))+
   geom_histogram(fill='lightblue', color='black') +
   xlab("square")+ylab("Count")+ggtitle("square of the House Histogram") 
+
+mean(data2017$square)
+median(data2017$square)
+quantile(data2017$square, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
+
+data2017%>%
+  filter(square>=167) %>%
+  count(district)
+
+data2017%>%
+  filter(square>=167 & district=="ChangPing")
 ```
 A house with more 1745.5 square meter seems very unreasonable, so we decided houses that are less than 1000 square meters are plausible. 
 ```{r}
@@ -343,18 +354,36 @@ data2017 <- data2017 %>%
 
 ### 3.1.10 bedRoom
 
-One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the US. Most of the houses have 2 bedrooms.
+One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the US. Thus, we decided t ochange the variable name from 'livingRoom' to 'bedRoom'. 
+The graph of number of bedrooms is unimodal, diamond-shaped, and skews right. Most of the houses have 2 bedrooms, and the mean and median number of bedrooms is also 2. Approximately 25% of values are below or equal to 1. Approximately  2.5% of values are above 3. (continued)
 
 ```{r}
 ggplot(data2017, aes(x=bedRoom))+
   geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
   xlab("bedRoom")+ylab("Count")+ggtitle("Number of bedroom Histogram")
 
+mean(data2017$bedRoom)
+median(data2017$bedRoom)
+quantile(data2017$bedRoom, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
+
 # 1 house with 0 bed room
 table(data2017$bedRoom)
 
+data2017 %>%
+  slice_max(bedRoom,n=1) 
+  
+data2017 %>%
+  slice_min(bedRoom,n=1)
 ```
 
+There is one house has 0 bedroom but sold in 145,612 yuan per square meter which almost reached the highest square per meter sold among all observations (150,000 yuan). Pulled out the link of this house, we found that it is located in XiCheng. According to Lianjia website, this house belongs to "RongFeng 2008" community. After a research on the community, we found out that this is the average price per square meter for this community. An investigation conducted by The Beijing News indicates that "RongFeng 2008" has a relative 10,000 yuan higher price per square meter compared with other communities in that area. But since the houses in this community have very small areas, the total price is still acceptable for most people who wanted to move to XiCheng. So this house is not an outlier.
+
+(https://www.sohu.com/a/479132582_114988)
+
+```{r}
+data %>%
+  filter(id=="101101275312")
+```
 ### 3.1.11 livingRoom
 
 The number of living rooms for all houses is between 0 to 4. Most houses sold in 2017 have 0 to 2 living rooms and nearly 78% of houses sold in 2017 have 1 living room. Houses with 0 living room is the third greatest choice, and it is reasonable for a house to have no living room, especially in the city.
