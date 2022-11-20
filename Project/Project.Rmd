@@ -413,97 +413,153 @@ district_percentage
 
 ```
 
-
-
-summary statistics and distributional shape
-- construction time
-Construction time would be the year that the property is built
-```{r}
-table(data2017$constructionTime)
-
-barplot(table(data2017$constructionTime))
-```
-- renovation condition
-Renovation Condition refers to the readiness for the next property owner to move in with 4 being the most to move in and 1 being the least ready to move in
-```{r}
-table(data2017$renovationCondition)
-
-barplot(table(data2017$renovationCondition))
-```
-- building structure
-Building Structure would be the main material that the building is made out of 
-```{r}
-table(data2017$buildingStructure)
-
-barplot(table(data2017$buildingStructure))
-```
-- ladder ratio
-```{r}
-table(data2017$ladderRatio)
-
-barplot(table(data2017$ladderRatio))
-```
-The maximum value for ladderRatio is 10009400, which seems like a typo, so we decided to remove this observation. 
-```{r}
-data2017 <- data2017 %>% 
-  filter(ladderRatio < 5)
-```
-
-- elevator
-```{r}
-table(data2017$elevator)
-
-barplot(table(data2017$elevator))
-```
-- five years property
-```{r}
-table(data2017$fiveYearsProperty)
-
-barplot(table(data2017$fiveYearsProperty))
-```
-- subway
-```{r}
-table(data2017$subway)
-
-barplot(table(data2017$subway))
-```
-- kitchen
-Kitchen would be the number of kitchens the property has, with 1 kitchen being the most popular
-```{r}
-table(data2017$kitchen)
-
-barplot(table(data2017$kitchen))
-```
+### 3.1.13 kitchen
 
 ```{r}
 data2017 %>% 
-  filter(kitchen>2) 
+  filter(kitchen > 2) 
 ```
 
-There are two houses with more than 2 kitchens, which seem odd. Taking a closer look, both of these houses had less than 300 square meters, which is impossible to have 3 kitchens in fairly medium house size. Therefore, we removed these two outliers. 
+There are two houses with more than 2 kitchens, which seem odd. Taking a closer look, both of these houses had less than 300 square meters, which is impossible to have 3 kitchens in fairly medium house size. Therefore, we removed these two outliers.
 
 ```{r}
 data2017 <- data2017 %>%
   filter(kitchen < 3)
 ```
 
-- bathroom
-Bathroom would be the number of bathrooms the property has, with 1 bathroom being the most popular
-```{r}
-table(data2017$bathRoom)
+The distribution for the number of kitchens shows that most listings have only one kitchen in their property. However, having no kitchen is evidently more common than having 2 kitchens in a property.
 
-barplot(table(data2017$bathRoom))
+``` {r}
+ggplot(data2017, aes(x = kitchen)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Kitchen Summary") +
+  xlab("Number of Kitchens") +
+  ylab("Count")
 ```
 
-potential relationships that may exist in the data
-- construction time, renovation condition
-```{r}
+### 3.1.14 bathroom
 
+The distribution for the number of bathrooms shows that most listings have only one bathroom in their property. This distribution skews heavily to the right and the count decreases as number of bathrooms increases.
+
+``` {r}
+ggplot(data2017, aes(x = bathRoom)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Bathroom Summary") +
+  xlab("Number of Bathrooms") +
+  ylab("Count")
 ```
 
-- construction time, building structure
-```{r}
+### 3.1.15 construction time
 
+```{r}
+table(data2017$constructionTime)
+```
+
+``` {r}
+median(data2017$constructionTime)
+mean(data2017$constructionTime)
+```
+
+The year of construction of the listings that were transacted in 2017 ranges from the year 1950 to the year 2016. Out of all the included listings, most of the properties were built in the year 2004 accumulating a total of 2525 properties.
+
+The distribution skews to the left as the median of the year 2002 and mean of the year 1999 both lie to the left of the mode of the year 2004.
+
+``` {r}
+ggplot(data2017, aes(x = constructionTime)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Time of Construction Summary") +
+  xlab("Time of Construction") +
+  ylab("Count")
+```
+
+### 3.1.16 renovation condition
+
+The condition of renovation 
+
+The distribution for the condition of renovation shows that most listings have the highest score of 4 in terms of the condition of renovation for their listing. This distribution skews heavily to the left.
+
+``` {r}
+ggplot(data2017, aes(x = renovationCondition)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Condition of Renovation Summary") +
+  xlab("Condition of Renovation") +
+  ylab("Count")
+```
+
+### 3.1.17 building structure
+
+The distribution for the building structure shows that most listings are made of steel-concrete composite. This distribution skews heavily to the left.
+
+``` {r}
+ggplot(data2017, aes(x = buildingStructure)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Structure of Building Summary") +
+  xlab("Structure of Building") +
+  ylab("Count")
+```
+
+### 3.1.18 ladder ratio
+
+The maximum value for ladderRatio is 10009400, which seems like a typo, so we decided to remove this observation. 
+
+``` {r}
+data2017 <- data2017 %>% 
+  filter(ladderRatio < 5)
+```
+
+```{r}
+table(data2017$ladderRatio)
+```
+
+``` {r}
+median(data2017$ladderRatio)
+mean(data2017$ladderRatio)
+```
+
+The distribution for the ladder ratio shows that most listings have 2 residents to one elevator per floor. This distribution skews heavily to the left as the average number of residents sharing an elevator per floor is 3.
+
+``` {r}
+ggplot(data2017, aes(x = ladderRatio)) +
+  geom_bar(fill = "lightblue", width = 0.05) +
+  ggtitle("Ladder Ratio Summary") +
+  xlab("Ladder Ratio") +
+  ylab("Count")
+```
+
+### 3.1.19 elevator
+
+The distribution for the presence of an elevator shows that it is more common for listings to have at lease one elevator in the building compared to none at all.
+
+``` {r}
+ggplot(data2017, aes(x = elevator)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Availability of Elevator") +
+  xlab("Elevator") +
+  ylab("Count")
+```
+
+### 3.1.20 five years property
+
+The distribution for whether the previous has stayed in the listing for less than five years shows that most sellers stay in their property for less than five years.
+
+``` {r}
+ggplot(data2017, aes(x = fiveYearsProperty)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Five Years Property Summary") +
+  xlab("Five Years Property") +
+  ylab("Count")
+```
+
+### 3.1.21 subway
+
+The distribution for the presence of any nearby subways shows that it is more common for listings to have at lease one subway nearby the building compared to none at all.
+
+``` {r}
+ggplot(data2017, aes(x = subway)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Subway Summary") +
+  xlab("Availability of Nearby Subways") +
+  ylab("Count")
 ```
 
 
@@ -512,6 +568,12 @@ potential relationships that may exist in the data
 ### 3.2.1 price vs. district
 
 ### 3.2.2 price vs. DOM
+
+### 3.2.3 price vs. construction time
+
+### 3.2.4 construction time vs. renovation condition
+
+### 3.2.5 construction time vs. building structure
 
 
 
