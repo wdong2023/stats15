@@ -1114,16 +1114,15 @@ for a house to have no living room, especially in the city.
 ## 0.0608722563 0.7888634957 0.1474789316 0.0026424796 0.0001428367
 \end{verbatim}
 
-\hypertarget{district}{%
-\subsubsection{3.1.12 district}\label{district}}
+\hypertarget{district-categorical}{%
+\subsubsection{3.1.12 district
+(Categorical)}\label{district-categorical}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{ggplot}\NormalTok{(data2017, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{district))}\SpecialCharTok{+}
   \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{fill=}\StringTok{\textquotesingle{}lightblue\textquotesingle{}}\NormalTok{, }\AttributeTok{color=}\StringTok{\textquotesingle{}black\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+}
-  \FunctionTok{xlab}\NormalTok{(}\StringTok{"district"}\NormalTok{)}\SpecialCharTok{+}
-  \FunctionTok{ylab}\NormalTok{(}\StringTok{"Count"}\NormalTok{)}\SpecialCharTok{+}
-  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust=}\DecValTok{1}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust=}\DecValTok{1}\NormalTok{))}\SpecialCharTok{+}
   \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"District the House located Histogram"}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
@@ -1134,7 +1133,7 @@ for a house to have no living room, especially in the city.
 \begin{Highlighting}[]
 \NormalTok{district\_percentage }\OtherTok{\textless{}{-}}\NormalTok{ data2017 }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{group\_by}\NormalTok{(district) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{count}\NormalTok{(district) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{count}\NormalTok{(district) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# number of houses sold in each district}
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{percentage=}\NormalTok{n}\SpecialCharTok{*}\DecValTok{100}\SpecialCharTok{/}\DecValTok{42004}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# what percentage of sold houses are in each district}
   \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(n))}
 \NormalTok{district\_percentage}
@@ -1159,38 +1158,6 @@ for a house to have no living room, especially in the city.
 ## 11 FangShan      730      1.74 
 ## 12 YiZhuang      348      0.828
 ## 13 MenTouGou     259      0.617
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{table}\NormalTok{(data2017}\SpecialCharTok{$}\NormalTok{district)}\SpecialCharTok{/}\FunctionTok{length}\NormalTok{(data2017}\SpecialCharTok{$}\NormalTok{district)}\SpecialCharTok{*}\DecValTok{100}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## 
-##   ChangPing    ChaoYang      DaXing   DongCheng    FangShan     FengTai 
-##  13.1147931  33.9999048   5.1468838   5.2921011   1.7378470   9.3581869 
-##     HaiDian   MenTouGou ShiJingShan      ShunYi    TongZhou     XiCheng 
-##  11.1436461   0.6165786   3.2281103   2.6091511   3.9327715   8.9915726 
-##    YiZhuang 
-##   0.8284531
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{table}\NormalTok{(data2017}\SpecialCharTok{$}\NormalTok{district)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## 
-##   ChangPing    ChaoYang      DaXing   DongCheng    FangShan     FengTai 
-##        5509       14282        2162        2223         730        3931 
-##     HaiDian   MenTouGou ShiJingShan      ShunYi    TongZhou     XiCheng 
-##        4681         259        1356        1096        1652        3777 
-##    YiZhuang 
-##         348
 \end{verbatim}
 
 \hypertarget{kitchen}{%
@@ -1511,15 +1478,78 @@ compared to none at all.
 
 \includegraphics{Project_files/figure-latex/unnamed-chunk-38-1.pdf}
 
-\hypertarget{relationships-between-variables}{%
-\subsection{3.2 Relationships between
-variables}\label{relationships-between-variables}}
+\hypertarget{potential-relationships-between-variables}{%
+\subsection{3.2 Potential Relationships between
+Variables}\label{potential-relationships-between-variables}}
 
-\hypertarget{price-vs.-district}{%
-\subsubsection{3.2.1 price vs.~district}\label{price-vs.-district}}
+\hypertarget{dom-vs.-followers}{%
+\subsubsection{3.2.1 DOM vs.~followers}\label{dom-vs.-followers}}
 
-\hypertarget{price-vs.-dom}{%
-\subsubsection{3.2.2 price vs.~DOM}\label{price-vs.-dom}}
+\emph{Do houses sold fast have many followers?} Among these 474 houses
+that were sold within 1 day, 376 have no follower and the maximum number
+of followers is 39, which is not a significant number of followers. But
+in general as shown on the graph, the graph is unimodal, diamond-shaped,
+and heavily skew right. Which indicates that the number of followers is
+decreasing as the number of days on market increase.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{table}\NormalTok{(data2017}\SpecialCharTok{$}\NormalTok{DOM}\SpecialCharTok{\textless{}=}\DecValTok{1}\NormalTok{) }\CommentTok{\# number of 0 or 1 Days in market}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## FALSE  TRUE 
+## 41530   474
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data2017 }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(DOM}\SpecialCharTok{\textless{}=}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{count}\NormalTok{(followers) }\CommentTok{\# Do houses sold fast have many followers?}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    followers   n
+## 1          0 376
+## 2          1  20
+## 3          2  13
+## 4          3   8
+## 5          4  10
+## 6          5   6
+## 7          6   5
+## 8          7   3
+## 9          8   3
+## 10         9   6
+## 11        10   2
+## 12        11   1
+## 13        12   4
+## 14        13   3
+## 15        14   4
+## 16        16   2
+## 17        19   1
+## 18        20   2
+## 19        21   1
+## 20        23   1
+## 21        25   1
+## 22        32   1
+## 23        39   1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(data2017, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{DOM,}\AttributeTok{y=}\NormalTok{followers))}\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{fill=}\StringTok{"lightblue"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Project_files/figure-latex/unnamed-chunk-39-1.pdf}
+
+\hypertarget{dom-vs.-price}{%
+\subsubsection{3.2.2 DOM vs.~price}\label{dom-vs.-price}}
 
 \hypertarget{price-vs.-construction-time}{%
 \subsubsection{3.2.3 price vs.~construction
@@ -1532,6 +1562,1736 @@ condition}\label{construction-time-vs.-renovation-condition}}
 \hypertarget{construction-time-vs.-building-structure}{%
 \subsubsection{3.2.5 construction time vs.~building
 structure}\label{construction-time-vs.-building-structure}}
+
+\hypertarget{district-vs.-square}{%
+\subsubsection{3.2.6 district vs.~square}\label{district-vs.-square}}
+
+\emph{Districts that have most large \& small houses sold}
+
+(ChaoYang(7) has significantly highest amount of these. But one
+surprising observation is that ChangPing(6) has the second highest
+amounts of houses in the higher 2.5\%. ChangPing indeed has a relative
+large area compared with other districts in Beijing but it is relative
+far from the core area of the city. Thus, it is reasonable to have great
+proportion of houses sold with large square meters with lower than
+average square meters price.)
+
+As indicated under the `square' variable, the top 2.5\% of houses sold
+have area over 167 square meters. Let's define houses over 167 square
+meters as ``large houses''. Then ChaoYang has the significantly highest
+amounts of large houses. ChangPing has the second highest amounts.
+
+The bottom 2.5\% of houses sold have less than 37 square meters. Let's
+define houses less than 37 square meters as ``small houses''.
+Surprisingly, ChangPing also has the greatest amounts of small houses
+sold in 2017. And then second one is ChaoYang.
+
+Let's compare the total amounts of houses sold in ChaoYang and
+ChangPing. Let's then compare the total areas of ChaoYang and ChangPing.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data2017}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(square}\SpecialCharTok{\textgreater{}=}\DecValTok{167}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# top 2.5\% large houses}
+  \FunctionTok{count}\NormalTok{(district)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       district   n
+## 1    ChangPing 196
+## 2     ChaoYang 448
+## 3       DaXing  41
+## 4    DongCheng  55
+## 5     FangShan   4
+## 6      FengTai  47
+## 7      HaiDian 115
+## 8  ShiJingShan  11
+## 9       ShunYi  39
+## 10    TongZhou  11
+## 11     XiCheng  44
+## 12    YiZhuang  21
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data2017}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(square}\SpecialCharTok{\textless{}=}\DecValTok{37}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# bottom 2.5\% small houses}
+  \FunctionTok{count}\NormalTok{(district)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       district   n
+## 1    ChangPing 204
+## 2     ChaoYang 159
+## 3       DaXing   5
+## 4    DongCheng  75
+## 5     FangShan   5
+## 6      FengTai 119
+## 7      HaiDian  54
+## 8  ShiJingShan  14
+## 9       ShunYi 108
+## 10    TongZhou  25
+## 11     XiCheng 225
+## 12    YiZhuang  33
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data2017}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(square}\SpecialCharTok{\textgreater{}=}\DecValTok{167} \SpecialCharTok{\&}\NormalTok{ district}\SpecialCharTok{==}\StringTok{"ChangPing"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               id DOM followers totalPrice price square bedRoom livingRoom
+## 1   101091685461 573       139      507.0 29575 171.43       3          2
+## 2   101100304923 220        42      590.0 28841 204.57       4          2
+## 3   101100392385 224        52      680.0 27439 247.83       3          2
+## 4   101100396818 200       589      500.0 24391 205.00       3          2
+## 5   101100576998 116         3      580.0 30397 190.81       5          2
+## 6   101100579167 163        66      600.0 26570 225.82       4          3
+## 7   101100585549 165       123      669.0 21792 307.00       6          2
+## 8   101100599506 194        45      828.0 39420 210.05       3          1
+## 9   101100607526 125        13      496.0 29623 167.44       3          2
+## 10  101100609403 160        79      635.0 33101 191.84       4          2
+## 11  101100630866 147       121      700.0 32293 216.77       4          2
+## 12  101100652107 172        23      615.0 29118 211.21       5          2
+## 13  101100661881 374       119      535.0 31680 168.88       4          1
+## 14  101100681180  95        35      480.0 27907 172.00       3          2
+## 15  101100715741 121        34      620.0 33127 187.16       4          1
+## 16  101100723317 242       130      640.0 34240 186.92       4          1
+## 17  101100742033  91        76      525.0 31058 169.04       3          2
+## 18  101100743343 139        58      598.0 25339 236.00       5          2
+## 19  101100745452 329       228      645.0 32951 195.75       4          1
+## 20  101100749623 108        35      585.0 25289 231.33       4          1
+## 21  101100770517  84        49      413.0 21038 196.32       5          2
+## 22  101100777546 140        38      590.0 30103 196.00       3          2
+## 23  101100791003 108       125      473.0 27272 173.44       3          1
+## 24  101100791031 155        53      585.0 34235 170.88       3          1
+## 25  101100791492 134        12      472.6 28175 167.74       3          2
+## 26  101100791644 118        20      515.0 26892 191.51       3          2
+## 27  101100792259 210        71      664.0 35278 188.22       4          2
+## 28  101100792375 113        64      870.0 38143 228.09       4          2
+## 29  101100793067  71         2      495.0 22416 220.83       3          2
+## 30  101100795524  69        16      680.0 32436 209.65       5          2
+## 31  101100799243  99        56      532.0 30197 176.18       4          1
+## 32  101100808970  70        35      550.0 27915 197.03       3          2
+## 33  101100820799 138        15      670.0 37525 178.55       3          1
+## 34  101100825242  90        44      690.0 40117 172.00       4          2
+## 35  101100827530  59        51      520.7 30795 169.06       3          2
+## 36  101100836859  96        60      735.0 36723 200.15       4          2
+## 37  101100845302 116        85      570.0 34085 167.23       3          2
+## 38  101100848510 105        92      649.0 34706 187.00       4          2
+## 39  101100850132 112        42      805.0 44693 180.12       3          3
+## 40  101100853694 102        30      843.0 44019 191.51       3          2
+## 41  101100855364 109        38      840.0 46458 180.81       4          2
+## 42  101100855365 133        53      906.0 50108 180.81       4          2
+## 43  101100888227  49        25      660.0 35676 185.00       4          1
+## 44  101100894686  91        29      617.0 27423 225.00       4          2
+## 45  101100909328  95        33      638.0 32189 198.21       4          2
+## 46  101100916465  88        71      800.0 41774 191.51       3          2
+## 47  101100930120 100        25      600.0 32259 186.00       3          2
+## 48  101100930283  92        50      710.0 40850 173.81       3          2
+## 49  101100930711  42        20      620.0 31468 197.03       3          2
+## 50  101100932351  27        20      565.0 28392 199.00       3          1
+## 51  101100943326  24        20      625.0 33793 184.95       4          2
+## 52  101100946260  27        23      520.0 22033 236.02       4          2
+## 53  101100947733  93         4      668.0 31781 210.19       5          2
+## 54  101100948244 108        25     1000.0 42341 236.18       4          2
+## 55  101100948837  93         0     1080.0 34488 313.16       6          3
+## 56  101100955246  22         0      716.0 38118 187.84       5          2
+## 57  101100956234  23         0      720.0 27714 259.80       5          2
+## 58  101100975983  29        15      518.0 28434 182.18       4          2
+## 59  101100983980  76        28      650.0 28115 231.20       5          2
+## 60  101100998603  66        49      647.0 35893 180.26       5          3
+## 61  101100998661  80        52      509.0 24733 205.80       5          2
+## 62  101101000554   9        25      765.0 39946 191.51       3          2
+## 63  101101001336 154        64      620.0 34895 177.68       4          2
+## 64  101101028034  13        29      598.0 33321 179.47       4          2
+## 65  101101031536  12        13      524.0 28591 183.28       5          2
+## 66  101101033623 160        78      704.0 27408 256.86       4          1
+## 67  101101034213  55        39      570.0 33669 169.30       3          2
+## 68  101101044696  38        64      510.0 24650 206.90       3          2
+## 69  101101047716  10         0      700.0 26563 263.53       5          2
+## 70  101101049975  73        36      510.0 27377 186.29       4          2
+## 71  101101055182   6        11      526.6 28078 187.55       3          2
+## 72  101101055768  80       164      600.0 27756 216.17       4          3
+## 73  101101064609  62         0      645.0 30868 208.96       3          2
+## 74  101101066874  10         1      490.0 27072 181.00       4          2
+## 75  101101068472  57        22      525.0 30968 169.53       3          2
+## 76  101101070060  52       119      480.8 26989 178.15       4          1
+## 77  101101074090  31         3      660.0 28720 229.81       5          2
+## 78  101101080254   3         7      860.0 44907 191.51       3          2
+## 79  101101080707 155        41      495.0 21664 228.50       4          2
+## 80  101101083971  35        13      676.0 24672 274.00       3          2
+## 81  101101085189  72        81      486.0 28974 167.74       3          2
+## 82  101101086436  34        20      330.0  9763 338.03       2          1
+## 83  101101086464  45        21      218.0  6450 338.03       1          0
+## 84  101101086471  33        59      212.0  6272 338.03       1          0
+## 85  101101086577   2        11      505.0 26274 192.21       3          2
+## 86  101101087680  61        21      939.0 47559 197.44       4          2
+## 87  101101088157  56        23      730.0 36171 201.82       5          2
+## 88  101101097843  18        33      673.0 34404 195.62       4          2
+## 89  101101117296  16         6      780.0 37301 209.11       4          2
+## 90  101101128976  18        88      524.0 29112 180.00       3          2
+## 91  101101139085 148        84      840.0 45897 183.02       4          2
+## 92  101101139363 144        72      630.0 34253 183.93       4          2
+## 93  101101140592  18        48      600.0 24724 242.68       5          1
+## 94  101101145805   4         0      575.0 23000 250.00       3          1
+## 95  101101146113  35        20      603.0 36085 167.11       3          2
+## 96  101101147495  17        38      508.0 25248 201.21       4          2
+## 97  101101151841  16        58      525.0 29470 178.15       4          1
+## 98  101101159408  17         0      548.0 32382 169.23       3          2
+## 99  101101173021  38        30      763.0 41667 183.12       4          3
+## 100 101101183783   9         4      558.0 31899 174.93       4          1
+## 101 101101184637 122        60      560.0 32290 173.43       3          2
+## 102 101101195356  26       123      620.0 35719 173.58       3          1
+## 103 101101198977  29        20      550.0 31886 172.49       3          2
+## 104 101101206483  20         8      800.0 45429 176.10       4          2
+## 105 101101224529   4         0      610.0 34640 176.10       3          2
+## 106 101101225939   8         5      951.0 52600 180.80       4          2
+## 107 101101227637 136       117      759.0 39633 191.51       3          2
+## 108 101101234683   7         8      742.0 38792 191.28       4          2
+## 109 101101246371  12        41      551.0 30523 180.52       4          3
+## 110 101101258830   2         6      225.0  6657 338.03       1          0
+## 111 101101258842   2         4      228.0  6745 338.03       1          0
+## 112 101101261331  39        46      550.0 27546 199.67       3          1
+## 113 101101269292  40        52      730.0 31742 229.98       5          2
+## 114 101101271155   5        33      457.0 24383 187.43       5          2
+## 115 101101275217   6         7      808.0 42192 191.51       3          2
+## 116 101101283898   8        14      473.5 25263 187.43       4          2
+## 117 101101297396  91        87      445.0 24053 185.01       4          2
+## 118 101101299195   5         9      648.0 37306 173.70       3          1
+## 119 101101303639   5         4      580.0 34110 170.04       4          2
+## 120 101101303874  25        85      600.0 29879 200.81       3          1
+## 121 101101311309 285        48      535.0 23097 231.64       4          2
+## 122 101101311695   4        28      580.0 32921 176.18       4          2
+## 123 101101319885  16        24      650.0 33846 192.05       4          3
+## 124 101101324796   4         2      470.0 27326 172.00       3          2
+## 125 101101326132   6        11      660.0 31456 209.82       5          3
+## 126 101101329972  19        89      568.0 29017 195.75       3          2
+## 127 101101369231 110       425      468.0 21818 214.51       5          3
+## 128 101101373922  19        85      609.0 29728 204.86       4          2
+## 129 101101381129 187        86      510.0 30085 169.52       3          2
+## 130 101101404243  11        14      725.0 42093 172.24       3          2
+## 131 101101425535  41        51      775.0 40468 191.51       3          2
+## 132 101101463185  88       164      456.0 23281 195.87       3          2
+## 133 101101466897  82        71      612.0 29196 209.62       5          2
+## 134 101101477423  25        27      640.0 29524 216.78       5          2
+## 135 101101497941  66        56      573.0 31375 182.63       4          2
+## 136 101101500974 108        65      886.0 28655 309.20       4          2
+## 137 101101511754  93        92      556.0 25520 217.87       3          3
+## 138 101101523373  72       191      460.0 23485 195.87       3          2
+## 139 101101527677   1         0      610.0 35326 172.68       3          1
+## 140 101101540423   6        27      900.0 49184 182.99       4          2
+## 141 101101548084   7        20      442.0 24768 178.46       4          2
+## 142 101101550684 132       126      650.0 33228 195.62       4          2
+## 143 101101553400 100       168      678.0 24056 281.85       7          2
+## 144 101101559422   6        12      595.0 33700 176.56       3          2
+## 145 101101569323 138        51      676.0 35971 187.93       4          1
+## 146 101101573210 137        43      600.0 35899 167.14       4          1
+## 147 101101642403 139       102      540.0 30625 176.33       3          1
+## 148 101101683445  59        67      580.0 27083 214.16       4          2
+## 149 101101683804  64       167      435.0 22158 196.32       5          3
+## 150 101101691303  69         6      565.0 33684 167.74       3          2
+## 151 101101701866  21        22      605.0 34234 176.73       5          1
+## 152 101101715462  42       278      710.0 30906 229.73       6          1
+## 153 101101748894  41         0      640.0 28129 227.53       5          2
+## 154 101101751336   8        23      780.0 41594 187.53       4          2
+## 155 101101773038  15        21      625.0 32466 192.51       5          1
+## 156 101101816635  44       205      500.0 26609 187.91       3          2
+## 157 101101832980  37        24      765.0 39946 191.51       3          2
+## 158 101101844096   9        32      828.0 33127 249.95       5          2
+## 159 101101844480  86        36      523.0 26045 200.81       4          1
+## 160 101101846650  69        49      652.0 35312 184.64       4          1
+## 161 101101851177  47        48      789.0 41199 191.51       3          2
+## 162 101101855566  35        81      500.0 28984 172.51       3          2
+## 163 101101906611  38        56      645.0 33605 191.94       5          2
+## 164 101101929403  64        77      525.0 22158 236.94       2          2
+## 165 101101940879  32        28      565.0 32043 176.33       3          1
+## 166 101101955556  15        65      850.0 38579 220.33       6          3
+## 167 101101971107  11        43      608.0 26298 231.20       4          2
+## 168 101101989672 116       570      550.0 32478 169.35       3          2
+## 169 101102005927  21         0      520.0 26173 198.68       3          2
+## 170 101102017700  11        78      518.0 26448 195.86       3          2
+## 171 101102019356  49       290      618.0 24621 251.01       6          3
+## 172 101102034158  34         4      550.0 31728 173.35       3          1
+## 173 101102046908   9         0      608.0 30961 196.38       5          1
+## 174 101102066663   1         0      515.0 26940 191.17       3          2
+## 175 101102077040  33        91      508.0 25585 198.56       3          1
+## 176 101102088226  22        93      550.0 25093 219.19       4          2
+## 177 101102089056  29        32      755.0 32315 233.64       5          3
+## 178 101102089805  43        30      655.0 38614 169.63       5          3
+## 179 101102095935   4         0      548.0 31031 176.60       3          2
+## 180 101102100509  23        70      533.5 25329 210.63       4          2
+## 181 101102117992  15        51      560.0 27870 200.94       3          2
+## 182 101102124629   8        21      490.0 28540 171.69       3          2
+## 183 101102141110  13        20      760.0 35671 213.06       3          2
+## 184 101102145779  75        36      488.0 27709 176.12       3          2
+## 185 101102155051  37       173      550.0 21098 260.70       5          2
+## 186 101102162154  73        81      405.0 23218 174.44       3          2
+## 187 101102181362  53        35      494.0 29428 167.87       3          2
+## 188 101102195289  13        24      510.0 30295 168.35       4          2
+## 189 101102198474  35        10      725.5 37884 191.51       3          2
+## 190 101102237556  23        31      600.0 27719 216.46       5          2
+## 191 101102249075  41        10      575.0 33083 173.81       3          2
+## 192 101102304255  19        43      561.0 31540 177.87       4          2
+## 193 101102342601  10        22      401.0 22037 181.97       3          3
+## 194 101102368593  20        27      560.0 24348 230.00       5          2
+## 195 101102380359  19        23      570.0 28352 201.05       4          2
+## 196 101102411955  12        34      650.0 38227 170.04       4          1
+##     kitchen bathRoom constructionTime renovationCondition buildingStructure
+## 1         1        2             2002                   3                 2
+## 2         1        3             2010                   2                 6
+## 3         1        2             2005                   4                 6
+## 4         1        2             2002                   4                 2
+## 5         1        3             2000                   4                 2
+## 6         1        3             2005                   4                 6
+## 7         1        4             1999                   4                 6
+## 8         0        2             2005                   4                 6
+## 9         1        2             1999                   3                 6
+## 10        1        2             2005                   4                 2
+## 11        1        3             2003                   4                 2
+## 12        1        3             2001                   4                 2
+## 13        1        2             2001                   3                 2
+## 14        1        2             2002                   1                 2
+## 15        1        2             2001                   3                 2
+## 16        1        2             2001                   1                 2
+## 17        1        3             2000                   4                 2
+## 18        2        2             2001                   4                 2
+## 19        1        2             2002                   4                 6
+## 20        1        3             2001                   4                 6
+## 21        1        3             2001                   3                 4
+## 22        1        2             1996                   4                 4
+## 23        1        2             2003                   3                 6
+## 24        1        2             2003                   4                 2
+## 25        1        2             2001                   1                 2
+## 26        1        2             2003                   4                 2
+## 27        1        2             2003                   4                 2
+## 28        1        3             2005                   3                 6
+## 29        1        2             2003                   3                 2
+## 30        1        2             2003                   4                 2
+## 31        1        2             2003                   3                 2
+## 32        1        2             2003                   4                 6
+## 33        0        2             2001                   3                 2
+## 34        1        2             2008                   4                 6
+## 35        1        3             2005                   3                 2
+## 36        1        3             1998                   4                 2
+## 37        1        2             2005                   4                 2
+## 38        1        2             2001                   3                 2
+## 39        1        2             2005                   3                 6
+## 40        1        2             1998                   4                 4
+## 41        1        2             2007                   4                 6
+## 42        1        2             2007                   4                 6
+## 43        1        2             2001                   1                 2
+## 44        1        2             2005                   4                 6
+## 45        1        2             2008                   3                 6
+## 46        1        2             1998                   3                 4
+## 47        1        2             2003                   4                 6
+## 48        1        2             2004                   4                 6
+## 49        1        2             2003                   4                 6
+## 50        1        2             2003                   4                 2
+## 51        1        2             2003                   4                 2
+## 52        1        1             2005                   3                 6
+## 53        1        3             2001                   4                 4
+## 54        1        2             2001                   4                 2
+## 55        1        3             2003                   4                 6
+## 56        1        2             2013                   4                 6
+## 57        1        3             2003                   4                 2
+## 58        1        3             1998                   3                 2
+## 59        1        2             2001                   4                 2
+## 60        1        3             2001                   4                 6
+## 61        1        2             2000                   3                 6
+## 62        1        2             1998                   4                 4
+## 63        1        2             2003                   4                 2
+## 64        1        2             1999                   1                 4
+## 65        1        2             1998                   3                 2
+## 66        1        3             2001                   3                 2
+## 67        1        2             2003                   4                 2
+## 68        1        3             2001                   4                 2
+## 69        1        4             2004                   4                 2
+## 70        1        2             1995                   3                 2
+## 71        1        3             2001                   4                 2
+## 72        1        3             2000                   2                 2
+## 73        1        2             2003                   4                 2
+## 74        1        2             1998                   2                 2
+## 75        1        2             2005                   4                 2
+## 76        1        2             2002                   4                 2
+## 77        1        3             2003                   3                 4
+## 78        1        2             1998                   1                 4
+## 79        1        3             1996                   3                 4
+## 80        1        2             2008                   3                 6
+## 81        1        2             2001                   3                 2
+## 82        1        1             2004                   3                 6
+## 83        1        1             2004                   1                 6
+## 84        0        1             2004                   3                 6
+## 85        1        2             2003                   1                 2
+## 86        1        3             2008                   4                 6
+## 87        1        3             2003                   4                 2
+## 88        1        2             2003                   4                 2
+## 89        1        3             1999                   4                 2
+## 90        1        2             2003                   3                 2
+## 91        1        2             2004                   4                 2
+## 92        1        3             2000                   3                 2
+## 93        1        3             2000                   3                 2
+## 94        1        2             2005                   4                 2
+## 95        1        2             2002                   3                 2
+## 96        1        3             2001                   4                 2
+## 97        1        2             2001                   3                 2
+## 98        1        2             2007                   3                 2
+## 99        1        3             2000                   4                 2
+## 100       1        2             2003                   4                 2
+## 101       1        3             2004                   4                 2
+## 102       1        2             2003                   3                 2
+## 103       1        2             2001                   2                 2
+## 104       1        3             2007                   1                 6
+## 105       1        2             2003                   4                 2
+## 106       1        2             2011                   4                 6
+## 107       1        2             1997                   3                 6
+## 108       1        2             2003                   3                 6
+## 109       1        2             1996                   3                 4
+## 110       1        1             2004                   2                 6
+## 111       1        1             2004                   3                 6
+## 112       1        2             2003                   3                 2
+## 113       1        3             2003                   2                 2
+## 114       1        2             1997                   4                 2
+## 115       1        2             1998                   3                 6
+## 116       1        2             1996                   3                 4
+## 117       1        2             1998                   3                 2
+## 118       1        2             2003                   4                 2
+## 119       1        2             2001                   1                 2
+## 120       1        2             2001                   4                 2
+## 121       1        2             2005                   4                 6
+## 122       1        2             2003                   4                 2
+## 123       1        2             2005                   4                 2
+## 124       1        2             1995                   3                 2
+## 125       1        2             2000                   3                 2
+## 126       1        2             2003                   3                 2
+## 127       1        3             1995                   4                 2
+## 128       1        3             2003                   4                 2
+## 129       1        2             2002                   4                 2
+## 130       1        2             2007                   4                 6
+## 131       1        2             1997                   4                 2
+## 132       1        2             1995                   1                 2
+## 133       1        2             2003                   4                 2
+## 134       1        2             2003                   4                 6
+## 135       1        2             2001                   4                 2
+## 136       1        3             2010                   4                 6
+## 137       1        4             2001                   4                 2
+## 138       1        2             1999                   3                 2
+## 139       1        2             2003                   4                 6
+## 140       1        2             2003                   4                 2
+## 141       1        3             1999                   1                 2
+## 142       1        2             2003                   4                 2
+## 143       1        3             2000                   4                 2
+## 144       1        2             2003                   4                 2
+## 145       1        2             2001                   4                 2
+## 146       1        2             2005                   4                 2
+## 147       1        1             2003                   3                 2
+## 148       1        3             2005                   4                 2
+## 149       1        3             2009                   3                 2
+## 150       1        2             2003                   4                 2
+## 151       1        1             2003                   3                 2
+## 152       1        3             2003                   4                 2
+## 153       1        2             2003                   1                 2
+## 154       1        2             2013                   3                 6
+## 155       1        2             2000                   1                 2
+## 156       1        2             2003                   4                 6
+## 157       1        2             1997                   3                 6
+## 158       1        3             2000                   4                 2
+## 159       1        2             2002                   3                 2
+## 160       1        2             2001                   3                 2
+## 161       1        2             1997                   4                 6
+## 162       1        2             2002                   4                 2
+## 163       1        2             2000                   4                 2
+## 164       1        2             2005                   1                 6
+## 165       1        1             2003                   4                 2
+## 166       1        2             2003                   4                 6
+## 167       1        2             2002                   4                 2
+## 168       1        2             2002                   4                 2
+## 169       1        2             2001                   1                 6
+## 170       1        2             2001                   4                 2
+## 171       1        3             2005                   4                 2
+## 172       1        2             2003                   4                 6
+## 173       1        2             2003                   1                 6
+## 174       1        2             2002                   4                 2
+## 175       1        2             2002                   4                 2
+## 176       1        3             2001                   4                 2
+## 177       1        4             2003                   4                 2
+## 178       1        2             2008                   4                 2
+## 179       1        2             2001                   4                 2
+## 180       1        3             2001                   3                 2
+## 181       1        2             2003                   4                 2
+## 182       1        2             2000                   4                 2
+## 183       1        3             2008                   4                 6
+## 184       1        1             2002                   4                 2
+## 185       1        3             1995                   3                 2
+## 186       1        3             2001                   4                 2
+## 187       1        2             2003                   4                 2
+## 188       1        2             2003                   3                 2
+## 189       1        2             1997                   4                 2
+## 190       1        2             2003                   3                 6
+## 191       1        2             2003                   4                 2
+## 192       1        2             1999                   4                 4
+## 193       1        2             1996                   3                 2
+## 194       1        4             2003                   4                 2
+## 195       1        3             2005                   4                 6
+## 196       1        2             2001                   4                 2
+##     ladderRatio elevator fiveYearsProperty subway  district     month day
+## 1         0.500        0                 0      0 ChangPing September  28
+## 2         1.000        1                 0      1 ChangPing  February  17
+## 3         0.500        1                 1      0 ChangPing     March  15
+## 4         0.500        0                 1      0 ChangPing  February  20
+## 5         0.500        0                 0      0 ChangPing   January   7
+## 6         0.500        1                 0      0 ChangPing  February  23
+## 7         2.000        1                 0      0 ChangPing  February  27
+## 8         0.500        0                 0      1 ChangPing     March  31
+## 9         0.500        1                 1      1 ChangPing   January  23
+## 10        0.500        0                 0      0 ChangPing  February  27
+## 11        0.333        1                 1      1 ChangPing  February  18
+## 12        0.500        0                 1      0 ChangPing     March  19
+## 13        0.500        0                 0      0 ChangPing   October  10
+## 14        0.500        0                 1      0 ChangPing   January   8
+## 15        0.500        1                 0      1 ChangPing  February  10
+## 16        0.500        1                 1      1 ChangPing      June  13
+## 17        0.500        0                 1      0 ChangPing   January  17
+## 18        0.500        0                 1      0 ChangPing     March   6
+## 19        0.500        1                 1      1 ChangPing September  12
+## 20        0.500        1                 1      0 ChangPing  February   4
+## 21        0.500        0                 1      0 ChangPing   January  17
+## 22        0.500        0                 1      0 ChangPing     March  17
+## 23        0.500        1                 1      1 ChangPing  February  17
+## 24        0.500        0                 0      0 ChangPing     April   5
+## 25        0.500        0                 1      0 ChangPing     March  15
+## 26        0.500        1                 0      0 ChangPing  February  27
+## 27        0.500        1                 1      1 ChangPing       May  30
+## 28        0.500        1                 0      0 ChangPing  February  22
+## 29        0.500        0                 1      0 ChangPing   January  11
+## 30        0.500        0                 1      1 ChangPing   January   9
+## 31        0.375        1                 1      1 ChangPing  February   9
+## 32        0.500        1                 1      1 ChangPing   January  14
+## 33        0.500        1                 1      1 ChangPing     March  25
+## 34        0.500        1                 0      0 ChangPing  February   6
+## 35        0.500        0                 1      0 ChangPing   January   6
+## 36        0.500        0                 1      0 ChangPing  February  15
+## 37        0.500        0                 1      0 ChangPing     March   9
+## 38        0.250        1                 1      1 ChangPing  February  27
+## 39        0.200        1                 1      1 ChangPing     March   7
+## 40        0.500        0                 1      0 ChangPing  February  26
+## 41        0.500        1                 1      1 ChangPing     March   6
+## 42        0.500        1                 1      1 ChangPing     March  30
+## 43        0.500        1                 0      1 ChangPing   January  15
+## 44        0.500        1                 0      0 ChangPing  February  27
+## 45        0.500        1                 0      0 ChangPing     March   6
+## 46        0.500        0                 1      0 ChangPing  February  28
+## 47        0.500        1                 1      1 ChangPing     March  16
+## 48        0.500        1                 0      0 ChangPing     March   7
+## 49        0.500        1                 1      1 ChangPing   January  17
+## 50        0.375        1                 1      1 ChangPing   January   2
+## 51        0.500        1                 0      1 ChangPing   January   2
+## 52        0.500        1                 0      0 ChangPing   January   6
+## 53        0.500        0                 1      0 ChangPing     March  12
+## 54        0.375        1                 1      0 ChangPing     March  28
+## 55        0.500        1                 0      1 ChangPing     March  13
+## 56        0.500        1                 0      0 ChangPing   January   2
+## 57        0.500        1                 0      1 ChangPing   January   4
+## 58        0.500        0                 1      0 ChangPing   January  15
+## 59        0.500        1                 0      0 ChangPing     March   6
+## 60        0.250        1                 1      1 ChangPing  February  28
+## 61        0.333        0                 1      0 ChangPing     March  14
+## 62        0.500        0                 1      0 ChangPing   January   2
+## 63        0.500        1                 1      1 ChangPing       May  27
+## 64        0.500        0                 1      0 ChangPing   January  14
+## 65        0.500        0                 1      0 ChangPing   January  14
+## 66        0.750        1                 0      0 ChangPing      June  12
+## 67        0.500        1                 1      1 ChangPing  February  27
+## 68        0.500        0                 1      0 ChangPing  February  12
+## 69        0.500        0                 0      1 ChangPing   January  16
+## 70        0.500        0                 1      0 ChangPing     March  21
+## 71        0.500        0                 0      0 ChangPing   January  14
+## 72        0.500        0                 1      0 ChangPing     March  29
+## 73        0.500        0                 0      0 ChangPing     March  14
+## 74        0.500        0                 1      0 ChangPing   January  21
+## 75        0.500        0                 1      0 ChangPing     March  10
+## 76        0.375        1                 1      0 ChangPing     March   6
+## 77        0.500        0                 1      1 ChangPing  February  14
+## 78        0.500        0                 1      0 ChangPing   January  18
+## 79        0.500        0                 0      0 ChangPing      June  20
+## 80        0.500        1                 1      0 ChangPing  February  21
+## 81        0.500        0                 1      0 ChangPing     March  29
+## 82        0.200        1                 0      1 ChangPing  February  21
+## 83        0.200        1                 0      1 ChangPing     March   3
+## 84        0.200        1                 0      1 ChangPing  February  19
+## 85        0.500        1                 0      0 ChangPing   January  19
+## 86        0.500        1                 1      0 ChangPing     March  20
+## 87        0.500        0                 0      1 ChangPing     March  15
+## 88        0.500        1                 0      1 ChangPing  February  20
+## 89        0.500        0                 0      0 ChangPing  February  21
+## 90        0.500        0                 0      0 ChangPing  February  24
+## 91        0.500        1                 1      1 ChangPing      July   6
+## 92        0.500        0                 1      0 ChangPing      July   2
+## 93        0.500        0                 1      0 ChangPing  February  27
+## 94        0.500        0                 0      0 ChangPing  February  14
+## 95        0.500        1                 1      1 ChangPing     March  16
+## 96        0.500        0                 0      0 ChangPing  February  27
+## 97        0.375        1                 0      0 ChangPing  February  27
+## 98        0.500        0                 1      0 ChangPing  February  28
+## 99        0.500        0                 1      0 ChangPing     March  24
+## 100       0.375        1                 1      1 ChangPing  February  25
+## 101       0.333        0                 1      0 ChangPing      June  18
+## 102       0.500        1                 1      1 ChangPing     March  16
+## 103       0.500        0                 1      0 ChangPing     March  19
+## 104       0.500        1                 0      0 ChangPing     March  11
+## 105       0.500        1                 1      1 ChangPing  February  27
+## 106       0.500        1                 0      0 ChangPing     March   3
+## 107       0.500        0                 1      0 ChangPing      July   9
+## 108       0.500        1                 0      1 ChangPing     March   4
+## 109       0.500        0                 1      0 ChangPing     March  10
+## 110       0.200        1                 0      1 ChangPing     March   3
+## 111       0.200        1                 0      1 ChangPing     March   3
+## 112       0.375        1                 0      1 ChangPing     April   9
+## 113       0.500        0                 1      1 ChangPing     April  11
+## 114       0.500        0                 1      0 ChangPing     March   8
+## 115       0.500        0                 1      0 ChangPing     March  10
+## 116       0.500        0                 1      0 ChangPing     March  12
+## 117       0.125        0                 1      0 ChangPing      June   6
+## 118       0.500        1                 0      1 ChangPing     March  13
+## 119       0.500        0                 1      0 ChangPing     March  14
+## 120       0.375        1                 1      0 ChangPing     April   3
+## 121       0.333        1                 0      0 ChangPing  December  20
+## 122       0.375        1                 1      1 ChangPing     March  14
+## 123       0.500        0                 0      0 ChangPing     March  28
+## 124       0.500        0                 1      0 ChangPing     March  16
+## 125       0.500        0                 1      0 ChangPing     March  19
+## 126       0.750        1                 1      0 ChangPing     April   1
+## 127       0.500        0                 0      0 ChangPing      July   9
+## 128       0.500        0                 1      0 ChangPing     April  10
+## 129       0.500        0                 1      0 ChangPing September  26
+## 130       0.500        1                 1      0 ChangPing     April   9
+## 131       0.500        0                 0      0 ChangPing       May  13
+## 132       0.500        0                 1      0 ChangPing      July   8
+## 133       0.500        0                 1      1 ChangPing      July   3
+## 134       0.500        0                 1      1 ChangPing       May  10
+## 135       0.500        0                 1      0 ChangPing      June  25
+## 136       0.500        1                 1      0 ChangPing    August   8
+## 137       0.500        0                 1      0 ChangPing      July  26
+## 138       0.500        0                 0      0 ChangPing      July   8
+## 139       0.500        1                 0      1 ChangPing     April  30
+## 140       0.500        1                 0      1 ChangPing       May   9
+## 141       0.500        0                 0      0 ChangPing       May  11
+## 142       0.500        1                 1      1 ChangPing September  14
+## 143       0.500        0                 1      0 ChangPing    August  14
+## 144       0.375        1                 1      1 ChangPing       May  13
+## 145       0.500        1                 1      1 ChangPing September  25
+## 146       0.500        0                 0      0 ChangPing September  25
+## 147       0.500        1                 1      1 ChangPing   October  16
+## 148       0.500        0                 0      0 ChangPing    August   8
+## 149       0.500        0                 0      0 ChangPing    August  12
+## 150       0.500        1                 1      1 ChangPing    August  19
+## 151       0.500        0                 0      1 ChangPing      July   5
+## 152       0.500        0                 1      1 ChangPing      July  30
+## 153       0.500        0                 1      1 ChangPing    August   8
+## 154       0.500        1                 0      0 ChangPing      July   6
+## 155       0.500        0                 1      0 ChangPing      July  18
+## 156       0.500        1                 1      1 ChangPing    August  27
+## 157       0.500        0                 1      0 ChangPing    August  24
+## 158       0.500        0                 1      0 ChangPing      July  30
+## 159       0.375        1                 0      0 ChangPing   October  15
+## 160       0.500        1                 1      1 ChangPing September  29
+## 161       0.500        0                 0      0 ChangPing September   8
+## 162       0.500        0                 0      0 ChangPing    August  28
+## 163       0.500        0                 1      0 ChangPing September  11
+## 164       0.500        1                 0      1 ChangPing   October  12
+## 165       0.500        1                 1      1 ChangPing September  13
+## 166       0.500        1                 1      0 ChangPing    August  31
+## 167       0.500        1                 0      0 ChangPing    August  30
+## 168       0.500        0                 1      0 ChangPing  December  18
+## 169       0.500        1                 1      0 ChangPing September  17
+## 170       0.500        1                 1      0 ChangPing September  10
+## 171       0.500        0                 1      0 ChangPing   October  19
+## 172       0.500        1                 1      1 ChangPing   October   7
+## 173       0.500        1                 1      0 ChangPing September  15
+## 174       0.500        1                 0      0 ChangPing September  12
+## 175       0.500        1                 1      0 ChangPing   October  16
+## 176       0.500        0                 0      0 ChangPing   October   8
+## 177       0.500        0                 0      0 ChangPing   October  15
+## 178       0.500        0                 0      0 ChangPing   October  29
+## 179       0.500        0                 0      1 ChangPing September  21
+## 180       0.500        0                 1      0 ChangPing   October  12
+## 181       0.375        1                 0      1 ChangPing   October   8
+## 182       0.250        0                 0      0 ChangPing   October   3
+## 183       0.500        1                 0      0 ChangPing   October  12
+## 184       0.500        1                 1      0 ChangPing  December  15
+## 185       0.500        0                 1      0 ChangPing  November  10
+## 186       0.500        0                 1      0 ChangPing  December  19
+## 187       0.500        0                 1      0 ChangPing  December   4
+## 188       0.500        0                 1      1 ChangPing   October  27
+## 189       0.500        0                 1      0 ChangPing  November  19
+## 190       0.500        0                 1      1 ChangPing  November  18
+## 191       0.500        1                 1      1 ChangPing  December   9
+## 192       0.500        0                 1      0 ChangPing  December   3
+## 193       0.500        0                 1      0 ChangPing  December   6
+## 194       0.500        0                 1      1 ChangPing  December  23
+## 195       0.333        1                 0      0 ChangPing  December  27
+## 196       0.500        0                 1      0 ChangPing  December  29
+##     totalFloor floorRange
+## 1            7       high
+## 2           28     midium
+## 3           12     bottom
+## 4            7       high
+## 5            7       high
+## 6           12     bottom
+## 7           23        low
+## 8            6        top
+## 9           23     midium
+## 10           7       high
+## 11          18        top
+## 12           6        top
+## 13           6     midium
+## 14           6        top
+## 15          13        low
+## 16          13        low
+## 17           7       high
+## 18           6        top
+## 19          13        low
+## 20          32     midium
+## 21           7       high
+## 22           5     midium
+## 23          13        low
+## 24           6        top
+## 25           6        top
+## 26          32     midium
+## 27          13       high
+## 28          12        top
+## 29           7       high
+## 30           5        top
+## 31          32       high
+## 32          32       high
+## 33          13     bottom
+## 34          10       high
+## 35           7       high
+## 36           6     bottom
+## 37           6        top
+## 38          15       high
+## 39          11        top
+## 40           4     midium
+## 41          12        top
+## 42          12       high
+## 43          13     bottom
+## 44          12     bottom
+## 45          12     bottom
+## 46           4        top
+## 47          32     midium
+## 48          18       high
+## 49          32       high
+## 50          32     midium
+## 51          14        top
+## 52          12     bottom
+## 53           7       high
+## 54          32        top
+## 55          13       high
+## 56           9        low
+## 57          13       high
+## 58           7     bottom
+## 59          32        low
+## 60          13       high
+## 61           7       high
+## 62           4     midium
+## 63          17     midium
+## 64           6     bottom
+## 65           6     midium
+## 66          32       high
+## 67          13       high
+## 68           6        top
+## 69           6       high
+## 70           6     midium
+## 71           7       high
+## 72           6     midium
+## 73           7       high
+## 74           6     bottom
+## 75           7       high
+## 76          32        low
+## 77           6       high
+## 78           4     midium
+## 79           6       high
+## 80          16     bottom
+## 81           6        top
+## 82          30     midium
+## 83          30     midium
+## 84          30     midium
+## 85          32     midium
+## 86          10        top
+## 87           5        top
+## 88          14     midium
+## 89           6     bottom
+## 90           6        top
+## 91           6     midium
+## 92           6       high
+## 93           6       high
+## 94           6     bottom
+## 95          14     midium
+## 96           7       high
+## 97          32        low
+## 98           6        top
+## 99           4     bottom
+## 100         32        low
+## 101          6        top
+## 102         13     midium
+## 103          6        top
+## 104         10     bottom
+## 105         19       high
+## 106          6       high
+## 107          4     midium
+## 108         20        top
+## 109          6     midium
+## 110         30     midium
+## 111         30     midium
+## 112         32       high
+## 113          6       high
+## 114          7       high
+## 115          4     midium
+## 116          7       high
+## 117          7       high
+## 118         13        low
+## 119          7       high
+## 120         32     midium
+## 121         17     bottom
+## 122         32       high
+## 123          7       high
+## 124          5     midium
+## 125          7       high
+## 126         32     bottom
+## 127          6        top
+## 128          6        top
+## 129          6        top
+## 130          9     bottom
+## 131          4     midium
+## 132          5     midium
+## 133          5        top
+## 134          6        top
+## 135          7       high
+## 136          7     bottom
+## 137          7       high
+## 138          5        top
+## 139         13     midium
+## 140          6     midium
+## 141          6       high
+## 142         14     midium
+## 143          6     midium
+## 144         32       high
+## 145         13        low
+## 146          5     midium
+## 147         19     midium
+## 148          6     bottom
+## 149          7       high
+## 150         13     midium
+## 151          6       high
+## 152          6       high
+## 153          5        top
+## 154          8     midium
+## 155          7       high
+## 156         32     midium
+## 157          4     midium
+## 158          6     midium
+## 159         32       high
+## 160         13        low
+## 161          4        top
+## 162          6        top
+## 163          7       high
+## 164         12     bottom
+## 165         19       high
+## 166         11        top
+## 167         32     midium
+## 168          6        top
+## 169         32     midium
+## 170         32       high
+## 171          7       high
+## 172         13       high
+## 173          9     bottom
+## 174         32       high
+## 175         32        low
+## 176          6        top
+## 177          6       high
+## 178          6        top
+## 179          6        low
+## 180          7       high
+## 181         32     midium
+## 182          7     bottom
+## 183         10       high
+## 184         32     midium
+## 185          4     midium
+## 186          5        top
+## 187          7       high
+## 188          5        top
+## 189          4     midium
+## 190          7       high
+## 191         14     midium
+## 192          6     bottom
+## 193          6        top
+## 194          6       high
+## 195         12     bottom
+## 196          7     midium
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data2017}\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(square}\SpecialCharTok{\textless{}=}\DecValTok{37} \SpecialCharTok{\&}\NormalTok{ district}\SpecialCharTok{==}\StringTok{"ChangPing"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               id DOM followers totalPrice price square bedRoom livingRoom
+## 1   101092156716 302         1       48.8 24647  19.80       1          1
+## 2   101100381185 192       111       50.0 26625  18.78       1          0
+## 3   101100449945 157        86      185.0 54316  34.06       1          0
+## 4   101100523428 122       158       27.9 16393  17.02       1          0
+## 5   101100610376 179       174      230.0 62671  36.70       1          0
+## 6   101100732988 132      1085       48.0 26667  18.00       1          1
+## 7   101100766518 131        48       52.0 28889  18.00       1          0
+## 8   101100766520 127        15       49.8 27667  18.00       1          0
+## 9   101100775402 133         0       48.0 26667  18.00       1          0
+## 10  101100845125 115       108       48.0 25560  18.78       1          0
+## 11  101100857020  65        44       42.5 23612  18.00       1          0
+## 12  101100871038  58       355       90.0 57953  15.53       1          0
+## 13  101100917225  67       153      181.5 51858  35.00       1          0
+## 14  101100928307  69        56      185.0 52246  35.41       1          0
+## 15  101100928854  72        43      188.0 51115  36.78       1          0
+## 16  101100939031  67       277      158.0 61840  25.55       1          0
+## 17  101100941044  64        13       46.7 25859  18.06       1          0
+## 18  101100949771  39        20       42.0 23256  18.06       1          0
+## 19  101100964349  22        51       35.0 18548  18.87       1          0
+## 20  101100964755  33        80      180.0 52755  34.12       1          0
+## 21  101100965510  40        77      151.0 57966  26.05       1          0
+## 22  101100974002  24         4       44.0 24445  18.00       1          0
+## 23  101100982918  23        40      148.0 58177  25.44       1          0
+## 24  101100988390  19         0       43.8 23224  18.86       1          0
+## 25  101100996068  22         9       33.0 20110  16.41       1          0
+## 26  101100998537  25         0       18.5 11247  16.45       1          0
+## 27  101101007727  10        36      175.0 47298  37.00       1          0
+## 28  101101011720  25        56       50.0 23924  20.90       1          0
+## 29  101101017425  52        51      187.0 50857  36.77       1          0
+## 30  101101021074  22         0      148.0 56924  26.00       1          0
+## 31  101101022408   5         0      135.0 53743  25.12       1          0
+## 32  101101024705  18        49      179.0 52555  34.06       1          0
+## 33  101101032469  11         0       43.0 23810  18.06       1          0
+## 34  101101033528   4         0      178.0 50858  35.00       1          0
+## 35  101101040258   9         0      132.0 50770  26.00       1          1
+## 36  101101049723  15        35       47.8 23877  20.02       1          0
+## 37  101101051840   2         0       50.0 26330  18.99       1          0
+## 38  101101054317  14         1       47.0 26112  18.00       1          0
+## 39  101101054335  33         0      152.0 58462  26.00       1          0
+## 40  101101056372  31        58       36.2 22625  16.00       1          0
+## 41  101101060507   3         0       40.5 21566  18.78       1          0
+## 42  101101064692  31         0      179.0 51143  35.00       1          0
+## 43  101101074620  30        31      185.0 51967  35.60       1          0
+## 44  101101078649  32       145      175.5 51437  34.12       1          0
+## 45  101101079101  51        67      191.8 54800  35.00       1          0
+## 46  101101079611  30        60      153.9 58876  26.14       1          0
+## 47  101101079644  44         0      198.0 57575  34.39       1          0
+## 48  101101080694   7        22      180.0 50834  35.41       1          0
+## 49  101101093016  33        24      183.0 51391  35.61       1          0
+## 50  101101113626  12         8      196.0 58040  33.77       1          0
+## 51  101101119406   6         0      148.4 41733  35.56       1          0
+## 52  101101131238  27         0       40.0 22223  18.00       1          0
+## 53  101101132085  25         0       45.0 25000  18.00       1          0
+## 54  101101134435   5         4      155.0 43577  35.57       1          0
+## 55  101101137426   4         0       43.0 22873  18.80       1          0
+## 56  101101140944  13         0       46.5 24761  18.78       1          0
+## 57  101101142727  17       129      209.0 57465  36.37       1          1
+## 58  101101145585   6         0       49.7 27612  18.00       1          1
+## 59  101101147113  51        48      230.0 71407  32.21       1          1
+## 60  101101151026  12        49       50.0 26625  18.78       1          0
+## 61  101101152325  13        12       55.0 28963  18.99       1          0
+## 62  101101153582  11        53      164.0 55500  29.55       1          0
+## 63  101101159604  10        11       47.5 26302  18.06       1          0
+## 64  101101160998   7        22      169.7 57663  29.43       1          0
+## 65  101101169177   9        85      150.5 57531  26.16       1          0
+## 66  101101170282   9        24      153.0 59883  25.55       1          0
+## 67  101101172737  13        36       48.0 25560  18.78       1          0
+## 68  101101178781  10         7       47.9 25506  18.78       1          0
+## 69  101101179701   7         5       45.7 25277  18.06       1          0
+## 70  101101180144   8        58      168.0 64492  26.05       1          0
+## 71  101101180562   4         9      155.0 60928  25.44       1          0
+## 72  101101193257   4         1       52.0 28889  18.00       1          0
+## 73  101101193408  21       114      189.0 55393  34.12       1          0
+## 74  101101196859   3         0       50.0 27778  18.00       1          1
+## 75  101101197318   2         0      263.0 81652  32.21       1          0
+## 76  101101197322   4         0      110.0 46532  23.64       1          1
+## 77  101101202607  17         0      175.0 87500  20.00       2          0
+## 78  101101204692   4        29      165.0 56066  29.43       1          0
+## 79  101101213786   1         0      196.0 57648  34.00       1          0
+## 80  101101216779   8         0       51.2 27235  18.80       1          0
+## 81  101101224649  14         0       53.4 24942  21.41       1          0
+## 82  101101225581  13        35      204.0 57611  35.41       1          0
+## 83  101101232123  11        38       50.0 26625  18.78       1          0
+## 84  101101232514  12       132      194.0 56859  34.12       1          0
+## 85  101101236251   1         0      206.0 55676  37.00       1          0
+## 86  101101239820   1         0       52.5 27956  18.78       1          0
+## 87  101101243271  12         0      180.0 69098  26.05       1          0
+## 88  101101249269   9         0       53.8 24736  21.75       1          0
+## 89  101101249438   7        50      210.0 60976  34.44       1          0
+## 90  101101272601   3        19      178.0 60237  29.55       1          0
+## 91  101101280108   2         0       41.5 27667  15.00       1          0
+## 92  101101284044   9         0       44.9 23909  18.78       1          0
+## 93  101101295753   3         0      169.0 65000  26.00       1          0
+## 94  101101297543   5        27      225.0 68390  32.90       1          0
+## 95  101101306147   1         0       55.5 30834  18.00       1          0
+## 96  101101306652   6        21      189.6 53772  35.26       1          0
+## 97  101101309619   9         0       45.0 23962  18.78       1          1
+## 98  101101315340   8         0       58.0 30884  18.78       1          0
+## 99  101101321395  16        48      227.0 63765  35.60       1          0
+## 100 101101327342   1         0      205.0 62122  33.00       1          0
+## 101 101101336419   4        46      229.0 64308  35.61       1          0
+## 102 101101336924   2         0      180.0 69098  26.05       1          0
+## 103 101101342455  19        42      217.0 60938  35.61       1          0
+## 104 101101355904   6       135      181.0 69616  26.00       1          0
+## 105 101101364627   8         1      204.0 59789  34.12       1          0
+## 106 101101370921  13         0      185.0 62862  29.43       1          0
+## 107 101101374086   2         0      205.0 68608  29.88       1          1
+## 108 101101387622  13        81      214.5 62102  34.54       1          0
+## 109 101101393604  77       112      175.0 53192  32.90       1          0
+## 110 101101430455  91       192      190.0 53658  35.41       1          0
+## 111 101101434725  42       106      180.0 52341  34.39       1          0
+## 112 101101456964  14        38      188.0 51977  36.17       1          1
+## 113 101101499108  63        51      183.0 52891  34.60       1          0
+## 114 101101501215   3        22      206.5 58153  35.51       1          0
+## 115 101101505691  11        44      269.0 83515  32.21       1          0
+## 116 101101534911  30       139      177.0 51876  34.12       1          0
+## 117 101101539604  13         2      193.8 54423  35.61       1          0
+## 118 101101563755   8         0      185.0 53795  34.39       1          0
+## 119 101101579294 128       314      172.0 52376  32.84       1          0
+## 120 101101585940   9        28      180.0 52341  34.39       1          0
+## 121 101101592193  20        20      185.0 54799  33.76       1          0
+## 122 101101606594   7        45      189.0 54958  34.39       1          0
+## 123 101101637195 117       117      180.0 50834  35.41       1          0
+## 124 101101654090  54        85      190.0 55686  34.12       1          0
+## 125 101101656326  30        72      164.5 55669  29.55       1          0
+## 126 101101658007  50        26      188.0 57143  32.90       1          0
+## 127 101101668460  29        36      267.0 74623  35.78       1          0
+## 128 101101684396  10        45      161.0 54484  29.55       1          0
+## 129 101101692023   7        64      154.0 60535  25.44       1          0
+## 130 101101692082  10         0      141.0 39386  35.80       1          1
+## 131 101101704116   3         0      151.0 59100  25.55       1          1
+## 132 101101711169   2         0      183.9 52543  35.00       1          0
+## 133 101101714602   4        16      154.0 58869  26.16       1          0
+## 134 101101716305  34       103      132.0 36821  35.85       1          1
+## 135 101101718568   7        53      152.0 58350  26.05       1          0
+## 136 101101720426   2         0      181.0 51044  35.46       1          0
+## 137 101101720770  15       104      120.0 33473  35.85       1          1
+## 138 101101722116  15       162      143.0 54895  26.05       1          0
+## 139 101101722881  35        70      185.0 54221  34.12       1          1
+## 140 101101730673  41         0      124.0 55063  22.52       1          1
+## 141 101101761833   3        26      153.0 58734  26.05       1          0
+## 142 101101769894  64       195      172.0 52280  32.90       1          0
+## 143 101101776681  10        72      168.0 56853  29.55       1          0
+## 144 101101777821  10        11      172.0 58444  29.43       1          0
+## 145 101101787777   6        44      188.0 57248  32.84       1          0
+## 146 101101792477  11       121      181.0 53049  34.12       1          1
+## 147 101101795674   2         0      153.9 59185  26.00       1          0
+## 148 101101796610   3         0      174.2 58654  29.70       1          0
+## 149 101101822314   5         0      144.5 56556  25.55       1          0
+## 150 101101833051   2         0      155.0 59616  26.00       1          0
+## 151 101101842844  24         1      167.0 56515  29.55       1          0
+## 152 101101850390  82       272      175.0 49310  35.49       1          1
+## 153 101101875766  30        77      175.0 50259  34.82       1          0
+## 154 101101894434  25        41      183.0 53729  34.06       1          0
+## 155 101101919033   3         0      158.5 60381  26.25       1          0
+## 156 101101919870   6        35      181.0 51893  34.88       1          0
+## 157 101101929217   9        23       43.6 23217  18.78       1          0
+## 158 101101931625   4        29      183.0 55624  32.90       1          0
+## 159 101101953878  66       102      182.0 55320  32.90       1          0
+## 160 101101956769  20        63      173.0 50689  34.13       1          0
+## 161 101101957193  61        61      179.0 50466  35.47       1          0
+## 162 101101958800  19        33      184.0 53928  34.12       1          0
+## 163 101101976009  21        46      162.5 55216  29.43       1          0
+## 164 101101978338   4         0      230.0 64972  35.40       1          1
+## 165 101102017908  80        21       35.0 17527  19.97       1          0
+## 166 101102045364  14        57      176.0 52133  33.76       1          0
+## 167 101102054216   2         0      152.0 42793  35.52       1          0
+## 168 101102054551   4         5      165.0 56066  29.43       1          0
+## 169 101102058927  12        91      180.0 50690  35.51       1          1
+## 170 101102079042  45        27      182.8 51479  35.51       1          0
+## 171 101102089813  27        70      228.0 64280  35.47       1          0
+## 172 101102090975  48        41      229.0 71096  32.21       1          1
+## 173 101102105941  30       115      226.0 63716  35.47       1          1
+## 174 101102109457   1         0      178.0 51760  34.39       1          0
+## 175 101102133123  24        48      156.5 61253  25.55       1          0
+## 176 101102136043  21         0      173.9 59966  29.00       1          0
+## 177 101102136062   8         0      155.5 60862  25.55       1          0
+## 178 101102147981   5        26      160.0 54367  29.43       1          0
+## 179 101102148730  15         0      174.8 59154  29.55       1          0
+## 180 101102165575  13        82      157.0 53131  29.55       1          0
+## 181 101102192623  14         0       34.0 18349  18.53       1          0
+## 182 101102193623  77        55      177.5 53952  32.90       1          0
+## 183 101102236812  62       225      170.0 50356  33.76       1          0
+## 184 101102247021   9        41      178.0 51121  34.82       1          0
+## 185 101102258731  11        89      152.0 58104  26.16       1          0
+## 186 101102269103  17        33       35.0 19380  18.06       1          1
+## 187 101102269249   8         0       36.9 19649  18.78       1          0
+## 188 101102277616   2         0      170.0 65260  26.05       1          0
+## 189 101102278149  14         0       36.0 19170  18.78       1          0
+## 190 101102290960  23        36      172.5 48716  35.41       1          0
+## 191 101102291899  16        63      175.5 49563  35.41       1          0
+## 192 101102295160   1         0      165.0 63340  26.05       1          0
+## 193 101102304594  47       100      148.0 69517  21.29       1          1
+## 194 101102311748   5        28      190.0 55686  34.12       1          0
+## 195 101102317613  10        26       35.0 18588  18.83       2          0
+## 196 101102333310  38       204      183.0 53635  34.12       1          0
+## 197 101102338259   3         0       41.3 21965  18.78       1          0
+## 198 101102341375   3         0      170.0 57530  29.55       1          0
+## 199 101102353455   3        25      160.0 54367  29.43       1          0
+## 200 101102356202  11        47      174.0 50922  34.17       1          0
+## 201 101102395195   8        22      185.0 52246  35.41       1          0
+## 202 101102400572  10        50      177.0 51394  34.44       1          0
+## 203 101102407840   2         0      160.0 61163  26.16       1          0
+## 204 101102415053   3         6      174.0 51358  33.88       1          0
+##     kitchen bathRoom constructionTime renovationCondition buildingStructure
+## 1         1        1             2011                   3                 6
+## 2         0        1             2011                   4                 6
+## 3         1        1             2010                   4                 6
+## 4         0        1             2011                   3                 6
+## 5         1        1             2010                   1                 6
+## 6         1        1             2011                   4                 6
+## 7         0        1             2011                   1                 6
+## 8         0        1             2011                   1                 6
+## 9         0        1             2011                   3                 6
+## 10        0        1             2011                   3                 6
+## 11        0        1             2011                   4                 6
+## 12        1        1             2005                   3                 6
+## 13        1        1             2010                   4                 6
+## 14        1        1             2010                   3                 6
+## 15        1        1             2010                   1                 6
+## 16        1        1             2009                   4                 6
+## 17        0        1             2011                   4                 6
+## 18        0        1             2011                   4                 6
+## 19        0        1             2011                   4                 6
+## 20        1        1             2003                   3                 6
+## 21        1        1             2009                   4                 6
+## 22        0        1             2011                   1                 6
+## 23        1        1             2009                   4                 6
+## 24        0        1             2011                   1                 6
+## 25        1        1             2011                   3                 6
+## 26        0        0             2011                   4                 6
+## 27        1        1             2010                   4                 6
+## 28        0        1             2011                   4                 6
+## 29        1        1             2010                   4                 6
+## 30        1        1             2009                   4                 6
+## 31        1        1             2009                   4                 6
+## 32        1        1             2010                   4                 6
+## 33        0        1             2011                   4                 6
+## 34        1        1             2010                   4                 6
+## 35        1        1             2005                   3                 6
+## 36        0        1             2011                   1                 6
+## 37        0        1             2011                   4                 6
+## 38        0        1             2011                   1                 6
+## 39        1        1             2009                   4                 6
+## 40        0        1             2011                   4                 6
+## 41        0        1             2011                   3                 6
+## 42        1        1             2010                   4                 6
+## 43        1        1             2010                   4                 6
+## 44        1        1             2003                   4                 6
+## 45        1        1             2003                   1                 2
+## 46        1        1             2009                   4                 6
+## 47        1        1             2010                   4                 6
+## 48        1        1             2010                   4                 6
+## 49        1        1             2010                   3                 6
+## 50        1        1             2010                   4                 6
+## 51        0        1             2007                   1                 6
+## 52        0        1             2011                   3                 6
+## 53        0        1             2011                   3                 6
+## 54        1        1             2007                   1                 6
+## 55        0        0             2011                   1                 6
+## 56        0        1             2011                   1                 6
+## 57        1        1             1979                   4                 2
+## 58        0        1             2011                   4                 6
+## 59        1        1             2004                   3                 6
+## 60        0        1             2011                   4                 6
+## 61        0        1             2011                   4                 6
+## 62        1        1             2010                   1                 6
+## 63        0        1             2011                   4                 6
+## 64        1        1             2009                   3                 6
+## 65        0        1             2009                   3                 6
+## 66        1        1             2010                   1                 6
+## 67        0        1             2011                   4                 6
+## 68        0        1             2011                   4                 6
+## 69        0        1             2011                   4                 6
+## 70        0        0             2009                   4                 6
+## 71        0        0             2010                   4                 6
+## 72        0        1             2011                   1                 6
+## 73        1        1             2003                   1                 6
+## 74        1        1             2011                   1                 6
+## 75        1        1             2004                   4                 6
+## 76        1        1             2005                   4                 6
+## 77        2        2             2010                   4                 6
+## 78        1        1             2010                   4                 6
+## 79        1        1             2010                   1                 6
+## 80        0        1             2011                   1                 6
+## 81        0        0             2011                   3                 6
+## 82        1        1             2010                   3                 6
+## 83        0        1             2011                   4                 6
+## 84        1        1             2003                   3                 6
+## 85        0        1             2010                   1                 6
+## 86        0        1             2011                   1                 6
+## 87        1        1             2009                   4                 6
+## 88        0        1             2011                   3                 6
+## 89        1        1             2010                   4                 6
+## 90        1        1             2010                   3                 6
+## 91        0        0             2011                   1                 6
+## 92        0        1             2011                   1                 6
+## 93        1        1             2009                   4                 6
+## 94        1        1             2010                   4                 6
+## 95        1        1             2011                   3                 6
+## 96        0        1             2004                   4                 6
+## 97        1        1             2011                   4                 6
+## 98        0        1             2011                   4                 6
+## 99        1        1             2011                   1                 6
+## 100       1        1             2010                   4                 6
+## 101       1        1             2010                   3                 6
+## 102       1        1             2010                   4                 6
+## 103       1        1             2011                   4                 6
+## 104       1        1             2010                   4                 6
+## 105       1        1             2003                   1                 6
+## 106       1        1             2009                   4                 6
+## 107       1        1             1981                   4                 2
+## 108       1        1             2003                   4                 2
+## 109       1        1             2010                   4                 6
+## 110       1        1             2010                   3                 6
+## 111       1        1             2011                   4                 6
+## 112       1        1             1984                   4                 2
+## 113       1        1             2011                   4                 6
+## 114       1        1             2010                   3                 6
+## 115       1        1             2002                   3                 6
+## 116       1        1             2003                   3                 6
+## 117       1        1             2010                   4                 6
+## 118       1        1             2011                   4                 6
+## 119       1        1             2010                   3                 6
+## 120       1        1             2011                   1                 6
+## 121       1        1             2010                   3                 6
+## 122       1        1             2011                   4                 6
+## 123       1        1             2010                   4                 6
+## 124       1        1             2003                   1                 6
+## 125       1        1             2009                   3                 6
+## 126       1        1             2010                   4                 6
+## 127       1        1             2007                   4                 6
+## 128       1        1             2010                   1                 6
+## 129       1        1             2009                   3                 6
+## 130       1        1             1984                   3                 2
+## 131       1        1             2009                   4                 6
+## 132       1        1             2010                   4                 6
+## 133       1        1             2009                   4                 6
+## 134       1        1             1984                   1                 2
+## 135       1        1             2010                   4                 6
+## 136       1        1             2010                   4                 6
+## 137       1        1             1984                   4                 2
+## 138       1        1             2009                   4                 6
+## 139       1        1             2003                   4                 6
+## 140       1        1             2005                   3                 6
+## 141       1        1             2009                   3                 6
+## 142       1        1             2011                   4                 6
+## 143       1        1             2009                   4                 6
+## 144       1        1             2009                   4                 6
+## 145       1        1             2010                   4                 6
+## 146       1        1             2003                   4                 6
+## 147       1        1             2009                   4                 6
+## 148       1        1             2009                   4                 6
+## 149       1        1             2010                   4                 6
+## 150       1        1             2009                   4                 6
+## 151       1        1             2009                   4                 6
+## 152       1        1             2010                   4                 6
+## 153       1        1             2004                   3                 6
+## 154       1        1             2010                   1                 6
+## 155       1        1             2009                   4                 6
+## 156       0        1             2004                   3                 6
+## 157       0        1             2011                   3                 6
+## 158       1        1             2010                   4                 6
+## 159       1        1             2010                   4                 6
+## 160       1        1             2003                   4                 6
+## 161       1        1             2010                   4                 6
+## 162       1        1             2003                   3                 6
+## 163       1        1             2010                   4                 6
+## 164       1        1             1997                   3                 2
+## 165       0        1             2011                   3                 6
+## 166       1        1             2010                   3                 6
+## 167       1        1             2003                   1                 6
+## 168       1        1             2009                   4                 6
+## 169       1        1             2010                   4                 6
+## 170       1        1             2011                   4                 6
+## 171       1        1             1997                   3                 2
+## 172       1        1             2002                   1                 6
+## 173       1        1             1997                   4                 2
+## 174       1        1             2010                   4                 6
+## 175       1        1             2010                   3                 6
+## 176       1        1             2009                   4                 6
+## 177       1        1             2009                   4                 6
+## 178       1        1             2009                   4                 6
+## 179       1        1             2009                   4                 6
+## 180       1        1             2009                   4                 6
+## 181       0        1             2011                   1                 6
+## 182       1        1             2011                   4                 6
+## 183       1        1             2010                   1                 6
+## 184       0        1             2004                   3                 6
+## 185       0        0             2009                   4                 6
+## 186       1        1             2011                   4                 6
+## 187       0        1             2011                   1                 6
+## 188       1        1             2009                   4                 6
+## 189       0        1             2011                   1                 6
+## 190       1        1             2011                   1                 6
+## 191       1        1             2010                   1                 6
+## 192       1        1             2009                   4                 6
+## 193       1        1             2010                   4                 6
+## 194       1        1             2003                   4                 6
+## 195       0        2             2011                   1                 6
+## 196       1        1             2003                   4                 6
+## 197       0        1             2011                   1                 6
+## 198       1        1             2009                   1                 6
+## 199       1        1             2010                   1                 6
+## 200       1        1             2010                   4                 6
+## 201       1        1             2011                   1                 6
+## 202       1        1             2011                   4                 6
+## 203       1        1             2009                   4                 6
+## 204       1        1             2011                   4                 6
+##     ladderRatio elevator fiveYearsProperty subway  district     month day
+## 1         0.625        1                 0      0 ChangPing     March   6
+## 2         0.385        1                 0      0 ChangPing  February   9
+## 3         0.167        1                 0      0 ChangPing   January  20
+## 4         0.385        1                 1      0 ChangPing   January   2
+## 5         0.167        1                 0      0 ChangPing     March  18
+## 6         0.385        1                 0      0 ChangPing  February  24
+## 7         0.870        1                 0      0 ChangPing     March   3
+## 8         0.870        1                 0      0 ChangPing  February  28
+## 9         0.370        1                 0      0 ChangPing     March   9
+## 10        0.198        1                 0      0 ChangPing     March   8
+## 11        0.190        1                 0      0 ChangPing   January  21
+## 12        0.125        0                 0      1 ChangPing   January  18
+## 13        0.167        1                 0      0 ChangPing  February   8
+## 14        0.167        1                 0      0 ChangPing  February  12
+## 15        0.167        1                 0      0 ChangPing  February  15
+## 16        0.125        1                 0      0 ChangPing  February  13
+## 17        0.370        1                 0      0 ChangPing  February  10
+## 18        0.385        1                 1      0 ChangPing   January  19
+## 19        0.190        1                 1      0 ChangPing   January   6
+## 20        0.057        1                 1      1 ChangPing   January  17
+## 21        0.143        1                 0      0 ChangPing   January  23
+## 22        0.625        1                 0      0 ChangPing   January  10
+## 23        0.125        1                 0      0 ChangPing   January  11
+## 24        0.625        1                 0      0 ChangPing   January   8
+## 25        0.190        1                 0      0 ChangPing   January  14
+## 26        0.198        1                 1      0 ChangPing   January  18
+## 27        0.222        1                 0      0 ChangPing   January   5
+## 28        0.833        1                 0      0 ChangPing   January  22
+## 29        0.167        1                 0      0 ChangPing  February  19
+## 30        0.125        1                 0      0 ChangPing   January  21
+## 31        0.125        1                 0      0 ChangPing   January   4
+## 32        0.167        1                 0      0 ChangPing   January  18
+## 33        0.833        1                 1      0 ChangPing   January  13
+## 34        0.222        1                 0      0 ChangPing   January   7
+## 35        0.167        0                 0      0 ChangPing   January  13
+## 36        0.190        1                 1      0 ChangPing   January  22
+## 37        0.625        1                 0      0 ChangPing   January   9
+## 38        0.190        1                 0      0 ChangPing   January  22
+## 39        0.125        1                 0      0 ChangPing  February  10
+## 40        0.385        1                 0      0 ChangPing  February   8
+## 41        0.370        1                 0      0 ChangPing   January  12
+## 42        0.167        1                 0      0 ChangPing  February  10
+## 43        0.154        1                 0      0 ChangPing  February  13
+## 44        0.057        1                 0      1 ChangPing  February  16
+## 45        0.167        0                 0      0 ChangPing     March   7
+## 46        0.125        1                 0      0 ChangPing  February  14
+## 47        0.167        1                 0      0 ChangPing  February  28
+## 48        0.167        1                 0      0 ChangPing   January  22
+## 49        0.154        1                 0      0 ChangPing  February  22
+## 50        0.182        1                 0      0 ChangPing  February  16
+## 51        0.042        0                 0      0 ChangPing  February  12
+## 52        0.190        1                 0      0 ChangPing     March   6
+## 53        0.190        1                 0      0 ChangPing     March   4
+## 54        0.042        0                 0      0 ChangPing  February  13
+## 55        0.385        1                 0      0 ChangPing  February  12
+## 56        0.625        1                 0      0 ChangPing  February  22
+## 57        0.333        0                 0      0 ChangPing  February  26
+## 58        0.370        1                 0      0 ChangPing  February  15
+## 59        0.250        1                 0      1 ChangPing     April   2
+## 60        0.385        1                 0      0 ChangPing  February  22
+## 61        0.625        1                 0      0 ChangPing  February  24
+## 62        0.125        1                 0      0 ChangPing  February  22
+## 63        0.370        1                 0      0 ChangPing  February  21
+## 64        0.125        1                 0      0 ChangPing  February  18
+## 65        0.143        1                 0      0 ChangPing  February  22
+## 66        0.125        1                 0      0 ChangPing  February  22
+## 67        0.870        1                 1      0 ChangPing  February  27
+## 68        0.370        1                 0      0 ChangPing  February  25
+## 69        0.190        1                 0      0 ChangPing  February  22
+## 70        0.125        1                 0      0 ChangPing  February  23
+## 71        0.125        1                 0      0 ChangPing  February  20
+## 72        0.385        1                 0      0 ChangPing  February  21
+## 73        0.057        1                 0      1 ChangPing     March  10
+## 74        0.385        1                 0      0 ChangPing  February  21
+## 75        0.250        1                 1      1 ChangPing  February  20
+## 76        0.167        0                 0      0 ChangPing  February  22
+## 77        0.286        1                 0      0 ChangPing     March   8
+## 78        0.143        1                 0      0 ChangPing  February  23
+## 79        0.182        1                 0      0 ChangPing  February  22
+## 80        0.385        1                 0      0 ChangPing     March   1
+## 81        0.625        1                 0      0 ChangPing     March   8
+## 82        0.222        1                 0      0 ChangPing     March   8
+## 83        0.385        1                 1      0 ChangPing     March   7
+## 84        0.057        1                 0      1 ChangPing     March   8
+## 85        0.167        1                 0      0 ChangPing  February  26
+## 86        0.370        1                 0      0 ChangPing  February  26
+## 87        0.143        1                 0      0 ChangPing     March  10
+## 88        0.385        1                 0      0 ChangPing     March   8
+## 89        0.167        1                 0      0 ChangPing     March   6
+## 90        0.167        1                 0      0 ChangPing     March   6
+## 91        0.385        1                 0      0 ChangPing     March   6
+## 92        0.190        1                 0      0 ChangPing     March  14
+## 93        0.143        1                 0      0 ChangPing     March  10
+## 94        0.182        1                 0      0 ChangPing     March  12
+## 95        0.370        1                 0      0 ChangPing     March  10
+## 96        0.087        1                 0      0 ChangPing     March  15
+## 97        0.385        1                 0      0 ChangPing     March  18
+## 98        0.370        1                 0      0 ChangPing     March  18
+## 99        0.154        1                 0      0 ChangPing     March  28
+## 100       0.182        1                 0      0 ChangPing     March  14
+## 101       0.200        1                 0      0 ChangPing     March  18
+## 102       0.143        1                 0      0 ChangPing     March  16
+## 103       0.154        1                 0      0 ChangPing     April   3
+## 104       0.111        1                 0      0 ChangPing     March  25
+## 105       0.057        1                 0      1 ChangPing     March  28
+## 106       0.143        1                 0      0 ChangPing     April   3
+## 107       0.250        0                 0      0 ChangPing     March  24
+## 108       0.167        0                 1      0 ChangPing     April   7
+## 109       0.182        1                 0      0 ChangPing      June  10
+## 110       0.167        1                 0      0 ChangPing      July   4
+## 111       0.167        1                 0      0 ChangPing       May  16
+## 112       0.333        0                 1      0 ChangPing     April  23
+## 113       0.222        1                 0      0 ChangPing      June  23
+## 114       0.154        1                 0      0 ChangPing     April  24
+## 115       0.250        1                 1      1 ChangPing       May   3
+## 116       0.057        1                 0      1 ChangPing       May  31
+## 117       0.154        1                 0      0 ChangPing       May  15
+## 118       0.167        1                 0      0 ChangPing       May  16
+## 119       0.154        1                 1      0 ChangPing September  18
+## 120       0.167        1                 0      0 ChangPing       May  23
+## 121       0.200        1                 0      0 ChangPing      June   5
+## 122       0.222        1                 0      0 ChangPing       May  27
+## 123       0.167        1                 0      0 ChangPing September  23
+## 124       0.057        1                 1      1 ChangPing      July  26
+## 125       0.143        1                 0      0 ChangPing      July   3
+## 126       0.182        1                 0      0 ChangPing      July  23
+## 127       0.167        0                 1      0 ChangPing      July   4
+## 128       0.167        1                 0      0 ChangPing      June  19
+## 129       0.143        1                 0      0 ChangPing      June  18
+## 130       0.333        0                 0      0 ChangPing      June  22
+## 131       0.167        1                 0      0 ChangPing      June  18
+## 132       0.182        1                 0      0 ChangPing      June  19
+## 133       0.143        1                 0      0 ChangPing      June  22
+## 134       0.333        0                 1      0 ChangPing      July  22
+## 135       0.143        1                 0      0 ChangPing      June  26
+## 136       0.222        1                 0      0 ChangPing      June  22
+## 137       0.333        0                 0      0 ChangPing      July   5
+## 138       0.125        1                 0      0 ChangPing      July   5
+## 139       0.057        1                 0      1 ChangPing      July  25
+## 140       0.167        0                 0      0 ChangPing    August   3
+## 141       0.143        1                 0      0 ChangPing      July   3
+## 142       0.182        1                 0      0 ChangPing September   5
+## 143       0.125        1                 0      0 ChangPing      July  15
+## 144       0.143        1                 0      0 ChangPing      July  15
+## 145       0.154        1                 1      0 ChangPing      July  13
+## 146       0.057        1                 0      1 ChangPing      July  19
+## 147       0.143        1                 0      0 ChangPing      July  10
+## 148       0.143        1                 0      0 ChangPing      July  12
+## 149       0.125        1                 0      0 ChangPing      July  20
+## 150       0.143        1                 0      0 ChangPing      July  20
+## 151       0.167        1                 0      0 ChangPing    August  14
+## 152       0.154        1                 0      0 ChangPing   October  13
+## 153       0.091        1                 0      0 ChangPing    August  27
+## 154       0.167        1                 0      0 ChangPing    August  27
+## 155       0.125        1                 0      0 ChangPing    August   9
+## 156       0.091        1                 1      0 ChangPing    August  13
+## 157       0.370        1                 0      0 ChangPing    August  18
+## 158       0.182        1                 0      0 ChangPing    August  14
+## 159       0.182        1                 0      0 ChangPing   October  20
+## 160       0.057        1                 1      1 ChangPing September   5
+## 161       0.167        1                 0      0 ChangPing   October  16
+## 162       0.057        1                 1      1 ChangPing September   4
+## 163       0.143        1                 0      0 ChangPing September  10
+## 164       0.333        0                 0      1 ChangPing    August  25
+## 165       0.198        1                 0      0 ChangPing  November  18
+## 166       0.200        1                 1      0 ChangPing September  20
+## 167       0.286        1                 0      1 ChangPing September  10
+## 168       0.143        1                 0      0 ChangPing September  12
+## 169       0.200        1                 0      0 ChangPing September  21
+## 170       0.182        1                 0      0 ChangPing   October  29
+## 171       0.333        0                 0      1 ChangPing   October  13
+## 172       0.250        1                 1      1 ChangPing  November   3
+## 173       0.333        0                 0      1 ChangPing   October  20
+## 174       0.167        1                 0      0 ChangPing September  22
+## 175       0.167        1                 0      0 ChangPing   October  21
+## 176       0.143        1                 0      0 ChangPing   October  19
+## 177       0.125        1                 0      0 ChangPing   October   5
+## 178       0.143        1                 0      0 ChangPing   October   6
+## 179       0.167        1                 0      0 ChangPing   October  17
+## 180       0.143        1                 0      0 ChangPing   October  20
+## 181       0.190        1                 0      0 ChangPing   October  28
+## 182       0.182        1                 0      0 ChangPing  December  30
+## 183       0.200        1                 1      0 ChangPing  December  27
+## 184       0.091        1                 1      0 ChangPing  November   7
+## 185       0.167        1                 0      0 ChangPing  November  12
+## 186       0.370        1                 1      0 ChangPing  November  20
+## 187       0.385        1                 0      0 ChangPing  November  12
+## 188       0.143        1                 0      0 ChangPing  November   8
+## 189       0.189        1                 0      0 ChangPing  November  20
+## 190       0.222        1                 0      0 ChangPing  December   3
+## 191       0.167        1                 0      0 ChangPing  November  26
+## 192       0.125        1                 0      0 ChangPing  November  12
+## 193       0.286        1                 0      0 ChangPing  December  31
+## 194       0.057        1                 1      1 ChangPing  November  21
+## 195       0.385        1                 0      0 ChangPing  November  27
+## 196       0.057        1                 0      1 ChangPing  December  31
+## 197       0.370        1                 0      0 ChangPing  November  27
+## 198       0.125        1                 0      0 ChangPing  November  28
+## 199       0.125        1                 0      0 ChangPing  December   2
+## 200       0.167        1                 0      0 ChangPing  December  11
+## 201       0.222        1                 0      0 ChangPing  December  20
+## 202       0.222        1                 0      0 ChangPing  December  24
+## 203       0.125        1                 0      0 ChangPing  December  18
+## 204       0.182        1                 0      0 ChangPing  December  22
+##     totalFloor floorRange
+## 1           28     bottom
+## 2           28        low
+## 3           17       high
+## 4           28        low
+## 5           17       high
+## 6           28     midium
+## 7           28     midium
+## 8           28     midium
+## 9           28     midium
+## 10          28        low
+## 11          28        low
+## 12           5        top
+## 13          17     midium
+## 14          17       high
+## 15          17       high
+## 16          18        low
+## 17          28     midium
+## 18          28     midium
+## 19          28        low
+## 20           7     midium
+## 21          18     bottom
+## 22          28        low
+## 23          18        low
+## 24          28     midium
+## 25          28        low
+## 26          28        low
+## 27          17     bottom
+## 28          28     midium
+## 29          17     midium
+## 30          18     midium
+## 31          18        low
+## 32          17        top
+## 33          28     midium
+## 34          17       high
+## 35           6        top
+## 36          28     midium
+## 37          28        low
+## 38          28        low
+## 39          18        low
+## 40          28        low
+## 41          28        low
+## 42          17       high
+## 43          18        top
+## 44           7     midium
+## 45           6       high
+## 46          18        low
+## 47          17     midium
+## 48          17     midium
+## 49          18     midium
+## 50          18     midium
+## 51          10     midium
+## 52          28        low
+## 53          28        low
+## 54          10     midium
+## 55          28        low
+## 56          28        low
+## 57           5        top
+## 58          28     midium
+## 59           6       high
+## 60          28        low
+## 61          28        low
+## 62          18     bottom
+## 63          28     midium
+## 64          18     midium
+## 65          18       high
+## 66          18     bottom
+## 67          28     midium
+## 68          28        low
+## 69          28        low
+## 70          18       high
+## 71          18       high
+## 72          28     midium
+## 73           7       high
+## 74          28     midium
+## 75           6        low
+## 76           6        top
+## 77          17       high
+## 78          18        top
+## 79          18       high
+## 80          28        low
+## 81          28        low
+## 82          17     midium
+## 83          28        low
+## 84           7     midium
+## 85          17     midium
+## 86          28     midium
+## 87          18     bottom
+## 88          28     midium
+## 89          17        low
+## 90          18     midium
+## 91          28     midium
+## 92          28        low
+## 93          18     midium
+## 94          18        low
+## 95          28        low
+## 96          10        low
+## 97          28     midium
+## 98          28        low
+## 99          18     midium
+## 100         18     midium
+## 101         18        low
+## 102         18     midium
+## 103         18     midium
+## 104         18        low
+## 105          7     midium
+## 106         18        low
+## 107          6     midium
+## 108          6        low
+## 109         18     midium
+## 110         17     midium
+## 111         17     midium
+## 112          5        top
+## 113         17       high
+## 114         18     midium
+## 115          6        low
+## 116          7     midium
+## 117         18       high
+## 118         17       high
+## 119         18     bottom
+## 120         17        low
+## 121         18       high
+## 122         17     midium
+## 123         17        low
+## 124          7     midium
+## 125         18     midium
+## 126         18     midium
+## 127          6     bottom
+## 128         18       high
+## 129         18        low
+## 130          5     midium
+## 131         18       high
+## 132         18     midium
+## 133         18     midium
+## 134          5     midium
+## 135         18       high
+## 136         17        low
+## 137          5     midium
+## 138         18     bottom
+## 139          7     midium
+## 140          6        top
+## 141         18        low
+## 142         18        low
+## 143         18     midium
+## 144         18       high
+## 145         18     midium
+## 146          7        top
+## 147         18       high
+## 148         18     midium
+## 149         18        low
+## 150         18     midium
+## 151         18        low
+## 152         18       high
+## 153         10       high
+## 154         17     midium
+## 155         18        low
+## 156         10       high
+## 157         28     midium
+## 158         18       high
+## 159         18       high
+## 160          7     midium
+## 161         17     midium
+## 162          7     midium
+## 163         18     midium
+## 164          6     midium
+## 165         28     bottom
+## 166         18     midium
+## 167         19        top
+## 168         18       high
+## 169         18        low
+## 170         18     midium
+## 171          6     midium
+## 172          6       high
+## 173          6        top
+## 174         17       high
+## 175         18       high
+## 176         18     midium
+## 177         18        low
+## 178         18     midium
+## 179         18     bottom
+## 180         18        low
+## 181         28     midium
+## 182         18        low
+## 183         18       high
+## 184         10       high
+## 185         18     midium
+## 186         28        low
+## 187         28        low
+## 188         18       high
+## 189         28        low
+## 190         17     midium
+## 191         17     midium
+## 192         18       high
+## 193         17     bottom
+## 194          7     midium
+## 195         28     midium
+## 196          7       high
+## 197         28     midium
+## 198         18        low
+## 199         18     midium
+## 200         17     midium
+## 201         17     midium
+## 202         17        low
+## 203         18       high
+## 204         18        low
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{table}\NormalTok{(data2017}\SpecialCharTok{$}\NormalTok{square}\SpecialCharTok{\textgreater{}=}\DecValTok{167}\NormalTok{,data2017}\SpecialCharTok{$}\NormalTok{district}\SpecialCharTok{==}\StringTok{"ChangPing"}\NormalTok{) }\CommentTok{\#}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        
+##         FALSE  TRUE
+##   FALSE 35660  5312
+##   TRUE    836   196
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# proportion of large houses in ChaoYang}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{district-vs.-price}{%
+\subsubsection{3.2.7 district vs.~price}\label{district-vs.-price}}
+
+\hypertarget{price-square}{%
+\subsubsection{3.2.8 price \& square}\label{price-square}}
+
+*Within the same district and conditions, do houses with larger square
+meters have higher price per square meter?
 
 \hypertarget{work-cited}{%
 \subsubsection{\texorpdfstring{\textbf{Work
