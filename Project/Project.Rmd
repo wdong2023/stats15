@@ -571,10 +571,57 @@ ggplot(data2017, aes(x = subway)) +
 
 ### 3.2.3 price vs. construction time
 
-### 3.2.4 construction time vs. renovation condition
+### 3.2.4 construction time vs. district
 
-### 3.2.5 construction time vs. building structure
+From the distribution of time of construction by district, we see that most of the listings were constructed in ChaoYang after the year 2000.
 
+``` {r}
+ggplot(data2017, aes(x = constructionTime)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Distribution of Time of Construction by District") +
+  xlab("Time of Construction") +
+  ylab("Count") +
+  facet_wrap(~ district)
+```
+
+### 3.2.5 renovationCondition vs. district
+
+From the distribution of renovation condition by district, we see that the highest number of renovation conditions with ratings 1 to 4 come from the district of ChaoYang and the lowest number of renovation conditions with ratings 1 to 4 come from the district of MenTouGou. For all districts with the exception of XiCheng, most of the listings reflect that their renovation condition is rated as 4. 
+
+``` {r}
+ggplot(data2017, aes(x = renovationCondition)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Distribution of Renovation Condition by District") +
+  xlab("Renovation Condition") +
+  ylab("Count") +
+  facet_wrap(~ district)
+```
+
+### 3.2.6 elevator vs. building structure
+
+From the distribution of presence of elevator by building structure, we see that the greatest number of listings with the availability of an elevator are those that have a building structure of steel-concrete composite. For the greatest number of listings with the absence of an elevator, those would have a building structure of a mix of more than 3 distinguishable materials.
+
+``` {r}
+ggplot(data2017, aes(x = elevator, fill = elevator)) +
+  geom_bar(colour = "black") +
+  ggtitle("Distribution of Elevator by Building Structure") +
+  xlab("Building Structure") +
+  ylab("Count") +
+  facet_wrap(~ buildingStructure)
+```
+
+### 3.2.7 five years property vs. district
+
+From the distribution of five years property by district, we see that the district of ChaoYang has the highest number of previous owners who stayed in their property for more than 5 years followed by ChangPing. On the other hand, ChaoYang also has the highest number of previous owners who stayed in their property for less than 5 years followed by ChangPing. This is because ChaoYang is the largest district compared to the others and thus in terms of the total number of people staying more than or less than 5 years in that district will be the highest overall.
+
+``` {r}
+ggplot(data2017, aes(x = fiveYearsProperty, fill = fiveYearsProperty)) +
+  geom_bar(colour = "black") +
+  ggtitle("Distribution of Five Years Property by District") +
+  xlab("Five Years Property") +
+  ylab("Count") +
+  facet_wrap(~ district)
+```
 
 
 
