@@ -209,7 +209,7 @@ Apartments located in the middle of a building were traded the most in 2017.
 
 ### 3.1.5 DOM
 
-The graph of number of days on market is unimodal and heavily skewed to the right. The mean number of days on market is around 51 and the median is 31 days. Approximately 2.5% of values are below 2. Approximately 2.5% of values are above 196. The longest day on market is 721. Whereas there are total of 474 houses have less or equal to 1 day on market until sold. A great portion of these houses are sold in March, which is the peak of house transaction in Beijing in 2017 as the previous 'month' variable section showed. And most of these houses are located in ChaoYang(7) district. According to the following 'district' variable section showed, ChaoYang indeed is the district that has the most transactions. The number of followers of these houses is between 0 to 9, which is not a great number. And nearly half of these houses have no followers. It shows that the number of followers is not necessarily indicating the "popularity" of the houses.
+The graph of number of days on market is unimodal and heavily skewed to the right. The mean number of days on market is around 51 and the median is 31 days. Approximately 2.5% of values are below 2. Approximately 2.5% of values are above 196. The longest day on market is 721. Whereas there are total of 474 houses have less or equal to 1 day on market until sold. 
 
 ```{r}
 ggplot(data2017, aes(x=DOM))+
@@ -217,29 +217,16 @@ ggplot(data2017, aes(x=DOM))+
   xlab("DOM")+ylab("Count")+ggtitle("Active Days on Market Histogram")
 
 mean(data2017$DOM)
-median(data2017$DOM)
 quantile(data2017$DOM, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
 data2017 %>%
   filter(DOM<=1) %>%
   nrow()  # number of houses have less than 1 day on market
-
-data2017 %>%
-  filter(DOM<=1) %>%
-  count(month) # In which months are these houses sold
-
-data2017 %>%
-  filter(DOM<=1) %>%
-  count(district) # In which districts are these houses sold
-
-data2017 %>%
-  filter(DOM<=1) %>%
-  count(followers) # Do houses sold fast have many followers?
 ```
 
 ### 3.1.6 followers
 
-The graph of number of followers is unimodal and heavily skewed to the right. The mean and median number of followers is the same, which is around 49 people. Approximately 2.5% of values are below or equal to 0. Approximately 2.5% of values are above 216. However, the highest 2.5% are between 216 and 1143, which suggests that there are a few significantly popular houses. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among these houses with more than 1000 followers, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
+The graph of number of followers is unimodal and heavily skewed to the right. The mean is around 49 people and the median is around 31 people. Approximately 2.5% of values are below or equal to 0. Approximately 2.5% of values are above 216. However, the highest 2.5% are jumps from 216 to 1143, which suggests that there are a few significantly popular houses. There are 5617 houses with 0 follower and also a total of 5 houses with more than 1000 followers. Among these houses with more than 1000 followers, 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
 
 ```{r}
 ggplot(data2017, aes(x=followers))+
@@ -248,7 +235,6 @@ ggplot(data2017, aes(x=followers))+
   ggtitle("followers Histogram")
 
 mean(data2017$followers)
-mean(data2017$followers)
 quantile(data2017$followers, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
 data2017 %>% filter(followers>1000)
@@ -256,12 +242,9 @@ data2017 %>% filter(followers>1000)
 
 
 ### 3.1.7 totalPrice
-## problem: some districts do not have high or low 2.5% houses and are not shown on the tibbles. So the numbers do not match. Replace missing values with 0?
 
 The graph of total price is diamond-shaped, unimodal, and skews right. The average total price of a house in Beijing in 2017 is 526x10,000 yuan (around 750~810 thousands dollars depend on inflation) and the median is 460x10,000 yuan (around 660~710 thousands dollars). 
-Approximately 2.5% of values are below 215x10,000 yuan. Among these houses, ChangPing(6) has significantly higher amounts of these. ChangPing is the northern suburb of Beijing. And the second one is ChaoYang(7).
-Approximately  2.5% of values are above 1250x10,000 yuan. Among these houses, ChangPing(6) has none of these whereas ChaoYang(7) has significantly highest amounts of these. It seems like ChaoYang has houses with big ranges of prices. Even though XiCheng(10) and DongCheng(1) are the most central part of Beijing and close to each other, XiCheng has 85% more higher 2.5% percentile houses sold in 2017. XiCheng spans 32 square kilometers and DongCheng spans 40.6 square kilometers. DongCheng actually has larger area than XiCheng but XiCheng has more houses sold.
-
+Approximately 2.5% of values are below 215x10,000 yuan. Approximately  2.5% of values are above 1250x10,000 yuan. 
 
 ```{r}
 ggplot(data2017, aes(x=totalPrice))+
@@ -271,32 +254,15 @@ ggplot(data2017, aes(x=totalPrice))+
 mean(data2017$totalPrice)
 quantile(data2017$totalPrice, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
-# tried to compute percenatge of low&high 2.5% within each district to find out what affect DongCheng and XiCheng
-lower2_5 <- data2017 %>%
-  filter(totalPrice<=215) %>% 
-  group_by(district) %>% # number of lower 2.5% houses in each district
-  summarize(n()) #%>%
-  #pull()
-lower2_5
-
-higher2_5 <- data2017 %>% # number of higher 2.5% houses in each district
-  
-  group_by(district) %>%
-   filter(totalPrice>=1250) %>%
-  summarise(n())
-  #pull()
-higher2_5
-
 ggplot(data2017, aes(x=district,y=totalPrice))+
   geom_boxplot()+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
-
 ```
 
 
 ### 3.1.8 price
 
-The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,430 yuan and median is 62670, which are relative close. Approximately 2.5% of values are above 127,359 yuan. Approximately 2.5% of values are below 33,035 yuan. The house that has the lowest value has 136 yuan per square meter, which is about 20 dollars per square meter. Such low price doesn't make sense in any part of Beijing. Therefore, we decided to remove this outlier. 
+The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,430 yuan and median is 62,670 yuan, which are close. Approximately 2.5% of values are above 127,359 yuan. Approximately 2.5% of values are below 33,035 yuan. The house that has the lowest value has 136 yuan per square meter, which is about 20 dollars per square meter. Such low price doesn't make sense in any part of Beijing. Therefore, we decided to remove this outlier. 
 
 ```{r}
 ggplot(data2017, aes(x=price))+
@@ -322,7 +288,7 @@ ggplot(data2017, aes(x=district,y=price))+
 
 ### 3.1.9 square
 
-The graph of number of squares is diamond-shaped, unimodal, and skews right. The mean of houses sold in Beijing in 2017 have around 81 square meters. The median is 72 square meters. Approximately 2.5% of values are below 37 square meters. Approximately 2.5% of values are above 167 square meters. ChaoYang(7) has significantly highest amount of these. But one surprising observation is that ChangPing(6) has the second highest amounts of houses in the higher 2.5%. ChangPing indeed has a relative large area compared with other districts in Beijing but it is relative far from the core area of the city. Thus, it is reasonable to have great proportion of houses sold with large square meters with lower than average square meters price.
+The graph of number of squares is diamond-shaped, unimodal, and skews right. The mean of houses sold in Beijing in 2017 have around 81 square meters. The median is around 72 square meters. Approximately 2.5% of values are below 37 square meters. Approximately 2.5% of values are above 167 square meters. 
 
 ```{r}
 ggplot(data2017, aes(x=square))+
@@ -330,15 +296,7 @@ ggplot(data2017, aes(x=square))+
   xlab("square")+ylab("Count")+ggtitle("square of the House Histogram") 
 
 mean(data2017$square)
-median(data2017$square)
 quantile(data2017$square, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
-
-data2017%>%
-  filter(square>=167) %>%
-  count(district)
-
-data2017%>%
-  filter(square>=167 & district=="ChangPing")
 ```
 A house with more 1745.5 square meter seems very unreasonable, so we decided houses that are less than 1000 square meters are plausible. 
 ```{r}
@@ -347,9 +305,10 @@ data2017 <- data2017 %>%
 ```
 
 ### 3.1.10 bedRoom
+## might be a report error, move the house with 0 bedroom to 0 livingroom? 
 
-One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the US. Thus, we decided t ochange the variable name from 'livingRoom' to 'bedRoom'. 
-The graph of number of bedrooms is unimodal, diamond-shaped, and skews right. Most of the houses have 2 bedrooms, and the mean and median number of bedrooms is also 2. Approximately 25% of values are below or equal to 1. Approximately  2.5% of values are above 3. (continued)
+One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the United States. Thus, we decided to change the variable name from 'livingRoom' to 'bedRoom'. 
+The graph of number of bedrooms is unimodal, diamond-shaped, and skews right. Most of the houses have 2 bedrooms, and the mean and median number of bedrooms are both 2. Approximately 25% of values are below or equal to 1. Approximately  2.5% of values are above 3. (continued)
 
 ```{r}
 ggplot(data2017, aes(x=bedRoom))+
@@ -357,7 +316,6 @@ ggplot(data2017, aes(x=bedRoom))+
   xlab("bedRoom")+ylab("Count")+ggtitle("Number of bedroom Histogram")
 
 mean(data2017$bedRoom)
-median(data2017$bedRoom)
 quantile(data2017$bedRoom, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
 # 1 house with 0 bed room
@@ -378,9 +336,11 @@ There is one house has 0 bedroom but sold in 145,612 yuan per square meter which
 data %>%
   filter(id=="101101275312")
 ```
+
+
 ### 3.1.11 livingRoom
 
-The number of living rooms for all houses is between 0 to 4. Most houses sold in 2017 have 0 to 2 living rooms and nearly 78% of houses sold in 2017 have 1 living room. Houses with 0 living room is the third greatest choice, and it is reasonable for a house to have no living room, especially in the city.
+The graph of number of living rooms is unimodal, diamond-shaped, and skews right. The number of living rooms for all houses is between 0 to 4. Both the mean and median number of living rooms is 1. Approximately 2.5% of values have no living room. Approximately 2.5% of values have more than 2 living rooms. Most houses sold in 2017 have 0 to 2 living rooms and nearly 78% of houses sold in 2017 have 1 living room. Houses with 0 living room is the third greatest choice, and it is reasonable for a house to have no living room, especially in the city.
 
 ```{r}
 ggplot(data2017, aes(x=livingRoom))+
@@ -388,29 +348,28 @@ ggplot(data2017, aes(x=livingRoom))+
   xlab("livingRoom")+
   ylab("Count")+
   ggtitle("Number of Living Rooms Histogram")
-```
 
-```{r}
+mean(data2017$livingRoom)
+quantile(data2017$livingRoom, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
+
 table(data2017$livingRoom)/length(data2017$livingRoom)
 ```
 
-### 3.1.12 district 
+
+### 3.1.12 district (Categorical)
 
 ```{r}
 ggplot(data2017, aes(x=district))+
   geom_bar(fill='lightblue', color='black') +
-  xlab("district")+
-  ylab("Count")+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
   ggtitle("District the House located Histogram") 
 
 district_percentage <- data2017 %>%
   group_by(district) %>%
-  count(district) %>%
+  count(district) %>% # number of houses sold in each district
   mutate(percentage=n*100/42004) %>% # what percentage of sold houses are in each district
   arrange(desc(n))
 district_percentage
-
 ```
 
 ### 3.1.13 kitchen
@@ -563,11 +522,25 @@ ggplot(data2017, aes(x = subway)) +
 ```
 
 
-## 3.2 Relationships between variables
+## 3.2 Potential Relationships between Variables
 
-### 3.2.1 price vs. district
+### 3.2.1 DOM vs. followers
 
-### 3.2.2 price vs. DOM
+*Do houses sold fast have many followers?*
+Among these 474 houses that were sold within 1 day, 376 have no follower and the maximum number of followers is 39, which is not a significant number of followers. But in general as shown on the graph, the graph is unimodal, diamond-shaped, and heavily skew right. Which indicates that the number of followers is decreasing as the number of days on market increase.
+
+```{r}
+table(data2017$DOM<=1) # number of 0 or 1 Days in market
+data2017 %>%
+  filter(DOM<=1) %>%
+  count(followers) # Do houses sold fast have many followers?
+
+ggplot(data2017, aes(x=DOM,y=followers))+
+  geom_col(fill="lightblue")
+```
+
+
+### 3.2.2 DOM vs. price
 
 ### 3.2.3 price vs. construction time
 
@@ -575,8 +548,49 @@ ggplot(data2017, aes(x = subway)) +
 
 ### 3.2.5 construction time vs. building structure
 
+### 3.2.6 district vs. square
+
+*Districts that have most large & small houses sold*
+
+(ChaoYang(7) has significantly highest amount of these. But one surprising observation is that ChangPing(6) has the second highest amounts of houses in the higher 2.5%. ChangPing indeed has a relative large area compared with other districts in Beijing but it is relative far from the core area of the city. Thus, it is reasonable to have great proportion of houses sold with large square meters with lower than average square meters price.)
+
+As indicated under the 'square' variable, the top 2.5% of houses sold have area over 167 square meters. Let's define houses over 167 square meters as "large houses". Then ChaoYang has the significantly highest amounts of large houses. ChangPing has the second highest amounts.
+
+The bottom 2.5% of houses sold have less than 37 square meters. Let's define houses less than 37 square meters as "small houses". Surprisingly, ChangPing also has the greatest amounts of small houses sold in 2017. And then second one is ChaoYang. 
+
+Let's compare the total amounts of houses sold in ChaoYang and ChangPing.
+Let's then compare the total areas of ChaoYang and ChangPing.
+
+```{r}
 
 
+data2017%>%
+  filter(square>=167) %>% # top 2.5% large houses
+  count(district)
+
+data2017%>%
+  filter(square<=37) %>% # bottom 2.5% small houses
+  count(district)
+
+data2017%>%
+  filter(square>=167 & district=="ChangPing")
+data2017%>%
+  filter(square<=37 & district=="ChangPing")
+
+table(data2017$square>=167,data2017$district=="ChangPing") #
+
+# proportion of large houses in ChaoYang
+
+
+```
+
+
+
+
+### 3.2.7 district vs. price
+
+### 3.2.8 price & square
+*Within the same district and conditions, do houses with larger square meters have higher price per square meter?
 
 ### **Work Cited**
 ## some online resources that I think might be helpful 
