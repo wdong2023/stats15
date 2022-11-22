@@ -20,9 +20,6 @@ As one of the biggest cities in China, Beijing currently houses a population of 
 
 ***How a Buyer can Purchase a Listing:*** To purchase a listing on Lianjia, the buyer can simply just reach out to the contact number or email of the real estate angent provided to arrange a viewing. After viewing the property and possible negotiations, both parties will agree on a price for the transaction and legal paperwork will be organized by the real estate agency to facilitate the payment process and finally legalize the change of ownership of the property.
 
-***Beijing Districts:*** There are a total of 13 districts within Beijing that we will be focusing on. These 13 districts include DongCheng, FengTai, YiZhuang, DaXing, FangShan, ChangPing, ChaoYang, HaiDian, ShiJingShan, XiCheng, TongZhou, MenTouGou and ShunYi. Each listing in our data set lies in one of these 13 districts.
-
-There are a total of 16 districts in Beijing, but we mainly focuses on the listed 13 districts which are shown on the map as yellow, red, and purple. Yellow and red parts are considered the core districts. In other words, "the city". They contains the main functions of Beijing in political, cultural and economic ways. The yellow parts, DongCheng and XiCheng contain the most history of the city. They have a relative small area but most ancient buildings preserved. Thus, there are actually not that much area could be used for residency nor new structures. Among these red parts, ChaoYang and HaiDian are a bit special. ChaoYang is the largest among the core districts. It has the majority of foreign embassies and it is also the business center. HaiDian is famous for education. It contains the most education institutions. Purple parts are considered suburb areas where airports are located. Green parts are excluded from our data because these are relative rural that are mostly made up of mountains, Great Walls, manors for travelers, etc.
 
 ## **1.3 - Variable Explanation**
 
@@ -47,26 +44,13 @@ There are a total of 16 districts in Beijing, but we mainly focuses on the liste
 knitr::include_graphics("beijing_map.jpeg")
 ```
 
-15. ***district***: (*categorical*) There are 13 main districts in Beijing and each number from 1 to 13 refers to a different district in which the property lies in. In this case, 1 refers to DongCheng, 2 refers to FengTai, 3 refers to YiZhuang, 4 refers to DaXing, 5 refers to FangShan, 6 refers to ChangPing, 7 refers to ChaoYang, 8 refers to HaiDian, 9 refers to ShiJingShan, 10 refers to XiCheng, 11 refers to TongZhou, 12 refers to MenTouGou and 13 refers to ShunYi.
+15. ***district***: (*categorical*) There are 13 main districts in Beijing and each number from 1 to 13 refers to a different district in which the property lies in. In this case, 1 refers to DongCheng, 2 refers to FengTai, 3 refers to YiZhuang(a sub-region of DaXing, we will consider it as DaXing in the following analysis), 4 refers to DaXing, 5 refers to FangShan, 6 refers to ChangPing, 7 refers to ChaoYang, 8 refers to HaiDian, 9 refers to ShiJingShan, 10 refers to XiCheng, 11 refers to TongZhou, 12 refers to MenTouGou and 13 refers to ShunYi.
+
+As shown in the map above, there are a total of 16 districts in Beijing, but we mainly focuses on the listed 12 districts which are shown on the map as yellow, red, and purple. Green districts are not included in this Lianjia dataset. Yellow and red parts are considered the core districts. In other words, "the city". They contains the main functions of Beijing in political, cultural and economic ways. The yellow parts, DongCheng and XiCheng contain the most history of the city. They have a relative small area but most ancient buildings preserved. Thus, there are actually not that much area could be used for residency nor new structures. Among these red parts, ChaoYang and HaiDian are a bit special. ChaoYang is the largest among the core districts. It has the majority of foreign embassies and it is also the business center. HaiDian is famous for education. It contains the most education institutions. Purple parts are considered suburb areas where airports are located. Green parts are excluded from our data because these are relative rural that are mostly made up of mountains, Great Walls, manors for travelers, etc.
 
 ### **Response Variable**
 1. ***price***: (*integer*) The price per square foot of the property (price = totalPrice / square). To ensure that the price is a fair comparison across all the properties listed, we decided to compare the price per square foot of all properties instead of totalPrice. Since some properties may be bigger than others, comparing price per square foot provides us with a better understanding of how valuable a property is.
 
-
-Districts: 
-1-DongCheng
-2-FengTai
-3-YiZhuang
-4-DaXing
-5-FangShan
-6-ChangPing
-7-ChaoYang
-8-HaiDian 
-9-ShiJingShan
-10-XiCheng
-11-TongZhou
-12-MenTouGou
-13-ShunYi
 
 
 # Section 2: Data Cleaning
@@ -128,10 +112,18 @@ data2017 <- data2017 %>%
          elevator = as.factor(elevator),
          fiveYearsProperty = as.factor(fiveYearsProperty),
          district = recode(district, "1" = "DongCheng",
-                           "2" = "FengTai", "3" = "YiZhuang", "4" = "DaXing", 
+                           "2" = "FengTai", "3" = "DaXing", "4" = "DaXing", 
                            "5" = "FangShan", "6" = "ChangPing", "7" = "ChaoYang",
                            "8" = "HaiDian", "9" = "ShiJingShan", "10" = "XiCheng", 
-                           "11" = "TongZhou", "12" = "MenTouGou", "13" = "ShunYi"))
+                           "11" = "TongZhou", "12" = "MenTouGou", "13" = "ShunYi"),
+         subway = recode(subway, "0" = "not_near_subway", "1" = "near_subway"),
+         elevator = recode(elevator, "0" = "no", "1" = "yes"),
+         fiveYearsProperty = recode(fiveYearsProperty, "0" = "no", "1" = "yes"),
+         renovationCondition = recode(renovationCondition, "1" = "other", "2" = "rough", 
+                                      "3" = "simplicity", "4" = "hardcover"),
+         buildingStructure = recode(buildingStructure, "1" = "other", "2" = "mixed", 
+                                    "3" = "brick&wood", "4" = "brick&concrete", 
+                                    "5" = "steel-concrete"))
 ```
 
 
@@ -209,7 +201,7 @@ Apartments located in the middle of a building were traded the most in 2017.
 
 ### 3.1.5 DOM
 
-The graph of number of days on market is unimodal and heavily skewed to the right. The mean number of days on market is around 51 and the median is 31 days. Approximately 2.5% of values are below 2. Approximately 2.5% of values are above 196. The longest day on market is 721. Whereas there are total of 474 houses have less or equal to 1 day on market until sold. 
+The graph of number of days on market is unimodal and heavily skewed to the right. The mean number of days on market is around 51 and the median is 31 days. Approximately 2.5% of values are below 2. Approximately 2.5% of values are above 196. The longest day on market is 721. Whereas there are total of 474 houses have less or equal to 1 day on market until sold. A great portion of these houses are sold in March, which is the peak of house transaction in Beijing in 2017 as the previous 'month' variable section showed. And most of these houses are located in ChaoYang(7) district. According to the following 'district' variable section showed, ChaoYang indeed is the district that has the most transactions. The number of followers of these houses is between 0 to 9, which is not a great number. And nearly half of these houses have no followers. It shows that the number of followers is not necessarily indicating the "popularity" of the houses.
 
 ```{r}
 ggplot(data2017, aes(x=DOM))+
@@ -217,16 +209,29 @@ ggplot(data2017, aes(x=DOM))+
   xlab("DOM")+ylab("Count")+ggtitle("Active Days on Market Histogram")
 
 mean(data2017$DOM)
+median(data2017$DOM)
 quantile(data2017$DOM, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
 data2017 %>%
   filter(DOM<=1) %>%
   nrow()  # number of houses have less than 1 day on market
+
+data2017 %>%
+  filter(DOM<=1) %>%
+  count(month) # In which months are these houses sold
+
+data2017 %>%
+  filter(DOM<=1) %>%
+  count(district) # In which districts are these houses sold
+
+data2017 %>%
+  filter(DOM<=1) %>%
+  count(followers) # Do houses sold fast have many followers?
 ```
 
 ### 3.1.6 followers
 
-The graph of number of followers is unimodal and heavily skewed to the right. The mean is around 49 people and the median is around 31 people. Approximately 2.5% of values are below or equal to 0. Approximately 2.5% of values are above 216. However, the highest 2.5% are jumps from 216 to 1143, which suggests that there are a few significantly popular houses. There are 5617 houses with 0 follower and also a total of 5 houses with more than 1000 followers. Among these houses with more than 1000 followers, 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
+The graph of number of followers is unimodal and heavily skewed to the right. The mean and median number of followers is the same, which is around 49 people. Approximately 2.5% of values are below or equal to 0. Approximately 2.5% of values are above 216. However, the highest 2.5% are between 216 and 1143, which suggests that there are a few significantly popular houses. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among these houses with more than 1000 followers, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
 
 ```{r}
 ggplot(data2017, aes(x=followers))+
@@ -235,6 +240,7 @@ ggplot(data2017, aes(x=followers))+
   ggtitle("followers Histogram")
 
 mean(data2017$followers)
+mean(data2017$followers)
 quantile(data2017$followers, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
 data2017 %>% filter(followers>1000)
@@ -242,9 +248,12 @@ data2017 %>% filter(followers>1000)
 
 
 ### 3.1.7 totalPrice
+## problem: some districts do not have high or low 2.5% houses and are not shown on the tibbles. So the numbers do not match. Replace missing values with 0?
 
 The graph of total price is diamond-shaped, unimodal, and skews right. The average total price of a house in Beijing in 2017 is 526x10,000 yuan (around 750~810 thousands dollars depend on inflation) and the median is 460x10,000 yuan (around 660~710 thousands dollars). 
-Approximately 2.5% of values are below 215x10,000 yuan. Approximately  2.5% of values are above 1250x10,000 yuan. 
+Approximately 2.5% of values are below 215x10,000 yuan. Among these houses, ChangPing(6) has significantly higher amounts of these. ChangPing is the northern suburb of Beijing. And the second one is ChaoYang(7).
+Approximately  2.5% of values are above 1250x10,000 yuan. Among these houses, ChangPing(6) has none of these whereas ChaoYang(7) has significantly highest amounts of these. It seems like ChaoYang has houses with big ranges of prices. Even though XiCheng(10) and DongCheng(1) are the most central part of Beijing and close to each other, XiCheng has 85% more higher 2.5% percentile houses sold in 2017. XiCheng spans 32 square kilometers and DongCheng spans 40.6 square kilometers. DongCheng actually has larger area than XiCheng but XiCheng has more houses sold.
+
 
 ```{r}
 ggplot(data2017, aes(x=totalPrice))+
@@ -254,15 +263,32 @@ ggplot(data2017, aes(x=totalPrice))+
 mean(data2017$totalPrice)
 quantile(data2017$totalPrice, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
+# tried to compute percenatge of low&high 2.5% within each district to find out what affect DongCheng and XiCheng
+lower2_5 <- data2017 %>%
+  filter(totalPrice<=215) %>% 
+  group_by(district) %>% # number of lower 2.5% houses in each district
+  summarize(n()) #%>%
+  #pull()
+lower2_5
+
+higher2_5 <- data2017 %>% # number of higher 2.5% houses in each district
+  
+  group_by(district) %>%
+   filter(totalPrice>=1250) %>%
+  summarise(n())
+  #pull()
+higher2_5
+
 ggplot(data2017, aes(x=district,y=totalPrice))+
   geom_boxplot()+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+
 ```
 
 
 ### 3.1.8 price
 
-The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,430 yuan and median is 62,670 yuan, which are close. Approximately 2.5% of values are above 127,359 yuan. Approximately 2.5% of values are below 33,035 yuan. The house that has the lowest value has 136 yuan per square meter, which is about 20 dollars per square meter. Such low price doesn't make sense in any part of Beijing. Therefore, we decided to remove this outlier. 
+The graph for price is Diamond-shaped, unimodal, and skewed right. The average price per square meter is around 67,430 yuan and median is 62670, which are relative close. Approximately 2.5% of values are above 127,359 yuan. Approximately 2.5% of values are below 33,035 yuan. The house that has the lowest value has 136 yuan per square meter, which is about 20 dollars per square meter. Such low price doesn't make sense in any part of Beijing. Therefore, we decided to remove this outlier. 
 
 ```{r}
 ggplot(data2017, aes(x=price))+
@@ -288,7 +314,7 @@ ggplot(data2017, aes(x=district,y=price))+
 
 ### 3.1.9 square
 
-The graph of number of squares is diamond-shaped, unimodal, and skews right. The mean of houses sold in Beijing in 2017 have around 81 square meters. The median is around 72 square meters. Approximately 2.5% of values are below 37 square meters. Approximately 2.5% of values are above 167 square meters. 
+The graph of number of squares is diamond-shaped, unimodal, and skews right. The mean of houses sold in Beijing in 2017 have around 81 square meters. The median is 72 square meters. Approximately 2.5% of values are below 37 square meters. Approximately 2.5% of values are above 167 square meters. ChaoYang(7) has significantly highest amount of these. But one surprising observation is that ChangPing(6) has the second highest amounts of houses in the higher 2.5%. ChangPing indeed has a relative large area compared with other districts in Beijing but it is relative far from the core area of the city. Thus, it is reasonable to have great proportion of houses sold with large square meters with lower than average square meters price.
 
 ```{r}
 ggplot(data2017, aes(x=square))+
@@ -296,7 +322,15 @@ ggplot(data2017, aes(x=square))+
   xlab("square")+ylab("Count")+ggtitle("square of the House Histogram") 
 
 mean(data2017$square)
+median(data2017$square)
 quantile(data2017$square, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
+
+data2017%>%
+  filter(square>=167) %>%
+  count(district)
+
+data2017%>%
+  filter(square>=167 & district=="ChangPing")
 ```
 A house with more 1745.5 square meter seems very unreasonable, so we decided houses that are less than 1000 square meters are plausible. 
 ```{r}
@@ -305,10 +339,9 @@ data2017 <- data2017 %>%
 ```
 
 ### 3.1.10 bedRoom
-## might be a report error, move the house with 0 bedroom to 0 livingroom? 
 
-One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the United States. Thus, we decided to change the variable name from 'livingRoom' to 'bedRoom'. 
-The graph of number of bedrooms is unimodal, diamond-shaped, and skews right. Most of the houses have 2 bedrooms, and the mean and median number of bedrooms are both 2. Approximately 25% of values are below or equal to 1. Approximately  2.5% of values are above 3. (continued)
+One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the US. Thus, we decided t ochange the variable name from 'livingRoom' to 'bedRoom'. 
+The graph of number of bedrooms is unimodal, diamond-shaped, and skews right. Most of the houses have 2 bedrooms, and the mean and median number of bedrooms is also 2. Approximately 25% of values are below or equal to 1. Approximately  2.5% of values are above 3. (continued)
 
 ```{r}
 ggplot(data2017, aes(x=bedRoom))+
@@ -316,6 +349,7 @@ ggplot(data2017, aes(x=bedRoom))+
   xlab("bedRoom")+ylab("Count")+ggtitle("Number of bedroom Histogram")
 
 mean(data2017$bedRoom)
+median(data2017$bedRoom)
 quantile(data2017$bedRoom, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
 # 1 house with 0 bed room
@@ -336,11 +370,9 @@ There is one house has 0 bedroom but sold in 145,612 yuan per square meter which
 data %>%
   filter(id=="101101275312")
 ```
-
-
 ### 3.1.11 livingRoom
 
-The graph of number of living rooms is unimodal, diamond-shaped, and skews right. The number of living rooms for all houses is between 0 to 4. Both the mean and median number of living rooms is 1. Approximately 2.5% of values have no living room. Approximately 2.5% of values have more than 2 living rooms. Most houses sold in 2017 have 0 to 2 living rooms and nearly 78% of houses sold in 2017 have 1 living room. Houses with 0 living room is the third greatest choice, and it is reasonable for a house to have no living room, especially in the city.
+The number of living rooms for all houses is between 0 to 4. Most houses sold in 2017 have 0 to 2 living rooms and nearly 78% of houses sold in 2017 have 1 living room. Houses with 0 living room is the third greatest choice, and it is reasonable for a house to have no living room, especially in the city.
 
 ```{r}
 ggplot(data2017, aes(x=livingRoom))+
@@ -348,28 +380,29 @@ ggplot(data2017, aes(x=livingRoom))+
   xlab("livingRoom")+
   ylab("Count")+
   ggtitle("Number of Living Rooms Histogram")
+```
 
-mean(data2017$livingRoom)
-quantile(data2017$livingRoom, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
-
+```{r}
 table(data2017$livingRoom)/length(data2017$livingRoom)
 ```
 
-
-### 3.1.12 district (Categorical)
+### 3.1.12 district 
 
 ```{r}
 ggplot(data2017, aes(x=district))+
   geom_bar(fill='lightblue', color='black') +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("district")+
+  ylab("Count")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
   ggtitle("District the House located Histogram") 
 
 district_percentage <- data2017 %>%
   group_by(district) %>%
-  count(district) %>% # number of houses sold in each district
+  count(district) %>%
   mutate(percentage=n*100/42004) %>% # what percentage of sold houses are in each district
   arrange(desc(n))
 district_percentage
+
 ```
 
 ### 3.1.13 kitchen
@@ -522,75 +555,67 @@ ggplot(data2017, aes(x = subway)) +
 ```
 
 
-## 3.2 Potential Relationships between Variables
+## 3.2 Relationships between variables
 
-### 3.2.1 DOM vs. followers
+### 3.2.1 price vs. district
 
-*Do houses sold fast have many followers?*
-Among these 474 houses that were sold within 1 day, 376 have no follower and the maximum number of followers is 39, which is not a significant number of followers. But in general as shown on the graph, the graph is unimodal, diamond-shaped, and heavily skew right. Which indicates that the number of followers is decreasing as the number of days on market increase.
-
-```{r}
-table(data2017$DOM<=1) # number of 0 or 1 Days in market
-data2017 %>%
-  filter(DOM<=1) %>%
-  count(followers) # Do houses sold fast have many followers?
-
-ggplot(data2017, aes(x=DOM,y=followers))+
-  geom_col(fill="lightblue")
-```
-
-
-### 3.2.2 DOM vs. price
+### 3.2.2 price vs. DOM
 
 ### 3.2.3 price vs. construction time
 
-### 3.2.4 construction time vs. renovation condition
+### 3.2.4 construction time vs. district
 
-### 3.2.5 construction time vs. building structure
+From the distribution of time of construction by district, we see that most of the listings were constructed in ChaoYang after the year 2000.
 
-### 3.2.6 district vs. square
+``` {r}
+ggplot(data2017, aes(x = constructionTime)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Distribution of Time of Construction by District") +
+  xlab("Time of Construction") +
+  ylab("Count") +
+  facet_wrap(~ district)
+```
 
-*Districts that have most large & small houses sold*
+### 3.2.5 renovationCondition vs. district
 
-(ChaoYang(7) has significantly highest amount of these. But one surprising observation is that ChangPing(6) has the second highest amounts of houses in the higher 2.5%. ChangPing indeed has a relative large area compared with other districts in Beijing but it is relative far from the core area of the city. Thus, it is reasonable to have great proportion of houses sold with large square meters with lower than average square meters price.)
+From the distribution of renovation condition by district, we see that the highest number of renovation conditions with ratings 1 to 4 come from the district of ChaoYang and the lowest number of renovation conditions with ratings 1 to 4 come from the district of MenTouGou. For all districts with the exception of XiCheng, most of the listings reflect that their renovation condition is rated as 4. 
 
-As indicated under the 'square' variable, the top 2.5% of houses sold have area over 167 square meters. Let's define houses over 167 square meters as "large houses". Then ChaoYang has the significantly highest amounts of large houses. ChangPing has the second highest amounts.
+``` {r}
+ggplot(data2017, aes(x = renovationCondition)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Distribution of Renovation Condition by District") +
+  xlab("Renovation Condition") +
+  ylab("Count") +
+  facet_wrap(~ district)
+```
 
-The bottom 2.5% of houses sold have less than 37 square meters. Let's define houses less than 37 square meters as "small houses". Surprisingly, ChangPing also has the greatest amounts of small houses sold in 2017. And then second one is ChaoYang. 
+### 3.2.6 elevator vs. building structure
 
-Let's compare the total amounts of houses sold in ChaoYang and ChangPing.
-Let's then compare the total areas of ChaoYang and ChangPing.
+From the distribution of presence of elevator by building structure, we see that the greatest number of listings with the availability of an elevator are those that have a building structure of steel-concrete composite. For the greatest number of listings with the absence of an elevator, those would have a building structure of a mix of more than 3 distinguishable materials.
 
-```{r}
+``` {r}
+ggplot(data2017, aes(x = elevator, fill = elevator)) +
+  geom_bar(colour = "black") +
+  ggtitle("Distribution of Elevator by Building Structure") +
+  xlab("Building Structure") +
+  ylab("Count") +
+  facet_wrap(~ buildingStructure)
+```
 
+### 3.2.7 five years property vs. district
 
-data2017%>%
-  filter(square>=167) %>% # top 2.5% large houses
-  count(district)
+From the distribution of five years property by district, we see that the district of ChaoYang has the highest number of previous owners who stayed in their property for more than 5 years followed by ChangPing. On the other hand, ChaoYang also has the highest number of previous owners who stayed in their property for less than 5 years followed by ChangPing. This is because ChaoYang is the largest district compared to the others and thus in terms of the total number of people staying more than or less than 5 years in that district will be the highest overall.
 
-data2017%>%
-  filter(square<=37) %>% # bottom 2.5% small houses
-  count(district)
-
-data2017%>%
-  filter(square>=167 & district=="ChangPing")
-data2017%>%
-  filter(square<=37 & district=="ChangPing")
-
-table(data2017$square>=167,data2017$district=="ChangPing") #
-
-# proportion of large houses in ChaoYang
-
-
+``` {r}
+ggplot(data2017, aes(x = fiveYearsProperty, fill = fiveYearsProperty)) +
+  geom_bar(colour = "black") +
+  ggtitle("Distribution of Five Years Property by District") +
+  xlab("Five Years Property") +
+  ylab("Count") +
+  facet_wrap(~ district)
 ```
 
 
-
-
-### 3.2.7 district vs. price
-
-### 3.2.8 price & square
-*Within the same district and conditions, do houses with larger square meters have higher price per square meter?
 
 ### **Work Cited**
 ## some online resources that I think might be helpful 
@@ -612,12 +637,12 @@ test <- data2017[-index,c(2,3,5:22)] # exclude total price
 ```
 I splited the data in half, into train and test data. Train data is used to train the model, while test data is used to test the accuracy of prediction from the model. 
 
-## 4.2 Linear Model
+## 4.2 Linear Model (Validation set approach)
 ```{r}
 linear_model <- lm(price~., data = train)
 summary(linear_model)
 ```
-Based on the results of linear model, all the variables are important except for five year property and the day of month being sold.
+In this model, I randomly split data into training set and testing set, which is the validation set approach. Based on the results of linear model, all the variables are important except for five year property and the day of month being sold.
 
 ```{r}
 # training MSE
@@ -627,12 +652,75 @@ mean((pred_train_lm-train$price)^2)
 pred_test_lm <- predict(linear_model, test, type="response")
 mean((pred_test_lm-test$price)^2)
 ```
-For now, the MSE looks pretty big. Let's take a look at other models. 
+After putting test data into linear model, the mean squared error for both test data and train data look pretty big. Let's look at if k-fold cross validation could produce a better MSE. 
 
 
-## 4.2 Random Forest
+## 4.3 Linear Model (k-fold cross validation, k=10)
+```{r}
+library(caret)
+set.seed(428) 
+train.kfold <- trainControl(method = "cv", number = 10)
+# Train the model
+kfold_model <- train(price ~., data = data2017[,c(2,3,5:22)], method = "lm",
+               trControl = train.kfold)
+(kfold_model$resample$RMSE)^2
+```
+
+The above list of number shows the MSE for each fold. Comparing the MSE of k-fold cross validation with MSE of validation set approach, performing k-fold cross validation did not improve much on MSE. 
+
+
+## 4.4 Backward Regression
+```{r}
+library(leaps)
+backward <- regsubsets(price~.,data=train,method="backward")
+summary(backward)
+plot(backward,scale="bic", cex.names= 0.5)
+```
+Based on the plot and model summary, the best backward regression model includes followers, square, subway, district ChaoYang, district DongCheng, district FengTai, district HaiDian, district Xicheng (all important districts are the core districts). Lets put these important variables in linear model. 
+
+```{r}
+backward_model <- lm(price~followers+square+subway+district, data = train)
+summary(backward_model)
+# training MSE
+pred_train_lm <- predict(linear_model, train, type="response")
+mean((pred_train_lm-train$price)^2)
+# testing MSE
+pred_test_lm <- predict(linear_model, test, type="response")
+mean((pred_test_lm-test$price)^2)
+```
+
+Since the resulting backward model MSE for both training and testing data are very close to the MSE of linear regression using all variables, we can choose to use the simpler model with followers, square, subway, and district as the predictors. 
+
+Coefficient interpretation:
+- if followers increase by 1, the average price decreases by 39.87
+- if square increases by 1, the average price decreases by 58.39
+- if there is a subway near the house, we would expect the price to be 5667 Yuan higher than houses without a subway.
+- Being in ChaoYang, DongCheng, FengTai, HaiDian, ShiJingShan, and XiCheng increases the price with a significant amount compared to ChangPing because these are all core districts that are located in the center of Beijing.
+- Being in FangShan and ShunYi significantly decreases the price compared to ChangPing because these are the rural districts. 
+- Being in DaXing and TongZhou increases the price in a small amount compared to ChangPing because these two rural areas are developing, but not as developed as core districts. (A few tech companies moved to DaXing and Beijing plans to develop TongZhou as its sub-center.)
+- The price in MenTouGou is not significantly different from price in ChangPing since these two are both rural districts. 
 
 
 
 
+## 4.5 Random Forest
+```{r}
+library(randomForest)
+set.seed(428)
+rf_model <- randomForest(price~.,data=train,mtry=6,importance=TRUE)
+varImpPlot(rf_model)
+```
 
+Since we are using MSE to evaluate the models, we will look at the plot on the left. The plot shows that district contributes most in reducing MSE in the model, with subway, construction time, square, followers, etc in decreasing order. 
+
+
+```{r}
+# training MSE
+pred_train_rf <- predict(rf_model, train, type="response")
+mean((pred_train_rf-train$price)^2)
+# testing MSE
+pred_test_rf <- predict(rf_model, test, type="response")
+mean((pred_test_rf-test$price)^2)
+```
+
+Random Forest significantly reduced the MSE for both prediction of training and testing dataset. The MSE for testing dataset is much larger than training dataset because of overfitting effect, but it's still better than linear models. Because we have a smaller MSE, random forest is so far the best model in predicting house price per square meter, with district, subway, contruction time, square as some of the most important predictor. 
