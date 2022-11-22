@@ -115,7 +115,15 @@ data2017 <- data2017 %>%
                            "2" = "FengTai", "3" = "DaXing", "4" = "DaXing", 
                            "5" = "FangShan", "6" = "ChangPing", "7" = "ChaoYang",
                            "8" = "HaiDian", "9" = "ShiJingShan", "10" = "XiCheng", 
-                           "11" = "TongZhou", "12" = "MenTouGou", "13" = "ShunYi"))
+                           "11" = "TongZhou", "12" = "MenTouGou", "13" = "ShunYi"),
+         subway = recode(subway, "0" = "not_near_subway", "1" = "near_subway"),
+         elevator = recode(elevator, "0" = "no", "1" = "yes"),
+         fiveYearsProperty = recode(fiveYearsProperty, "0" = "no", "1" = "yes"),
+         renovationCondition = recode(renovationCondition, "1" = "other", "2" = "rough", 
+                                      "3" = "simplicity", "4" = "hardcover"),
+         buildingStructure = recode(buildingStructure, "1" = "other", "2" = "mixed", 
+                                    "3" = "brick&wood", "4" = "brick&concrete", 
+                                    "5" = "steel-concrete"))
 ```
 
 
