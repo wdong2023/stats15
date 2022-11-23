@@ -563,14 +563,10 @@ ggplot(data2017, aes(x=DOM,y=followers))+ # overall number of followers vs. DOM
 ```
 
 
-### 3.2.2 DOM vs. price
-## not sure should keep this or not
-*Will the price drops as the house staying longer on the market?*
-To test this, we need to first narrow down to houses with similar features. 
+### 3.2.2
 
 ```{r}
-data2017 %>%
-  filter(district=="ChaoYang" & bedRoom==2 & livingRoom==1 & subway=="near_subway" & fiveYearsProperty=="yes" & kitchen==1 & bathRoom==1 & renovationCondition=="simplicity")
+
 
 ```
 
@@ -676,11 +672,20 @@ ggplot(data2017, aes(x = fiveYearsProperty, fill = fiveYearsProperty)) +
 
 ### 3.2.8 district vs. price
 
-#### 3.2.8.1 DongCheng vs. XiCheng
+#### 3.2.8.1 DongCheng vs. XiCheng (Yellow areas)
 
 *DongCheng and XiCheng are the most center of Beijing. What affects the difference of DongCheng and XiCheng in house prices?*
 The lowest price in XiCheng is almost the half of the lowest price in DongCheng, but starting from the 2.5%, the price in XiCheng jumps around 53,000 yuan more and becomes higher than DongCheng in every interval. But when comes to the highest prices, they are almost the same. This shows us that XiCheng has a wider range of house prices than DongCheng. 
-DongCheng has 41.84 square km and XiCheng has 50.7 square km. XiCheng is indeed greater than DongCheng in areas and might have nore houses on market, but it is not suifficient to explain XiCheng has 2 times more houses sold in 2017 than DongCheng.
+DongCheng has 41.84 square km and XiCheng has 50.7 square km. XiCheng is indeed greater than DongCheng in areas and might have more houses on market, but it is not sufficient to explain XiCheng has 2 times more houses sold in 2017 than DongCheng.
+
+```{r}
+
+  data2017 %>%
+  filter(district %in% c("DongCheng","XiCheng")) %>%
+  
+
+  
+```
 
 ```{r}
 data2017 %>%
