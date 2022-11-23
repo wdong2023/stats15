@@ -14,7 +14,7 @@ As one of the biggest cities in China, Beijing currently houses a population of 
 
 ## **1.2 - Background on Lianjia**
 
-***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list properties all over China on the Lianjia website. In our data set, we narrowed down our listings to those that were traded in 2017 in the city of Beijing. This means that any property that was listed or sold in 2017 will be included and the others will be excluded. We found our data set on a website called Kaggle which is a data science company which provides a variety of public data sets. Before cleaning the data, our data set had 318,815 listings and 26 variables.
+***Basic Structure:*** Lianjia is a Chinese real-estate company that allows buyers and sellers to view and list properties all over China on the Lianjia website. In our data set, we narrowed down our listings to those that were traded in 2017 in the city of Beijing. This means that any property that was listed or sold in 2017 through Lianjia will be included in this dataset. We found our data set on a website called Kaggle which is a data science company which provides a variety of public data sets. Before cleaning the data, our data set had 318,851 listings and 26 variables.
 
 ***How a Seller can Post a Listing:*** To post a listing on Lianjia, the owner or the real estate agent of the property will have to follow the guidelines and steps provided by filling out the necessary information regarding the property such as price of listing, number of bathrooms, square footage of the entire property and more listed below in the explanatory variables. They will also need to provide accompanying photographs of the property.
 
@@ -35,16 +35,17 @@ As one of the biggest cities in China, Beijing currently houses a population of 
 8. ***constructionTime***: (*categorical*) The year the building was constructed.
 9. ***renovationCondition***: (*categorical*) The quality of the renovation with 4 being the best and 1 being the worst.
 10. ***buildingStructure***: (*categorical*) The material that is used the most to construct the building. More specifically, the main material used to build the exterior of the building. In this case, 1 refers to the material being unknown, 2 refers to the material being a mix of more than 3 distinguishable materials, 3 refers to brick and wood, 4 refers to brick and concrete, 5 refers to steel and 6 refers to steel-concrete composite. 
-11. ***ladderRatio***: (*categorical*) The proportion between number of residents who live on the same floor to the number of elevators or ladders that particular floor has. It relates to the frequency of usage of the elevator per floor. In this case, 1.00 refers to the highest frequency of usage and 0.00 refers to lowest frequency of usage.
+11. ***ladderRatio***: (*categorical*) The proportion between the number of elevators or ladders that particular floor has to the number of households who live on the same floor. It describes how many ladders a household have on average. In this case, 0.5 means two households share 1 elevator/ladder. The higher the number, the more elevators or ladders a household can use. 
 12. ***elevator***: (*categorical*) The presence of an elevator or not. In this case, 1 refers to the presence of an elevator in the building and 0 refers to the absence of an elevator in the building.
-13. ***fiveYearsProperty***: (*categorical*) Refers to whether or not the previous owner has owned the property for less than five years. In this case, 1 refers to the property being owned by the previous owner for less than five years and 0 refers to the property being owned by the previous owner for more than five years. 
-14. ***subway***: (*categorical*) Based on the knowledge of the seller posting the listing, this variable shows if a subway is located near the property. In this case, 1 refers to the presence of a subway nearby and 0 refers to the absence of a subway nearby.
+13. ***fiveYearsProperty***: (*categorical*) Refers to whether or not the previous owner has owned the property for less than five years. In this case, 1 refers to the property being owned by the previous owner for less than five years and 0 refers to the property being owned by the previous owner for more than five years. In Beijing, if a house/apartment has been owned for 5 years, the tax will be less than owning it for less than five years. 
+14. ***subway***: (*categorical*) Based on the knowledge of the seller posting the listing, this variable shows if a subway is located near the property. In this case, 1 refers to the presence of a subway nearby and 0 refers to the absence of a subway nearby. Whether or not a property is near a subway is self reported by the seller.
+
 
 ```{r pressure, echo=FALSE, fig.cap="Beijing District Map", out.width = '50%'}
 knitr::include_graphics("beijing_map.jpeg")
 ```
 
-15. ***district***: (*categorical*) There are 13 main districts in Beijing and each number from 1 to 13 refers to a different district in which the property lies in. In this case, 1 refers to DongCheng, 2 refers to FengTai, 3 refers to YiZhuang(a sub-region of DaXing, we will consider it as DaXing in the following analysis), 4 refers to DaXing, 5 refers to FangShan, 6 refers to ChangPing, 7 refers to ChaoYang, 8 refers to HaiDian, 9 refers to ShiJingShan, 10 refers to XiCheng, 11 refers to TongZhou, 12 refers to MenTouGou and 13 refers to ShunYi.
+15. ***district***: (*categorical*) There are 13 main districts in Beijing and each number from 1 to 13 refers to a different district in which the property lies in. In this case, 1 refers to DongCheng, 2 refers to FengTai, 3 refers to YiZhuang (a sub-region of DaXing, we will consider it as DaXing in the following analysis), 4 refers to DaXing, 5 refers to FangShan, 6 refers to ChangPing, 7 refers to ChaoYang, 8 refers to HaiDian, 9 refers to ShiJingShan, 10 refers to XiCheng, 11 refers to TongZhou, 12 refers to MenTouGou, and 13 refers to ShunYi.
 
 As shown in the map above, there are a total of 16 districts in Beijing, but we mainly focuses on the listed 12 districts which are shown on the map as yellow, red, and purple. Green districts are not included in this Lianjia dataset. Yellow and red parts are considered the core districts. In other words, "the city". They contains the main functions of Beijing in political, cultural and economic ways. The yellow parts, DongCheng and XiCheng contain the most history of the city. They have a relative small area but most ancient buildings preserved. Thus, there are actually not that much area could be used for residency nor new structures. Among these red parts, ChaoYang and HaiDian are a bit special. ChaoYang is the largest among the core districts. It has the majority of foreign embassies and it is also the business center. HaiDian is famous for education. It contains the most education institutions. Purple parts are considered suburb areas where airports are located. Green parts are excluded from our data because these are relative rural that are mostly made up of mountains, Great Walls, manors for travelers, etc.
 
@@ -62,6 +63,7 @@ library(VIM)
 library(stringr)
 library(ggplot2)
 library(naniar)
+library(waffle)
 ```
 
 ```{r}
@@ -98,7 +100,8 @@ data2017 <- data2017 %>%
 
 ## 2.3 Cleaning variable format
 
-Some variables such as living room and bedroom  should be numerical variable, while other variables such as subway and elevator should be categorical variables. We also recoded the district variable into district names, which will be easier to see for later analysis. Finally, the living room in this dataset should be bedroom and drawing room in this dataset should be living room. 
+Some variables such as living room and bedroom  should be numerical variable, while other variables such as subway and elevator should be categorical variables. We also recoded the district variable into district names, which will be easier to see for later analysis. Moreover, the living room in this dataset should be bedroom and drawing room in this dataset should be living room. Finally, we recoded some categorical variables such as subway and elevator to have text in the values to see them clearly. 
+
 ```{r, warning=FALSE, message=FALSE}
 
 data2017 <- data2017 %>% 
@@ -168,39 +171,46 @@ ggplot(data2017, aes(x = month)) +
   scale_x_discrete(limits = month.name)
 ```
 
-The first three months of year 2017 had the most trading of houses, with March being the highest number of trading, more than 8000 tradings. Apirl, May, and June each only had less than 1/4 of the number of trading compared to March. The amount of transactions for the rest of the year remained below 4000. 
+The first three months of year 2017 had the most trading of houses, with March being the highest number of trading, more than 8000 tradings. Apirl, May, and June each only had less than 1/4 of the number of trading compared to March. The amount of transactions for the rest of the year remained below 4000. One possible explanation for this trend is that Chinese people like to buy houses in the beginning of the year as a way of starting a fresh year. 
 
 
 ### 3.1.2 Day
 ```{r}
 ggplot(data2017, aes(x = day)) + 
-  geom_bar(fill = "light blue", color = "black")
+  geom_histogram(fill = "light blue", color = "black", bins = 31)
+quantile(data2017$day)
 ```
-There isn't a unique day of the month that people liked to buy houses, but people relatively like to buy houses in the middle of the month. Few trades happened in the beginning of the month. 
+Number of transactions of a day is uniform. There isn't a unique day of the month that people liked to buy houses, but people relatively like to buy houses in the middle of the month. Few trades happened in the beginning of the month. Approximately 25% of the houses are sold on and before 10th. 50% of the houses are sold on or before 17th. 25% of the houses are sold on or after 24th. 
+
 
 ### 3.1.3 Total Floor
 ```{r}
 ggplot(data2017, aes(x = totalFloor)) + geom_histogram(color = "black", fill = "blue") 
-summary(data2017$totalFloor)
+quantile(data2017$totalFloor, c(0, .025, .25, .5, .75, .975, 1))
 
 data2017 %>% arrange(desc(totalFloor)) %>% select(id, totalFloor, floorRange) %>% head()
 data2017 <- data2017 %>%
   filter(totalFloor < 60)
 ```
-The distribution of total floor is unimodel and skewed to the right. There are quite a few very tall buildings, but such high numbers could be an error in data recording. The url for the apartment located in a building with 63 floors is invalid; however, we checked the apartment located in the building with 57 floors using url and, surprisingly, the building does exist and is called Yu Jin Tai. Therefore, we only removed the trade with total floor of 63. 
+The distribution of total floor is unimodel and skewed to the right. The median number of floors is 6. 75% of the buildings less than or equal to 6 floors. Only 2.5% of the buildings had more than 18 floors. Some high numbers could be an error in data recording. The url for the apartment located in a building with 63 floors is invalid; however, we checked the apartment located in the building with 57 floors using url and, surprisingly, the building does exist and is called Yu Jin Tai. Therefore, we only removed the trade with total floor of 63. 
+
 
 
 ### 3.1.4 Floor Range
 ```{r}
-ggplot(data2017, aes(x = floorRange)) + 
-  geom_bar(fill = "light blue") +
-  scale_x_discrete(limits = c("bottom", "low", "midium", "high", "top")) 
+summary_table <- data2017 %>% group_by(floorRange) %>%
+  summarise(total = n()) %>%
+  mutate(percent = round(100 * total / sum(total)))
+counts <- summary_table$percent
+names(counts) <- summary_table$floorRange
+print(counts)
+waffle(counts)
 ```
-Apartments located in the middle of a building were traded the most in 2017. 
+Apartments located in the middle of a building were traded the most in 2017. All the other floor range had roughly the same percentage. 
+
 
 
 ### 3.1.5 DOM
-## 
 The graph of number of days on market is unimodal and heavily skewed to the right. The mean number of days on market is around 51 and the median is 31 days. Approximately 2.5% of values are below 2. Approximately 2.5% of values are above 196. The longest day on market is 721. Whereas there are total of 474 houses have less or equal to 1 day on market until sold. A great portion of these houses are sold in March, which is the peak of house transaction in Beijing in 2017 as the previous 'month' variable section showed. And most of these houses are located in ChaoYang(7) district. According to the following 'district' variable section showed, ChaoYang indeed is the district that has the most transactions. The number of followers of these houses is between 0 to 9, which is not a great number. And nearly half of these houses have no followers. It shows that the number of followers is not necessarily indicating the "popularity" of the houses.
 
 ```{r}
@@ -704,6 +714,27 @@ XiCheng <-
 mean(XiCheng$price)
 quantile(XiCheng$price, c(0,0.025,0.25,0.5,0.75,0.975,1))
 ```
+
+
+### 3.2.9 Price vs Ladder Ratio and Floor Range
+```{r}
+ggplot(data2017, aes(x = totalFloor, y = price, color = floorRange)) + 
+  geom_point()+
+  labs(x = "total number of floors", title = "Price vs Total Floor and Floor Range")
+```
+
+The floor range did not make a huge influence on the price of the house. However, the price drops significantly to 50,000 Yuan or below if the total floor is above 30, with one exception, which is the property that has 63 floors. In general, the price per square meter is lower for properties located in buildings higher than 30 floors. 
+
+### 3.2.10 Price vs Followers
+We would expect the price to be lower if there were many followers on a property because people like to keep an eye on things that are cheaper. 
+
+```{r}
+ggplot(data2017, aes(x=followers, y=price))+ geom_point() + geom_smooth() +
+  labs(title = "Price vs Followers")
+```
+
+The above graph does show the negative trend between price and followers. As followers increase, the price of the perperty is lower, although this trend does not apply to houses with very few followers because many properties ranging from low price to high price had few followers. 
+
 
 
 
