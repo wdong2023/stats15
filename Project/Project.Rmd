@@ -675,11 +675,50 @@ The above graph does show the negative trend between price and followers. As fol
 
 ### 3.2.11 district vs. totalPrice
 
+totalPrice variable is strongly connected with the square and price per square variables. 
+
+
 ```{r}
 ggplot(data2017, aes(x=district,y=totalPrice))+
   geom_boxplot()+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
+
+*five year property issue*
+
+The first and second highest total prices houses sold in 2017 are all located in HaiDian. Surprisingly, these 2 have exactly same features except one is over 5 years and one is not. The one satisfies five years property feature was sold around 20% cheaper than the one doesn't.
+
+```{r}
+data2017 %>%
+  slice_max(totalPrice,n=2)
+
+(3087.2-2457.2)/3087.2
+
+# are these 2 houses from the same community?
+```
+
+```{r}
+#separate houses with/without 5yp see difference in price
+
+yes <- data2017 %>%
+  filter(fiveYearsProperty=="yes")
+no <- data2017 %>%
+  filter(fiveYearsProperty=="no")
+
+ggplot(data2017,aes(x=square,y=price))+
+  geom_col()+
+  facet_wrap(~fiveYearsProperty)
+
+```
+
+
+
+
+
+### 3.2.12 price vs. floor
+
+
+
 
 
 ### **Work Cited**
