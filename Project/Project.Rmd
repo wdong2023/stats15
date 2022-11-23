@@ -211,7 +211,7 @@ Apartments located in the middle of a building were traded the most in 2017. All
 
 
 ### 3.1.5 DOM
-The graph of number of days on market is unimodal and heavily skewed to the right. The mean number of days on market is around 51 and the median is 31 days. Approximately 2.5% of values are below 2. Approximately 2.5% of values are above 196. The longest day on market is 721. Whereas there are total of 474 houses have less or equal to 1 day on market until sold. A great portion of these houses are sold in March, which is the peak of house transaction in Beijing in 2017 as the previous 'month' variable section showed. And most of these houses are located in ChaoYang(7) district. According to the following 'district' variable section showed, ChaoYang indeed is the district that has the most transactions. The number of followers of these houses is between 0 to 9, which is not a great number. And nearly half of these houses have no followers. It shows that the number of followers is not necessarily indicating the "popularity" of the houses.
+The graph of number of days on market is unimodal and heavily skewed to the right. The mean number of days on market is around 51 and the median is 31 days. Approximately 2.5% of values are below 2. Approximately 2.5% of values are above 196. The longest day on market is 721. Whereas there are total of 474 houses have less or equal to 1 day on market until sold.
 
 ```{r}
 ggplot(data2017, aes(x=DOM))+
@@ -219,29 +219,16 @@ ggplot(data2017, aes(x=DOM))+
   xlab("DOM")+ylab("Count")+ggtitle("Active Days on Market Histogram")
 
 mean(data2017$DOM)
-median(data2017$DOM)
 quantile(data2017$DOM, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
 
 data2017 %>%
   filter(DOM<=1) %>%
   nrow()  # number of houses have less than 1 day on market
-
-data2017 %>%
-  filter(DOM<=1) %>%
-  count(month) # In which months are these houses sold
-
-data2017 %>%
-  filter(DOM<=1) %>%
-  count(district) # In which districts are these houses sold
-
-data2017 %>%
-  filter(DOM<=1) %>%
-  count(followers) # Do houses sold fast have many followers?
 ```
 
 ### 3.1.6 followers
 
-The graph of number of followers is unimodal and heavily skewed to the right. The mean and median number of followers is the same, which is around 49 people. Approximately 2.5% of values are below or equal to 0. Approximately 2.5% of values are above 216. However, the highest 2.5% are between 216 and 1143, which suggests that there are a few significantly popular houses. There are 5617 houses with 0 follower. There are also a total of 5 houses with more than 1000 followers. Among these houses with more than 1000 followers, there is 1 house has significant low total price compare with other houses. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
+The graph of number of followers is unimodal and heavily skewed to the right. The mean and median number of followers is the same, which is around 49 people. Approximately 2.5% of values are below or equal to 0. However, the highest 2.5% are between 228 and 1045, which suggests that there are a few significantly popular houses. There are 2021 houses with 0 follower and also a total of 5 houses with more than 1000 followers. Among houses with more than 1000 followers, 1 house has significant low total price compare with others. However, it also has relative small area and is located in the suburb, which makes this reasonable. 
 
 ```{r}
 ggplot(data2017, aes(x=followers))+
@@ -251,18 +238,16 @@ ggplot(data2017, aes(x=followers))+
 
 mean(data2017$followers)
 quantile(data2017$followers, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
+table(data2017$followers==0) # 2021 houses with 0 follower
 
 data2017 %>% filter(followers>1000)
 ```
 
 
 ### 3.1.7 totalPrice
-## problem: some districts do not have high or low 2.5% houses and are not shown on the tibbles. So the numbers do not match. Replace missing values with 0?
 
-The graph of total price is diamond-shaped, unimodal, and skews right. The average total price of a house in Beijing in 2017 is 526x10,000 yuan (around 750~810 thousands dollars depend on inflation) and the median is 460x10,000 yuan (around 660~710 thousands dollars). 
-Approximately 2.5% of values are below 215x10,000 yuan. Among these houses, ChangPing(6) has significantly higher amounts of these. ChangPing is the northern suburb of Beijing. And the second one is ChaoYang(7).
-Approximately  2.5% of values are above 1250x10,000 yuan. Among these houses, ChangPing(6) has none of these whereas ChaoYang(7) has significantly highest amounts of these. It seems like ChaoYang has houses with big ranges of prices. Even though XiCheng(10) and DongCheng(1) are the most central part of Beijing and close to each other, XiCheng has 85% more higher 2.5% percentile houses sold in 2017. XiCheng spans 32 square kilometers and DongCheng spans 40.6 square kilometers. DongCheng actually has larger area than XiCheng but XiCheng has more houses sold.
-
+The graph of total price is diamond-shaped, unimodal, and skews right. The average total price of a house in Beijing in 2017 is 456x10,000 yuan (around 650~760 thousands dollars depend on inflation) and the median is 418x10,000 yuan (around 600~640 thousands dollars). 
+Approximately 2.5% of values are below 220x10,000 yuan. Approximately  2.5% of values are above 1250x10,000 yuan. 
 
 ```{r}
 ggplot(data2017, aes(x=totalPrice))+
@@ -271,27 +256,6 @@ ggplot(data2017, aes(x=totalPrice))+
 
 mean(data2017$totalPrice)
 quantile(data2017$totalPrice, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
-
-# tried to compute percenatge of low&high 2.5% within each district to find out what affect DongCheng and XiCheng
-lower2_5 <- data2017 %>%
-  filter(totalPrice<=215) %>% 
-  group_by(district) %>% # number of lower 2.5% houses in each district
-  summarize(n()) #%>%
-  #pull()
-lower2_5
-
-higher2_5 <- data2017 %>% # number of higher 2.5% houses in each district
-  
-  group_by(district) %>%
-   filter(totalPrice>=1250) %>%
-  summarise(n())
-  #pull()
-higher2_5
-
-ggplot(data2017, aes(x=district,y=totalPrice))+
-  geom_boxplot()+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
-
 ```
 
 
@@ -341,7 +305,7 @@ data2017 <- data2017 %>%
 
 ### 3.1.10 bedRoom
 
-One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the US. Thus, we decided t ochange the variable name from 'livingRoom' to 'bedRoom'. 
+One thing need to be noticed is that in this dataset, the variable 'livingRoom' could be understand as 'bedroom' in the US. Thus, we decided to change the variable name from 'livingRoom' to 'bedRoom'. 
 The graph of number of bedrooms is unimodal, diamond-shaped, and skews right. Most of the houses have 2 bedrooms, and the mean and median number of bedrooms is also 2. Approximately 25% of values are below or equal to 1. Approximately  2.5% of values are above 3. (continued)
 
 ```{r}
@@ -351,19 +315,11 @@ ggplot(data2017, aes(x=bedRoom))+
 
 mean(data2017$bedRoom)
 quantile(data2017$bedRoom, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
-
-# 1 house with 0 bed room
-table(data2017$bedRoom)
-
-data2017 %>%
-  slice_max(bedRoom,n=1) 
-  
-data2017 %>%
-  slice_min(bedRoom,n=1)
 ```
 
-There is one house has 0 bedroom but sold in 145,612 yuan per square meter which almost reached the highest square per meter sold among all observations (150,000 yuan). Pulled out the link of this house, we found that it is located in XiCheng. According to Lianjia website, this house belongs to "RongFeng 2008" community. After a research on the community, we found out that this is the average price per square meter for this community. An investigation conducted by The Beijing News indicates that "RongFeng 2008" has a relative 10,000 yuan higher price per square meter compared with other communities in that area. But since the houses in this community have very small areas, the total price is still acceptable for most people who wanted to move to XiCheng. So this house is not an outlier.
-
+There is one house has 0 bedroom but sold in 145,612 yuan per square meter which almost reached the highest square per meter sold among all observations (150,000 yuan). It is located in XiCheng. According to Lianjia website, this house belongs to "RongFeng 2008" community. After a research on the community, we found out that this is the average price per square meter for this community. An investigation conducted by The Beijing News indicates that "RongFeng 2008" has a relative 10,000 yuan higher price per square meter compared with other communities in that area. But since the houses in this community have very small areas, the total price is still acceptable for most people who wanted to move to XiCheng. 
+Also, this house is labeled 0 bedroom but 1 livingroom, which might be a mistake. This house could be considered as a studio with total of 1 room. Thus, we decide to change it from "1 livingroom, 0 bedroom" to "1 bedroom, 0 livingroom".
+So this house is not an outlier.
 (https://www.sohu.com/a/479132582_114988)
 
 ```{r}
@@ -372,7 +328,7 @@ data %>%
 ```
 ### 3.1.11 livingRoom
 
-The number of living rooms for all houses is between 0 to 4. Most houses sold in 2017 have 0 to 2 living rooms and nearly 78% of houses sold in 2017 have 1 living room. Houses with 0 living room is the third greatest choice, and it is reasonable for a house to have no living room, especially in the city.
+The graph of number of livling rooms is unimodal and skews right. The mean and median number of living room is 1. Approximately 2.5% of values are above 2. The number of living rooms for all houses sold in 2017 is between 0 to 3. 87% have 1 livingroom. Houses with 0 living room is the second greatest choice, and it is reasonable for a house to have no living room, especially in the city.
 
 ```{r}
 ggplot(data2017, aes(x=livingRoom))+
@@ -382,10 +338,13 @@ ggplot(data2017, aes(x=livingRoom))+
   ggtitle("Number of Living Rooms Histogram")
 
 table(data2017$livingRoom)/length(data2017$livingRoom)
+
+mean(data2017$livingRoom)
+quantile(data2017$livingRoom, c(0,0.025,0.25,0.5,0.75,0.975,1))
 ```
 
 
-### 3.1.12 district 
+### 3.1.12 district (Categorical)
 
 ```{r}
 ggplot(data2017, aes(x=district))+
@@ -401,7 +360,6 @@ district_percentage <- data2017 %>%
   mutate(percentage=n*100/42004) %>% # what percentage of sold houses are in each district
   arrange(desc(n))
 district_percentage
-
 ```
 
 ### 3.1.13 kitchen
@@ -689,30 +647,9 @@ The lowest price in XiCheng is almost the half of the lowest price in DongCheng,
 DongCheng has 41.84 square km and XiCheng has 50.7 square km. XiCheng is indeed greater than DongCheng in areas and might have more houses on market, but it is not sufficient to explain XiCheng has 2 times more houses sold in 2017 than DongCheng.
 
 ```{r}
-
-  data2017 %>%
-  filter(district %in% c("DongCheng","XiCheng")) %>%
-  
-
-  
-```
-
-```{r}
-data2017 %>%
-  filter(district %in% c("DongCheng","XiCheng")) %>% 
-  count(district) # total number of houses sold in D and X
-
-DongCheng <-
-  data2017 %>%
-  filter(district=="DongCheng") 
-mean(DongCheng$price)
-quantile(DongCheng$price, c(0,0.025,0.25,0.5,0.75,0.975,1))
-
-XiCheng <-
-  data2017 %>%
-  filter(district=="XiCheng")
-mean(XiCheng$price)
-quantile(XiCheng$price, c(0,0.025,0.25,0.5,0.75,0.975,1))
+ggplot(data2017 , aes(x=square,y=price))+
+  geom_boxplot()+
+  facet_wrap(~district,nrow=2)
 ```
 
 
@@ -736,7 +673,13 @@ ggplot(data2017, aes(x=followers, y=price))+ geom_point() + geom_smooth() +
 The above graph does show the negative trend between price and followers. As followers increase, the price of the perperty is lower, although this trend does not apply to houses with very few followers because many properties ranging from low price to high price had few followers. 
 
 
+### 3.2.11 district vs. totalPrice
 
+```{r}
+ggplot(data2017, aes(x=district,y=totalPrice))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+```
 
 
 ### **Work Cited**
