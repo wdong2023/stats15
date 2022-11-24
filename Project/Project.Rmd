@@ -675,7 +675,8 @@ The above graph does show the negative trend between price and followers. As fol
 
 ### 3.2.11 district vs. totalPrice
 
-totalPrice variable is strongly connected with the square and price per square variables. 
+Haidian has the top 2 highest total prices. 
+FangShan has the smallest range of total prices.
 
 
 ```{r}
@@ -684,9 +685,11 @@ ggplot(data2017, aes(x=district,y=totalPrice))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
 
+
+
 *five year property issue*
 
-The first and second highest total prices houses sold in 2017 are all located in HaiDian. Surprisingly, these 2 have exactly same features except one is over 5 years and one is not. The one satisfies five years property feature was sold around 20% cheaper than the one doesn't.
+The first and second highest total prices houses sold in 2017 are all located in HaiDian. Surprisingly, these 2 have exactly same features except one is over 5 years and one is not. The one satisfies five years property feature was sold around 20% cheaper than the one doesn't. These 2 houses are indeed from the same community and the deal time is only 1 month difference. 
 
 ```{r}
 data2017 %>%
@@ -697,26 +700,31 @@ data2017 %>%
 # are these 2 houses from the same community?
 ```
 
+
+
+### 3.2.12 month vs. price
+
+The total price over month seems to be proportional to the amount of house deals over month that March is the peak, followed by February and January, where May is the bottom.
+
 ```{r}
-#separate houses with/without 5yp see difference in price
-
-yes <- data2017 %>%
-  filter(fiveYearsProperty=="yes")
-no <- data2017 %>%
-  filter(fiveYearsProperty=="no")
-
-ggplot(data2017,aes(x=square,y=price))+
-  geom_col()+
-  facet_wrap(~fiveYearsProperty)
-
+ggplot(data2017,aes(x=month,y=totalPrice))+
+  geom_col(fill = "light blue") + 
+  scale_x_discrete(limits = month.name)
 ```
 
 
+### 3.2.13 price (totalPrice) vs. floorRange
 
+The graph of floor range over price and floor range over total price have the same trend. As shown under the 3.1.4 Floor Range variable, Medium floor range is the most popular one and has the highest price per square meter/total price. 
 
+```{r}
+ggplot(data2017, aes(floorRange,y=price))+
+  geom_col(fill="lightblue") 
 
-### 3.2.12 price vs. floor
+ggplot(data2017, aes(floorRange,y=totalPrice))+
+  geom_col(fill="lightblue") 
 
+```
 
 
 
