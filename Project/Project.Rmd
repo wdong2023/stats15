@@ -346,6 +346,9 @@ quantile(data2017$livingRoom, c(0,0.025,0.25,0.5,0.75,0.975,1))
 
 ### 3.1.12 district (Categorical)
 
+ChaoYang as one of the core districts (yellow and red) has the most houses sold in 2017.
+FangShan and MenTouGou have significant small amounts of houses transactions where these 2 are suburb districts (purple) that have relative large areas shown on the map. In contrast, as another suburb district, ChangPing has the second greatest amounts of houses sold in 2017. 
+
 ```{r}
 ggplot(data2017, aes(x=district))+
   geom_bar(fill='lightblue', color='black') +
@@ -354,12 +357,7 @@ ggplot(data2017, aes(x=district))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
   ggtitle("District the House located Histogram") 
 
-district_percentage <- data2017 %>%
-  group_by(district) %>%
-  count(district) %>%
-  mutate(percentage=n*100/42004) %>% # what percentage of sold houses are in each district
-  arrange(desc(n))
-district_percentage
+table(data2017$district)/length(data2017$district) # percentage of houses sold in each district
 ```
 
 ### 3.1.13 kitchen
@@ -518,16 +516,19 @@ ggplot(data2017, aes(x = subway)) +
 ### 3.2.1 DOM vs. followers
 
 *Do houses sold fast have many followers?*
-Among these 188 houses that were sold within 1 day, 140 have no follower and the maximum number of followers is 25, which is not a significant number of followers. But in general as shown on the graph, the graph is unimodal, diamond-shaped, and heavily skew right. Which indicates that the number of followers is decreasing as the number of days on market increase.
+Among these 188 houses that were sold within 1 day, 140 have no follower and the maximum number of followers is 25, which is not a significant number of followers. 
 
 ```{r}
-table(data2017$DOM<=1) # number of 0 or 1 Days in market
+table(data2017$DOM<=1) # houses are 0 or 1 Days on market
 data2017 %>%
   filter(DOM<=1) %>%
   count(followers) # Do houses sold fast have many followers?
 
 ggplot(data2017, aes(x=DOM,y=followers))+ # overall number of followers vs. DOM
-  geom_col(fill="lightblue")
+  geom_point(alpha=.1)+
+  geom_smooth()+
+  xlim(0,200)
+  #geom_col(fill="lightblue")
 ```
 
 
@@ -572,44 +573,43 @@ ggplot(data2017, aes(x = renovationCondition)) +
 
 ### 3.2.6 district vs. square
 
-*Districts that have most large & small houses sold*
+As indicated under the 'square' variable, the top 2.5% of houses sold have area over 149.97 square meters. Let's define them as "large houses". The bottom 2.5% of houses sold have less than 38.63 square meters. Let's define them as "small houses". 
 
-(ChaoYang(7) has significantly highest amount of these. But one surprising observation is that ChangPing(6) has the second highest amounts of houses in the higher 2.5%. ChangPing indeed has a relative large area compared with other districts in Beijing but it is relative far from the core area of the city. Thus, it is reasonable to have great proportion of houses sold with large square meters with lower than average square meters price.)
-
-As indicated under the 'square' variable, the top 2.5% of houses sold have area over 150 square meters. Let's define them as "large houses". Then ChaoYang has the significantly highest amounts of large houses. ChangPing has the second highest amounts.
-The bottom 2.5% of houses sold have less than 37 square meters. Let's define them as "small houses". Surprisingly, ChangPing also has the greatest amounts of small houses sold in 2017. And then second one is ChaoYang. 
-Is this just because these 2 districts have the most houses sold?
-Let's compare the total amounts of houses sold in ChaoYang and ChangPing.
-Let's then compare the total areas of ChaoYang and ChangPing.
-
+*Districts with most large and small houses*
+ChangPing has the significant highest amounts of large houses sold and ChaoYang has the significant highest amounts of small houses sold. The distribution of large and small houses in ShunYi and Haidian are even.
 ```{r}
-data2017 %>%
-  filter(square>=150) %>% # number of large houses in each district 
-  count(district) %>%
-  arrange(desc(n))
+large <- data2017 %>%
+  filter(square>=149.97) %>% # number of large houses in each district 
+  count(district)
+small <- data2017 %>%
+  filter(square<=38.63) %>% # number of small houses in each district
+  count(district) 
+full1 <- small %>%
+  full_join(large,by="district",suffix = c("_small","_large"))
+pivot <- full1 %>%
+  pivot_longer(col=c("n_large","n_small"))
 
-data2017 %>%
-  filter(square<=38.6) %>% # number of small houses in each district
-  count(district) %>%
-  arrange(desc(n))
-  
-
-# large houses / total houses sold in a district
-
+ggplot(pivot,aes(x=district,y=value,fill=name))+
+  geom_col()+
+  facet_wrap(~name)+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
 
-
+*Proportion of large and small houses within each district*
+The majority of houses for all districts are middle sized. ChangPing has the highest proportion of large houses followed by ShunYi which has relative even distributions of small and large houses. These 2 are suburb districts with large areas on the map. HaiDian is another district that has relative evenly distributed large and small houses. All core districts all have more small houses than large. FangShan has no small house and only 1 large house, but overall it has the least amounts of house transactions. 
 ```{r}
-
-#/table(data2017$district)
-
-
-
+middle <- data2017 %>%
+  filter(square>=38.63 & square<=149.97) %>%
+  count(district)
+full2 <- full1 %>%
+  full_join(middle,by="district")
+pivot2 <- full2 %>%
+  pivot_longer(col=c("n_large","n_small","n")) %>%
+  replace(is.na(.), 0)
+ggplot(pivot2,aes(x=district,y=value,fill=name))+
+  geom_col(position="fill")+ # stacked proportion barplot
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
-
-
-
-
 
 ### 3.2.6 elevator vs. building structure
 
@@ -702,9 +702,9 @@ data2017 %>%
 
 
 
-### 3.2.12 month vs. price
+### 3.2.12 month (Categorical) vs. price
 
-The total price over month seems to be proportional to the amount of house deals over month that March is the peak, followed by February and January, where May is the bottom.
+The total price over month seems to be proportional to the amount of house deals over month that March is the peak, followed by February and January, and May is the bottom.
 
 ```{r}
 ggplot(data2017,aes(x=month,y=totalPrice))+
@@ -713,7 +713,7 @@ ggplot(data2017,aes(x=month,y=totalPrice))+
 ```
 
 
-### 3.2.13 price (totalPrice) vs. floorRange
+### 3.2.13 price/totalPrice vs. floorRange
 
 The graph of floor range over price and floor range over total price have the same trend. As shown under the 3.1.4 Floor Range variable, Medium floor range is the most popular one and has the highest price per square meter/total price. 
 
@@ -723,7 +723,6 @@ ggplot(data2017, aes(floorRange,y=price))+
 
 ggplot(data2017, aes(floorRange,y=totalPrice))+
   geom_col(fill="lightblue") 
-
 ```
 
 
