@@ -26,7 +26,7 @@ As one of the biggest cities in China, Beijing currently houses a population of 
 ### **Explanatory Variables**
 
 1. ***DOM***: (*numerical*) The active days on market. The number of days since the property is posted until it is sold and removed from the website. 
-2. ***followers***: (*numerical*) The number of people who follow the transaction by bookmarking the property to revisit later on. This indicates the popularity of a property compared to the other listings.
+2. ***followers***: (*numerical*) The number of people who follow the transaction by bookmarking the property to revisit later on. This indicates the popularity of a property compared to the other listings. Once the transaction is completed, users can not follow it anymore. It is counted from the property is listed until the transaction is completed.
 3. ***livingRoom***: (*numerical*) The number of bedrooms.
 4. ***drawingRoom***: (*numerical*) The number of living rooms.
 5. ***kitchen***: (*numerical*) The number of kitchens.
@@ -233,8 +233,7 @@ The graph of number of followers is unimodal and heavily skewed to the right. Th
 ```{r}
 ggplot(data2017, aes(x=followers))+
   geom_histogram(fill='lightblue', color='black') +
-  xlab("followers")+ylab("Count")+
-  ggtitle("followers Histogram")
+  xlab("followers")+ylab("Count")+ggtitle("followers Histogram")
 
 mean(data2017$followers)
 quantile(data2017$followers, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
@@ -333,9 +332,7 @@ The graph of number of livling rooms is unimodal and skews right. The mean and m
 ```{r}
 ggplot(data2017, aes(x=livingRoom))+
   geom_bar(fill='lightblue', color='black') + # use geom_bar() instead of geom_histogram()
-  xlab("livingRoom")+
-  ylab("Count")+
-  ggtitle("Number of Living Rooms Histogram")
+  xlab("livingRoom")+ylab("Count")+ggtitle("Number of Living Rooms Histogram")
 
 table(data2017$livingRoom)/length(data2017$livingRoom)
 
@@ -352,9 +349,7 @@ FangShan and MenTouGou have significant small amounts of houses transactions whe
 ```{r}
 ggplot(data2017, aes(x=district))+
   geom_bar(fill='lightblue', color='black') +
-  xlab("district")+
-  ylab("Count")+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
+  xlab("district")+ylab("Count")+theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
   ggtitle("District the House located Histogram") 
 
 table(data2017$district)/length(data2017$district) # percentage of houses sold in each district
@@ -379,9 +374,7 @@ The distribution for the number of kitchens shows that most listings have only o
 ``` {r}
 ggplot(data2017, aes(x = kitchen)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Kitchen Summary") +
-  xlab("Number of Kitchens") +
-  ylab("Count")
+  ggtitle("Kitchen Summary") +xlab("Number of Kitchens") +ylab("Count")
 ```
 
 ### 3.1.14 bathroom
@@ -391,9 +384,7 @@ The distribution for the number of bathrooms shows that most listings have only 
 ``` {r}
 ggplot(data2017, aes(x = bathRoom)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Bathroom Summary") +
-  xlab("Number of Bathrooms") +
-  ylab("Count")
+  ggtitle("Bathroom Summary") +xlab("Number of Bathrooms") +ylab("Count")
 ```
 
 ### 3.1.15 construction time
@@ -414,9 +405,7 @@ The distribution skews to the left as the median of the year 2002 and mean of th
 ``` {r}
 ggplot(data2017, aes(x = constructionTime)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Time of Construction Summary") +
-  xlab("Time of Construction") +
-  ylab("Count")
+  ggtitle("Time of Construction Summary") +xlab("Time of Construction") +ylab("Count")
 ```
 
 ### 3.1.16 renovation condition
@@ -428,9 +417,7 @@ The distribution for the condition of renovation shows that most listings have t
 ``` {r}
 ggplot(data2017, aes(x = renovationCondition)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Condition of Renovation Summary") +
-  xlab("Condition of Renovation") +
-  ylab("Count")
+  ggtitle("Condition of Renovation Summary") +xlab("Condition of Renovation") +ylab("Count")
 ```
 
 ### 3.1.17 building structure
@@ -440,9 +427,7 @@ The distribution for the building structure shows that most listings are made of
 ``` {r}
 ggplot(data2017, aes(x = buildingStructure)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Structure of Building Summary") +
-  xlab("Structure of Building") +
-  ylab("Count")
+  ggtitle("Structure of Building Summary") +xlab("Structure of Building") +ylab("Count")
 ```
 
 ### 3.1.18 ladder ratio
@@ -468,9 +453,7 @@ The distribution for the ladder ratio shows that most listings have 2 residents 
 ``` {r}
 ggplot(data2017, aes(x = ladderRatio)) +
   geom_bar(fill = "lightblue", width = 0.05) +
-  ggtitle("Ladder Ratio Summary") +
-  xlab("Ladder Ratio") +
-  ylab("Count")
+  ggtitle("Ladder Ratio Summary") +xlab("Ladder Ratio") +ylab("Count")
 ```
 
 ### 3.1.19 elevator
@@ -480,9 +463,7 @@ The distribution for the presence of an elevator shows that it is more common fo
 ``` {r}
 ggplot(data2017, aes(x = elevator)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Availability of Elevator") +
-  xlab("Elevator") +
-  ylab("Count")
+  ggtitle("Availability of Elevator") +xlab("Elevator") +ylab("Count")
 ```
 
 ### 3.1.20 five years property
@@ -492,9 +473,7 @@ The distribution for whether the previous has stayed in the listing for less tha
 ``` {r}
 ggplot(data2017, aes(x = fiveYearsProperty)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Five Years Property Summary") +
-  xlab("Five Years Property") +
-  ylab("Count")
+  ggtitle("Five Years Property Summary") +xlab("Five Years Property") +ylab("Count")
 ```
 
 ### 3.1.21 subway
@@ -504,9 +483,7 @@ The distribution for the presence of any nearby subways shows that it is more co
 ``` {r}
 ggplot(data2017, aes(x = subway)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Subway Summary") +
-  xlab("Availability of Nearby Subways") +
-  ylab("Count")
+  ggtitle("Subway Summary") +xlab("Availability of Nearby Subways") +ylab("Count")
 ```
 
 
@@ -551,9 +528,7 @@ From the distribution of time of construction by district, we see that most of t
 ``` {r}
 ggplot(data2017, aes(x = constructionTime)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Distribution of Time of Construction by District") +
-  xlab("Time of Construction") +
-  ylab("Count") +
+  ggtitle("Distribution of Time of Construction by District") +xlab("Time of Construction") +ylab("Count") +
   facet_wrap(~ district)
 ```
 
@@ -564,9 +539,7 @@ From the distribution of renovation condition by district, we see that the highe
 ``` {r}
 ggplot(data2017, aes(x = renovationCondition)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Distribution of Renovation Condition by District") +
-  xlab("Renovation Condition") +
-  ylab("Count") +
+  ggtitle("Distribution of Renovation Condition by District") +xlab("Renovation Condition") +ylab("Count") +
   facet_wrap(~ district)
 ```
 
@@ -578,6 +551,7 @@ As indicated under the 'square' variable, the top 2.5% of houses sold have area 
 *Districts with most large and small houses*
 ChangPing has the significant highest amounts of large houses sold and ChaoYang has the significant highest amounts of small houses sold. The distribution of large and small houses in ShunYi and Haidian are even.
 ```{r}
+library(tidyverse)
 large <- data2017 %>%
   filter(square>=149.97) %>% # number of large houses in each district 
   count(district)
@@ -619,8 +593,7 @@ From the distribution of presence of elevator by building structure, we see that
 ggplot(data2017, aes(x = elevator, fill = elevator)) +
   geom_bar(colour = "black") +
   ggtitle("Distribution of Elevator by Building Structure") +
-  xlab("Building Structure") +
-  ylab("Count") +
+  xlab("Building Structure") +ylab("Count") +
   facet_wrap(~ buildingStructure)
 ```
 
@@ -632,8 +605,7 @@ From the distribution of five years property by district, we see that the distri
 ggplot(data2017, aes(x = fiveYearsProperty, fill = fiveYearsProperty)) +
   geom_bar(colour = "black") +
   ggtitle("Distribution of Five Years Property by District") +
-  xlab("Five Years Property") +
-  ylab("Count") +
+  xlab("Five Years Property") +ylab("Count") +
   facet_wrap(~ district)
 ```
 
@@ -720,7 +692,6 @@ The graph of floor range over price and floor range over total price have the sa
 ```{r}
 ggplot(data2017, aes(floorRange,y=price))+
   geom_col(fill="lightblue") 
-
 ggplot(data2017, aes(floorRange,y=totalPrice))+
   geom_col(fill="lightblue") 
 ```
