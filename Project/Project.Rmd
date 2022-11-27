@@ -356,10 +356,12 @@ ggplot(data2017, aes(x=district))+
 
 table(data2017$district)/length(data2017$district) # percentage of houses sold in each district
 ```
+
 #### Percentage of houses sold in core districts or suburb
 Both suburb and core districts contain 6 districts. Though suburb have much larger areas shown on the map, 34.4% of houses sold are located in the suburb where core districts have houses sold that made up 65.6% of the market.
 
 ```{r}
+# !!! use graph here
 core_district <- data2017 %>%
   filter(district %in% c("XiCheng" , "DongCheng" , "ChaoYang" , "HaiDian" , "ShiJingShan" , "FengTai")) %>% nrow()
 core_district/length(data2017$district)
@@ -371,6 +373,15 @@ suburb/length(data2017$district)
 
 
 ### 3.1.13 kitchen
+
+The distribution for the number of kitchens shows that most listings have only one kitchen in their property. However, having no kitchen is evidently more common than having 2 kitchens in a property.
+
+``` {r}
+ggplot(data2017, aes(x = kitchen)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Kitchen Summary") +xlab("Number of Kitchens") +ylab("Count")
+```
+
 
 ```{r}
 data2017 %>% 
@@ -384,13 +395,6 @@ data2017 <- data2017 %>%
   filter(kitchen < 3)
 ```
 
-The distribution for the number of kitchens shows that most listings have only one kitchen in their property. However, having no kitchen is evidently more common than having 2 kitchens in a property.
-
-``` {r}
-ggplot(data2017, aes(x = kitchen)) +
-  geom_bar(fill = "lightblue") +
-  ggtitle("Kitchen Summary") +xlab("Number of Kitchens") +ylab("Count")
-```
 
 ### 3.1.14 bathroom
 
@@ -427,7 +431,7 @@ ggplot(data2017, aes(x = constructionTime)) +
 
 The condition of renovation 
 
-The distribution for the condition of renovation shows that most listings have the highest score of 4 in terms of the condition of renovation for their listing. This distribution skews heavily to the left.
+The distribution for the condition of renovation shows that most listings have the highest score of 4 in terms of the condition of renovation for their listing. 
 
 ``` {r}
 ggplot(data2017, aes(x = renovationCondition)) +
@@ -437,7 +441,7 @@ ggplot(data2017, aes(x = renovationCondition)) +
 
 ### 3.1.17 building structure
 
-The distribution for the building structure shows that most listings are made of steel-concrete composite. This distribution skews heavily to the left.
+The distribution for the building structure shows that most listings are made of steel-concrete composite. 
 
 ``` {r}
 ggplot(data2017, aes(x = buildingStructure)) +
@@ -695,6 +699,17 @@ The total price over month seems to be proportional to the amount of house deals
 ggplot(data2017,aes(x=month,y=totalPrice))+
   geom_col(fill = "light blue") + 
   scale_x_discrete(limits = month.name)
+
+# I don't know what you are trying to show here, but if you graph the average price vs month (code below), you will see that the house price does not vary depend on month. In other words, month does not have a relationship with price, which is what we want to know from this section. 
+
+data2017%>%
+  group_by(month) %>%
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=month, y=avg_price)) + geom_col(fill="light blue")
+
+
+ 
+
 ```
 
 
@@ -703,6 +718,7 @@ ggplot(data2017,aes(x=month,y=totalPrice))+
 The graph of floor range over price and floor range over total price have the same trend. As shown under the 3.1.4 Floor Range variable, Medium floor range is the most popular one and has the highest price per square meter/total price. There is no significant difference between other fllor ranges.
 
 ```{r}
+# please change this section as well, same thing as month
 ggplot(data2017, aes(floorRange,y=price))+
   geom_col(fill="lightblue") 
 ggplot(data2017, aes(floorRange,y=totalPrice))+
