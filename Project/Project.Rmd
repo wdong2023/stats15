@@ -725,6 +725,10 @@ ggplot(data2017, aes(floorRange,y=totalPrice))+
   geom_col(fill="lightblue") 
 ```
 
+### 3.2.14 Price vs subway vs district
+
+
+
 ### **Work Cited**
 #some online resources that I think might be helpful 
 1. It mentions the price drop on beijing houses in 2017 because of some regulations
