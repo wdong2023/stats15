@@ -526,7 +526,7 @@ There is no doubt that the most essential factor that affects the price is the l
 price_district <- data2017 %>%
   group_by(district) %>%
   summarise(meanPriceDistrict=mean(price))
-ggplot(price_district_desc, aes(x=reorder(district, meanPriceDistrict), y=meanPriceDistrict))+
+ggplot(price_district, aes(x=reorder(district, meanPriceDistrict), y=meanPriceDistrict))+
   geom_col(fill="lightblue") +
   ggtitle("Mean Price vs. District") +ylab("price")+xlab("")+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
@@ -542,6 +542,13 @@ ggplot(data2017, aes(x=district,y=price))+
 
 
 ### 3.2.3 price vs. construction time
+
+Let's divide construction time into 10 years interval. 
+
+```{r}
+
+
+```
 
 
 ### 3.2.4 construction time vs. district
@@ -704,7 +711,7 @@ data2017 %>%
 
 
 
-### 3.2.12 month (Categorical) vs. price
+### 3.2.12 price vs. month (Categorical
 
 Overall, there is no huge differences on mean price per square on each month. The distribution skews right and it is bimodal that has peaks on March and July. As shown under the month variable section that March has the most transactions, the price is also at the peak on March. February and April have relative higher price. After March, the price starts to decrease until July it reaches the second peak. And then the price keeps decreasing and reaches the bottom on December.
 
@@ -756,6 +763,18 @@ data2017 %>%
 ```
 
 
+### 3.2.15 Price vs. Renovation vs. district
+
+For most districts, rough condition has the lowest mean price, except for ChaoYang, HaiDian, and TongZhou. But unexpectedly, hardcover condition houses does not always have the highest price, this might also due to other factors of the property such as subway, etc. 
+
+```{r}
+meanRenov <- data2017 %>%
+  group_by(renovationCondition, district) %>%
+  summarise(meanRenovPrice=mean(price))
+ggplot(meanRenov, aes(x=district, y=meanRenovPrice, fill=renovationCondition))+
+  geom_col(stat = "identity", position = position_dodge(), alpha = 0.75)+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+```
 
 
 ### **Work Cited**
