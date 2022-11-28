@@ -631,6 +631,29 @@ ggplot(data2017, aes(x = fiveYearsProperty, fill = fiveYearsProperty)) +
 ```
 
 
+### 3.2.8 price vs. subway
+
+Subway is one of the most important transportation in Beijing. Near subway or not also shows if the property is located in a busy area.
+
+```{r}
+meanSubway <- data2017 %>%
+  group_by(subway) %>%
+  summarise(meanSubwayPrice=mean(price))
+ggplot(meanSubway, aes(x=subway, y=meanSubwayPrice))+
+  geom_col(fill="lightblue")
+```
+*Is this affected by district?*
+Consider of the fact that core districts might have more houses near subway whereas other districts might have less, the price might be affected by the factor of district. Let's see how a house is near subway or not will affect the price within each district. The conclusion is still that for most districts mean price is higher if the house is near subway. FangShan is an exception that houses near subway actually have lower mean price. Another thing need to be noticed is that MenTouGou does not have houses near subway. 
+
+```{r}
+meanSubwayDistrict <- data2017 %>%
+  group_by(subway,district) %>%
+  summarise(meanSubwayDistrictPrice=mean(price))
+ggplot(meanSubwayDistrict, aes(x=subway, y=meanSubwayDistrictPrice))+
+  geom_col(fill="lightblue")+
+  facet_wrap(~district)
+```
+
 
 
 
