@@ -92,7 +92,7 @@ data2017 <- data2017 %>%
   mutate(totalFloor = as.numeric(str_extract(floor, "(\\d)+")), 
          floorRange = case_when(str_detect(floor, "顶") ~ "top", 
                                 str_detect(floor, "高") ~ "high", 
-                                str_detect(floor, "中") ~ "midium",
+                                str_detect(floor, "中") ~ "medium",
                                 str_detect(floor, "低") ~ "low",
                                 str_detect(floor, "底") ~ "bottom"))
 
@@ -198,6 +198,8 @@ The distribution of total floor is unimodel and skewed to the right. The median 
 
 ### 3.1.4 Floor Range
 ```{r}
+data2017$floorRange <- factor(data2017$floorRange,
+                  levels = c("bottom", "low", "medium", "high", "top"))
 summary_table <- data2017 %>% group_by(floorRange) %>%
   summarise(total = n()) %>%
   mutate(percent = round(100 * total / sum(total)))
@@ -310,7 +312,7 @@ The graph of number of bedrooms is unimodal and skews right. Most of the houses 
 ```{r}
 ggplot(data2017, aes(x=bedRoom))+
   geom_bar(fill='lightblue', color='black') + 
-  xlab("bedRoom")+ylab("Count")+ggtitle("Number of bedroom Histogram")
+  xlab("bedRoom")+ylab("Count")+ggtitle("Number of bedroom Barplot")
 
 mean(data2017$bedRoom)
 quantile(data2017$bedRoom, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
@@ -705,17 +707,41 @@ ggplot(monthPrice,aes(x=month,y=meanPrice))+
 
 ### 3.2.13 price vs. floorRange
 
-There is no huge differences on mean price per square on each floor range. As shown under the 3.1.4 Floor Range variable, Medium floor range is the most popular one. Medium and bottom floor ranges seem to have relative higher price whereas top floor range has the lowest.
+There is a slight decreasing trend. The higher the property is located, the lower the average price is. Medium and bottom floor ranges seem to have relative higher price whereas top floor range has the lowest.
 
 ```{r}
-floor <-data2017 %>% 
+data2017 %>% 
   group_by(floorRange) %>%
-  summarise(meanPrice2=mean(price))
-ggplot(floor, aes(x=floorRange, y=meanPrice2))+
+  summarise(meanPrice2=mean(price))%>%
+  ggplot(aes(x=floorRange, y=meanPrice2))+
   geom_col(fill="lightblue") 
 ```
 
+```{r}
+bottom_price <- data2017 %>%
+  filter(floorRange== "bottom") %>%
+  select(price) %>% pull()
+top_price <- data2017 %>%
+  filter(floorRange== "top") %>%
+  select(price) %>% pull()
+t.test(bottom_price, top_price)
+```
+
+The result of t-test is consistent with the graph, showing that the average price of bottom properties is significantly different from average price of top houses. 
+
+
+
 ### 3.2.14 Price vs subway vs district
+```{r, warning=FALSE, message=FALSE}
+data2017 %>%
+  group_by(district, subway) %>%
+  summarise(average_price = mean(price)) %>%
+  ggplot(aes(x = district, y = average_price, fill = subway)) +
+  geom_col(stat = "identity", position = position_dodge(), alpha = 0.75)  +
+  labs(x = "Districts", y = "price", title = "Price vs District vs Subway") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+```
+
 
 
 
