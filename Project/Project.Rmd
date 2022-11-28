@@ -693,11 +693,14 @@ data2017 %>%
 
 ### 3.2.12 month (Categorical) vs. price
 
-The total price over month seems to be proportional to the amount of house deals over month that March is the peak, followed by February and January, and May is the bottom.
+Overall, there is no huge differences on mean price per square on each month. The distribution skews right and it is bimodal that has peaks on March and July. As shown under the month variable section that March has the most transactions, the price is also at the peak on March. February and April have relative higher price. After March, the price starts to decrease until July it reaches the second peak. And then the price keeps decreasing and reaches the bottom on December.
 
 ```{r}
-ggplot(data2017,aes(x=month,y=totalPrice))+
-  geom_col(fill = "light blue") + 
+monthPrice <- data2017 %>% 
+  group_by(month) %>%
+  summarise(meanPrice=mean(price))
+ggplot(monthPrice,aes(x=month,y=meanPrice))+
+  geom_col(fill = "lightblue")+ # geom_bar() not working?
   scale_x_discrete(limits = month.name)
 
 # I don't know what you are trying to show here, but if you graph the average price vs month (code below), you will see that the house price does not vary depend on month. In other words, month does not have a relationship with price, which is what we want to know from this section. 
@@ -713,15 +716,13 @@ data2017%>%
 ```
 
 
-### 3.2.13 price/totalPrice vs. floorRange
+### 3.2.13 price vs. floorRange
 
-The graph of floor range over price and floor range over total price have the same trend. As shown under the 3.1.4 Floor Range variable, Medium floor range is the most popular one and has the highest price per square meter/total price. There is no significant difference between other fllor ranges.
+As shown under the 3.1.4 Floor Range variable, Medium floor range is the most popular one and has the highest price per square meter/total price. There is no significant difference between other floor ranges.
 
 ```{r}
 # please change this section as well, same thing as month
 ggplot(data2017, aes(floorRange,y=price))+
-  geom_col(fill="lightblue") 
-ggplot(data2017, aes(floorRange,y=totalPrice))+
   geom_col(fill="lightblue") 
 ```
 
