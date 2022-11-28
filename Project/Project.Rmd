@@ -685,8 +685,6 @@ data2017 %>%
   slice_max(totalPrice,n=2)
 
 (3087.2-2457.2)/3087.2
-
-# are these 2 houses from the same community?
 ```
 
 
@@ -700,29 +698,20 @@ monthPrice <- data2017 %>%
   group_by(month) %>%
   summarise(meanPrice=mean(price))
 ggplot(monthPrice,aes(x=month,y=meanPrice))+
-  geom_col(fill = "lightblue")+ # geom_bar() not working?
+  geom_col(fill = "lightblue")+
   scale_x_discrete(limits = month.name)
-
-# I don't know what you are trying to show here, but if you graph the average price vs month (code below), you will see that the house price does not vary depend on month. In other words, month does not have a relationship with price, which is what we want to know from this section. 
-
-data2017%>%
-  group_by(month) %>%
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=month, y=avg_price)) + geom_col(fill="light blue")
-
-
- 
-
 ```
 
 
 ### 3.2.13 price vs. floorRange
 
-As shown under the 3.1.4 Floor Range variable, Medium floor range is the most popular one and has the highest price per square meter/total price. There is no significant difference between other floor ranges.
+There is no huge differences on mean price per square on each floor range. As shown under the 3.1.4 Floor Range variable, Medium floor range is the most popular one. Medium and bottom floor ranges seem to have relative higher price whereas top floor range has the lowest.
 
 ```{r}
-# please change this section as well, same thing as month
-ggplot(data2017, aes(floorRange,y=price))+
+floor <-data2017 %>% 
+  group_by(floorRange) %>%
+  summarise(meanPrice2=mean(price))
+ggplot(floor, aes(x=floorRange, y=meanPrice2))+
   geom_col(fill="lightblue") 
 ```
 
