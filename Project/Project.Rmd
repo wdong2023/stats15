@@ -271,18 +271,6 @@ ggplot(data2017, aes(x=price))+
 
 mean(data2017$price)
 quantile(data2017$price, c(0, 0.025, 0.25, 0.5, 0.75, 0.975, 1))
-
-data2017 %>%
-  filter(price<=1000) 
-
-data2017 <- data2017 %>% 
-  filter(price>1000)
-
-summary(data2017$price)
-
-ggplot(data2017, aes(x=district,y=price))+
-  geom_boxplot()+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
 
 
@@ -530,13 +518,27 @@ ggplot(data2017, aes(x=DOM,y=followers))+ # overall number of followers vs. DOM
 ```
 
 
-### 3.2.2
+### 3.2.2 price vs. district
+
+There is no doubt that the most essential factor that affects the price is the location of the property. XiCheng has the highest price which is above 105,000 yuan and DongCheng is the next, they are the most center districts of the city (Yellow). And then followed by other core districts (Red) HaiDian, ChaoYang, FengTai, and ShiJingShan. TongZhou has the highest price among other suburb districts, and then DaXing, ChangPing, MenTouGou, and ShunYi. Lastly, FangShan has the lowest price which is around 30,000 yuan. The highest price is more than 3 times higher than the lowest price. And the distribution of price is strictly following the location of the district that center districts have the highest prices, and then core districts, and lastly the suburb districts.
 
 ```{r}
-
-
+price_district <- data2017 %>%
+  group_by(district) %>%
+  summarise(meanPriceDistrict=mean(price))
+ggplot(price_district_desc, aes(x=reorder(district, meanPriceDistrict), y=meanPriceDistrict))+
+  geom_col(fill="lightblue") +
+  ggtitle("Mean Price vs. District") +ylab("price")+xlab("")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
 
+XiCheng still has the highest median price that is above 100,000 yuan and the second one is DongCheng which is around 100,000 yuan. FangShan still got the lowest median price which is around 30,000 yuan. The distribution of median prices is the same as the distribution of mean price. It seems like both HaiDian and ChaoYang have big range of house price. But HaiDian has overall higher prices than ChaoYang.
+
+```{r}
+ggplot(data2017, aes(x=district,y=price))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+```
 
 
 ### 3.2.3 price vs. construction time
@@ -631,19 +633,30 @@ ggplot(data2017, aes(x = fiveYearsProperty, fill = fiveYearsProperty)) +
 ```
 
 
-### 3.2.8 district vs. price
+### 3.2.8 price vs. subway
 
-#### 3.2.8.1 DongCheng vs. XiCheng (Yellow areas)
-
-*DongCheng and XiCheng are the most center of Beijing. What affects the difference of DongCheng and XiCheng in house prices?*
-The lowest price in XiCheng is almost the half of the lowest price in DongCheng, but starting from the 2.5%, the price in XiCheng jumps around 53,000 yuan more and becomes higher than DongCheng in every interval. But when comes to the highest prices, they are almost the same. This shows us that XiCheng has a wider range of house prices than DongCheng. 
-DongCheng has 41.84 square km and XiCheng has 50.7 square km. XiCheng is indeed greater than DongCheng in areas and might have more houses on market, but it is not sufficient to explain XiCheng has 2 times more houses sold in 2017 than DongCheng.
+Subway is one of the most important transportation in Beijing. Near subway or not also shows if the property is located in a busy area.
 
 ```{r}
-ggplot(data2017 , aes(x=square,y=price))+
-  geom_boxplot()+
-  facet_wrap(~district,nrow=2)
+meanSubway <- data2017 %>%
+  group_by(subway) %>%
+  summarise(meanSubwayPrice=mean(price))
+ggplot(meanSubway, aes(x=subway, y=meanSubwayPrice))+
+  geom_col(fill="lightblue")
 ```
+*Is this affected by district?*
+Consider of the fact that core districts might have more houses near subway whereas other districts might have less, the price might be affected by the factor of district. Let's see how a house is near subway or not will affect the price within each district. The conclusion is still that for most districts mean price is higher if the house is near subway. FangShan is an exception that houses near subway actually have lower mean price. Another thing need to be noticed is that MenTouGou does not have houses near subway. 
+
+```{r}
+meanSubwayDistrict <- data2017 %>%
+  group_by(subway,district) %>%
+  summarise(meanSubwayDistrictPrice=mean(price))
+ggplot(meanSubwayDistrict, aes(x=subway, y=meanSubwayDistrictPrice))+
+  geom_col(fill="lightblue")+
+  facet_wrap(~district)
+```
+
+
 
 
 ### 3.2.9 Price vs Ladder Ratio and Floor Range
