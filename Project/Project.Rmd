@@ -777,6 +777,49 @@ ggplot(meanRenov, aes(x=district, y=meanRenovPrice, fill=renovationCondition))+
 ```
 
 
+### 3.2.16 price vs. kitchen
+
+Houses with more kitchens actually have lower mean prices. But this might due to the reason that district played a key factor on the price. Let's compare how the number of kitchens affect price within each district.
+
+```{r}
+meanKitchen <- data2017 %>%
+  group_by(kitchen) %>%
+  summarise(meanKitchenPrice=mean(price))
+ggplot(meanKitchen, aes(x=kitchen, y=meanKitchenPrice))+
+  geom_col(fill="lightblue")
+```
+
+In HaiDian, different numbers of kitchens seem to have significant effects on the price and more kitchens indicates lower price. Just like what we have seen under the district variable that HaiDian has the largest range of house price. Other suburb districts such as ChangPing, FangShan, ShunYi, and TongZhou also have the same trend. This could due to the reason that less kitchen indicates the house is located in the center area of this specific district and thus has a higher price compared with other houses. 
+
+```{r}
+meanKitchenDistrict <- data2017 %>%
+  group_by(kitchen,district) %>%
+  summarise(meanKitchenDistrictPrice=mean(price))
+ggplot(meanKitchenDistrict, aes(x=kitchen, y=meanKitchenDistrictPrice))+
+  facet_wrap(~district)+
+  geom_col(fill="lightblue")
+```
+
+### 3.2.17 price vs. bedRoom
+
+```{r}
+meanBed <- data2017 %>%
+  group_by(bedRoom) %>%
+  summarise(meanBedPrice=mean(price))
+ggplot(meanBed, aes(x=bedRoom, y=meanBedPrice))+
+  geom_col(fill="lightblue")
+```
+
+```{r}
+meanBedDistrict <- data2017 %>%
+  group_by(bedRoom,district) %>%
+  summarise(meanBedDistrictPrice=mean(price))
+ggplot(meanBedDistrict, aes(x=bedRoom, y=meanBedDistrictPrice))+
+  facet_wrap(~district)+
+  geom_col(fill="lightblue")
+```
+
+
 ### **Work Cited**
 #some online resources that I think might be helpful 
 1. It mentions the price drop on beijing houses in 2017 because of some regulations
