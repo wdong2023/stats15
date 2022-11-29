@@ -801,6 +801,8 @@ ggplot(meanKitchenDistrict, aes(x=kitchen, y=meanKitchenDistrictPrice))+
 
 ### 3.2.17 price vs. bedRoom
 
+The more bedrooms also indicate the lower mean house price is. However, simply look at the mean price for all houses is not enough because district plays the key role. Let's compare how the number of bedrooms affect price within each district.
+
 ```{r}
 meanBed <- data2017 %>%
   group_by(bedRoom) %>%
@@ -809,6 +811,7 @@ ggplot(meanBed, aes(x=bedRoom, y=meanBedPrice))+
   geom_col(fill="lightblue")
 ```
 
+There is also a trend observed for some districts that the more bedrooms the lower price is. However, most graphs are actually bimodal. For example, in XiCheng, houses sold with 0 or 5 bedrooms are the two peaks of price. The most obivious example is FengTai that houses sold with 4 bedrooms have the significant high price caompared with others in that district. 
 ```{r}
 meanBedDistrict <- data2017 %>%
   group_by(bedRoom,district) %>%
@@ -870,6 +873,42 @@ From the distribution between price and construction time, we can see that the h
 ```{r}
 boxplot(price ~ constructionTime, data2017, main = "Distribution of Price and Construction Time", xlab = "Construction Time", ylab="Price", col = "light blue")
 ```
+
+
+### 3.2.22 price vs. living room
+
+The graph shows that the more living rooms are the lower price is. Houses sold with no living room have the highest mean price. As shown under the living room variable section, most houses have 1 living room. The price of houses with 1 living room is slightly lower, however, as the number of living rooms increase to 2, the mean price drops for nearly 20,000 yuan. Let's compare how the nu ber of living rooms affect house price within each district.
+
+```{r}
+meanLiving <- data2017 %>%
+  group_by(livingRoom) %>%
+  summarise(meanLivingPrice=mean(price))
+ggplot(meanLiving, aes(x=livingRoom, y=meanLivingPrice))+
+  geom_col(fill="lightblue")
+```
+
+For most district, houses with 0 or 1 living room still have relative higher price. Except for ChaoYang that houses with 4 living rooms have the highest mean price.
+```{r}
+meanLivingDistrict <- data2017 %>%
+  group_by(district,livingRoom) %>%
+  summarise(meanLivingDistrictPrice=mean(price))
+ggplot(meanLivingDistrict, aes(x=livingRoom, y=meanLivingDistrictPrice))+
+  facet_wrap(~district)+
+  geom_col(fill="lightblue")
+```
+
+
+### 3.2.23 price vs. bathrooms
+
+```{r}
+meanBath <- data2017 %>%
+  group_by(bathRoom) %>%
+  summarise(meanBathPrice=mean(price))
+ggplot(meanBath, aes(x=bathRoom, y=meanBathPrice))+
+  geom_col(fill="lightblue")
+```
+
+
 
 
 
