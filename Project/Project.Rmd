@@ -581,7 +581,6 @@ As indicated under the 'square' variable, the top 2.5% of houses sold have area 
 *Districts with most large and small houses*
 ChangPing has the significant highest amounts of large houses sold and ChaoYang has the significant highest amounts of small houses sold. The distribution of large and small houses in ShunYi and Haidian are even.
 ```{r}
-library(tidyverse)
 large <- data2017 %>%
   filter(square>=149.97) %>% # number of large houses in each district 
   count(district)
@@ -854,7 +853,7 @@ Looking at the distribution between these three relationships, we can see that a
 
 ``` {r}
 ggplot(data2017, aes(x = constructionTime, y = price, fill = elevator)) +
-  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
+  geom_histogram(stat = "identity", position = position_dodge(), alpha = 0.75) +
   ggtitle("Distribution of Price by Construction Time and Presence of Elevator") +
   labs(x = "Time of Construction", y = "Price") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"), 
