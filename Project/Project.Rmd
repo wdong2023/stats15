@@ -413,7 +413,7 @@ The distribution skews to the left as the median of the year 2002 and mean of th
 
 ``` {r}
 ggplot(data2017, aes(x = constructionTime)) +
-  geom_bar(fill = "lightblue") +
+  geom_histogram(fill = "lightblue") +
   ggtitle("Time of Construction Summary") +xlab("Time of Construction") +ylab("Count")
 ```
 
@@ -461,7 +461,7 @@ The distribution for the ladder ratio shows that most listings have 2 residents 
 
 ``` {r}
 ggplot(data2017, aes(x = ladderRatio)) +
-  geom_bar(fill = "lightblue", width = 0.05) +
+  geom_histogram(fill = "lightblue", width = 0.05) +
   ggtitle("Ladder Ratio Summary") +xlab("Ladder Ratio") +ylab("Count")
 ```
 
@@ -818,6 +818,60 @@ ggplot(meanBedDistrict, aes(x=bedRoom, y=meanBedDistrictPrice))+
   facet_wrap(~district)+
   geom_col(fill="lightblue")
 ```
+
+### 3.2.18 five years property vs. district vs. price
+
+By using side by side bar graphs, we can see the relationship between the price of the listings compared to their corresponding districts and whether the owners have stayed in the listing for more than five years or less than five years. From the distribution, we can see that the most expensive listings are from the districts 1, 7, 8 and 10 and are usually stayed in for less than five years. Looking at the other end of the spectrum, we can see that the lower priced listings are found in districts 5 and 12 and are more likely to be stayed in for more than five years. This could be due to the affordability of the properties in the district. 
+
+``` {r}
+ggplot(data2017, aes(x = district, y = price, fill = fiveYearsProperty)) +
+  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
+  ggtitle("Distribution of Price by District and Five Years Property") +
+  labs(x = "District", y = "Price") +
+  theme(plot.title = element_text(hjust = 0.5, face="bold"), 
+        axis.title.x = element_text(face="bold", size = 12),
+        axis.title.y = element_text(face="bold", size = 12),
+        legend.title = element_text(face="bold", size = 10))
+```
+
+
+### 3.2.19 district vs elevator vs price
+
+``` {r}
+ggplot(data2017, aes(x = district, y = price, fill = elevator)) +
+  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
+  ggtitle("Distribution of Price by District and Presence of Elevator") +
+  labs(x = "District", y = "Price") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"), 
+        axis.title.x = element_text(face="bold", size = 12),
+        axis.title.y = element_text(face="bold", size = 12),
+        legend.title = element_text(face="bold", size = 10))
+```
+
+### 3.2.20 construction time vs elevator vs price
+
+Looking at the distribution between these three relationships, we can see that as the year of construction increases, the availability of an elevator in the building becomes increasingly available and the price of the listing gradually increases as well.
+
+``` {r}
+ggplot(data2017, aes(x = constructionTime, y = price, fill = elevator)) +
+  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
+  ggtitle("Distribution of Price by Construction Time and Presence of Elevator") +
+  labs(x = "Time of Construction", y = "Price") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"), 
+        axis.title.x = element_text(face="bold", size = 12),
+        axis.title.y = element_text(face="bold", size = 12),
+        legend.title = element_text(face="bold", size = 10))
+```
+
+
+### 3.2.21 price vs construction time
+
+From the distribution between price and construction time, we can see that the highest average price of the listings occured during the year 1973. 
+
+```{r}
+boxplot(price ~ constructionTime, data2017, main = "Distribution of Price and Construction Time", xlab = "Construction Time", ylab="Price", col = "light blue")
+```
+
 
 
 ### **Work Cited**
