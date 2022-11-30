@@ -500,20 +500,24 @@ ggplot(data2017, aes(x = subway)) +
 ### 3.2.1 DOM vs. followers
 
 *Do houses sold fast have many followers?*
-Among these 188 houses that were sold within 1 day, 140 have no follower and the maximum number of followers is 25, which is not a significant number of followers. 
-
+Among these 188 houses that were sold within 1 day, 140 have no follower and the maximum number of followers is 25, which is not a significant number. Our guessing is that the owner and buyer might have already planned about this deal privately and they just list the property on an official third-party website like LianJia to make the transaction secure and supervised.
 ```{r}
 table(data2017$DOM<=1) # houses are 0 or 1 Days on market
-data2017 %>%
+
+follower1DOM <- data2017 %>%
   filter(DOM<=1) %>%
   count(followers) # Do houses sold fast have many followers?
-
+ggplot(follower1DOM, aes(x=followers,y=n))+
+  geom_col(fill="lightblue")
+```
+Let's take a closer look at the houses sold within 200 days on market. There seems to be a slightly increase on the number of followers as it stays more days on market. But it is not as what we expected that the more days a property listed on market the more followers it has.
+```{r}
 ggplot(data2017, aes(x=DOM,y=followers))+ # overall number of followers vs. DOM
   geom_point(alpha=.1)+
   geom_smooth()+
   xlim(0,200)
-  #geom_col(fill="lightblue")
 ```
+
 
 
 ### 3.2.2 price vs. district
@@ -928,6 +932,13 @@ ggplot(data2017, aes(x = buildingStructure, y = price)) +
   geom_col(fill="lightblue") +
   labs(x = "Building Structure", y = "Price", title = "Distribution of Price by Building Structure")
 ```
+
+
+### 3.2.25 price vs. followers
+
+
+
+
 
 ### **Work Cited**
 #some online resources that I think might be helpful 
