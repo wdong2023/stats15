@@ -364,12 +364,12 @@ suburb/length(data2017$district)
 
 ### 3.1.13 kitchen
 
-The distribution for the number of kitchens shows that most listings have only one kitchen in their property. However, having no kitchen is evidently more common than having 2 kitchens in a property.
+The distribution for the number of kitchens shows that most listings have only one kitchen in their property.
 
 ``` {r}
 ggplot(data2017, aes(x = kitchen)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Kitchen Summary") +xlab("Number of Kitchens") +ylab("Count")
+  ggtitle("Kitchen Summary") + xlab("Number of Kitchens") + ylab("Count")
 ```
 
 
@@ -393,7 +393,7 @@ The distribution for the number of bathrooms shows that most listings have only 
 ``` {r}
 ggplot(data2017, aes(x = bathRoom)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Bathroom Summary") +xlab("Number of Bathrooms") +ylab("Count")
+  ggtitle("Bathroom Summary") + xlab("Number of Bathrooms") + ylab("Count")
 ```
 
 ### 3.1.15 construction time
@@ -407,26 +407,24 @@ median(data2017$constructionTime)
 mean(data2017$constructionTime)
 ```
 
-The year of construction of the listings that were transacted in 2017 ranges from the year 1950 to the year 2016. Out of all the included listings, most of the properties were built in the year 2004 accumulating a total of 2525 properties.
+The year of construction of the listings that were transacted in 2017 ranges from the year 1950 to the year 2013. Out of all the included listings, most of the properties were built in the year 2000 accumulating a total of 944 properties.
 
-The distribution skews to the left as the median of the year 2002 and mean of the year 1999 both lie to the left of the mode of the year 2004.
+The distribution skews to the left as the median of the year 1995 and mean of the year 1993 both lie to the left of the mode of the year 2000.
 
 ``` {r}
 ggplot(data2017, aes(x = constructionTime)) +
   geom_histogram(fill = "lightblue") +
-  ggtitle("Time of Construction Summary") +xlab("Time of Construction") +ylab("Count")
+  ggtitle("Time of Construction Summary") + xlab("Time of Construction") + ylab("Count")
 ```
 
 ### 3.1.16 renovation condition
 
-The condition of renovation 
-
-The distribution for the condition of renovation shows that most listings have the highest score of 4 in terms of the condition of renovation for their listing. 
+The distribution for the condition of renovation shows that most listings have the highest rating of simplicity in terms of the condition of renovation for their listing.
 
 ``` {r}
 ggplot(data2017, aes(x = renovationCondition)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Condition of Renovation Summary") +xlab("Condition of Renovation") +ylab("Count")
+  ggtitle("Condition of Renovation Summary") + xlab("Condition of Renovation") + ylab("Count")
 ```
 
 ### 3.1.17 building structure
@@ -436,7 +434,7 @@ The distribution for the building structure shows that most listings are made of
 ``` {r}
 ggplot(data2017, aes(x = buildingStructure)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Structure of Building Summary") +xlab("Structure of Building") +ylab("Count")
+  ggtitle("Structure of Building Summary") + xlab("Structure of Building") + ylab("Count")
 ```
 
 ### 3.1.18 ladder ratio
@@ -457,12 +455,12 @@ median(data2017$ladderRatio)
 mean(data2017$ladderRatio)
 ```
 
-The distribution for the ladder ratio shows that most listings have 2 residents to one elevator per floor. This distribution skews heavily to the left as the average number of residents sharing an elevator per floor is 3.
+The distribution for the ladder ratio shows that most listings have 2 residents to one elevator per floor. This distribution skews heavily to the left.
 
 ``` {r}
 ggplot(data2017, aes(x = ladderRatio)) +
   geom_histogram(fill = "lightblue", width = 0.05) +
-  ggtitle("Ladder Ratio Summary") +xlab("Ladder Ratio") +ylab("Count")
+  ggtitle("Ladder Ratio Summary") + xlab("Ladder Ratio") + ylab("Count")
 ```
 
 ### 3.1.19 elevator
@@ -477,12 +475,12 @@ ggplot(data2017, aes(x = elevator)) +
 
 ### 3.1.20 five years property
 
-The distribution for whether the previous has stayed in the listing for less than five years shows that most sellers stay in their property for less than five years.
+The distribution shows that most sellers stay in their property for less than five years.
 
 ``` {r}
 ggplot(data2017, aes(x = fiveYearsProperty)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Five Years Property Summary") +xlab("Five Years Property") +ylab("Count")
+  ggtitle("Five Years Property Summary") + xlab("Five Years Property") + ylab("Count")
 ```
 
 ### 3.1.21 subway
@@ -492,7 +490,7 @@ The distribution for the presence of any nearby subways shows that it is more co
 ``` {r}
 ggplot(data2017, aes(x = subway)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Subway Summary") +xlab("Availability of Nearby Subways") +ylab("Count")
+  ggtitle("Subway Summary") + xlab("Availability of Nearby Subways") + ylab("Count")
 ```
 
 
@@ -541,29 +539,27 @@ ggplot(data2017, aes(x=district,y=price))+
 ```
 
 
-
-
-
 ### 3.2.4 construction time vs. district
 
-From the distribution of time of construction by district, we see that most of the listings were constructed in ChaoYang after the year 2000.
+From the distribution of time of construction by district, we see that for the district of ChaoYang, there is a gradual increase in the number of listings being constructed since 1950 and then a sharp decrease after it reached its peak. For the district of ChangPing, there is a sharper increase in the number of listings being constructed since 1950 compared to ChaoYang but a more gradual decrease after it reached its peak. For the other districts, the number of listings being constructed changes less drastically compared to ChaoYang and ChangPing.
 
 ``` {r}
 ggplot(data2017, aes(x = constructionTime)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Distribution of Time of Construction by District") +xlab("Time of Construction") +ylab("Count") +
+  ggtitle("Distribution of Time of Construction by District") + xlab("Time of Construction") + ylab("Count") +
   facet_wrap(~ district)
 ```
 
 ### 3.2.5 renovationCondition vs. district
 
-From the distribution of renovation condition by district, we see that the highest number of renovation conditions with ratings 1 to 4 come from the district of ChaoYang and the lowest number of renovation conditions with ratings 1 to 4 come from the district of MenTouGou. For all districts with the exception of XiCheng, most of the listings reflect that their renovation condition is rated as 4. 
+From the distribution of renovation condition by district, we see that ChaoYang has the highest number of listings with the *simplicity* rating and ChangPing has the highest number of listings with the *hardcover* rating.
 
 ``` {r}
 ggplot(data2017, aes(x = renovationCondition)) +
   geom_bar(fill = "lightblue") +
-  ggtitle("Distribution of Renovation Condition by District") +xlab("Renovation Condition") +ylab("Count") +
-  facet_wrap(~ district)
+  ggtitle("Distribution of Renovation Condition by District") + xlab("Renovation Condition") + ylab("Count") +
+  facet_wrap(~ district) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
 
 
@@ -615,7 +611,7 @@ From the distribution of presence of elevator by building structure, we see that
 ggplot(data2017, aes(x = elevator, fill = elevator)) +
   geom_bar(colour = "black") +
   ggtitle("Distribution of Elevator by Building Structure") +
-  xlab("Building Structure") +ylab("Count") +
+  xlab("Building Structure") + ylab("Count") +
   facet_wrap(~ buildingStructure)
 ```
 
@@ -703,7 +699,7 @@ data2017 %>%
 
 
 
-### 3.2.12 price vs. month (Categorical
+### 3.2.12 price vs. month (Categorical)
 
 Overall, there is no huge differences on mean price per square on each month. The distribution skews right and it is bimodal that has peaks on March and July. As shown under the month variable section that March has the most transactions, the price is also at the peak on March. February and April have relative higher price. After March, the price starts to decrease until July it reaches the second peak. And then the price keeps decreasing and reaches the bottom on December.
 
@@ -816,7 +812,7 @@ ggplot(meanBedDistrict, aes(x=bedRoom, y=meanBedDistrictPrice))+
 
 ### 3.2.18 five years property vs. district vs. price
 
-By using side by side bar graphs, we can see the relationship between the price of the listings compared to their corresponding districts and whether the owners have stayed in the listing for more than five years or less than five years. From the distribution, we can see that the most expensive listings are from the districts 1, 7, 8 and 10 and are usually stayed in for less than five years. Looking at the other end of the spectrum, we can see that the lower priced listings are found in districts 5 and 12 and are more likely to be stayed in for more than five years. This could be due to the affordability of the properties in the district. 
+By using side by side bar graphs, we can see the relationship between the price of the listings compared to their corresponding districts and whether the owners have stayed in the listing for more than five years or less than five years. From the distribution, we can see that the most expensive listings are from the districts DongCheng, HaiDian and XiCheng and are usually stayed in for less than five years. Looking at the other end of the spectrum, we can see that the lower priced listings are found in districts FangShan and MenTouGou and are more likely to be stayed in for more than five years. This could be due to the affordability of the properties in the district. 
 
 ``` {r}
 ggplot(data2017, aes(x = district, y = price, fill = fiveYearsProperty)) +
@@ -826,7 +822,9 @@ ggplot(data2017, aes(x = district, y = price, fill = fiveYearsProperty)) +
   theme(plot.title = element_text(hjust = 0.5, face="bold"), 
         axis.title.x = element_text(face="bold", size = 12),
         axis.title.y = element_text(face="bold", size = 12),
-        legend.title = element_text(face="bold", size = 10))
+        legend.title = element_text(face="bold", size = 10)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+
 ```
 
 
@@ -845,7 +843,7 @@ ggplot(data2017, aes(x = district, y = price, fill = elevator)) +
 
 ### 3.2.20 construction time vs elevator vs price
 
-Looking at the distribution between these three relationships, we can see that as the year of construction increases, the availability of an elevator in the building becomes increasingly available and the price of the listing gradually increases as well.
+Looking at the distribution between these three relationships, we can see that as the year of construction increases, the availability of an elevator in the building becomes increasingly available and the price of the listing gradually increases as well. However, after the year 2012, there is a sharp decrease in price until 2015. 
 
 ``` {r}
 ggplot(data2017, aes(x = constructionTime, y = price, fill = elevator)) +
@@ -861,10 +859,13 @@ ggplot(data2017, aes(x = constructionTime, y = price, fill = elevator)) +
 
 ### 3.2.21 price vs construction time
 
-From the distribution between price and construction time, we can see that the highest average price of the listings occured during the year 1973. 
+From the distribution between price and construction time, we can see that there is a gradual increase in price leading up to 1980. From the year 1980 to 2014, the price fluctuates up and down but ends up with a sharp decrease in price from 2014 onewards.
 
 ```{r}
-boxplot(price ~ constructionTime, data2017, main = "Distribution of Price and Construction Time", xlab = "Construction Time", ylab="Price", col = "light blue")
+ggplot(data2017, aes(x = constructionTime, y = price)) +
+  geom_point() +
+  labs(x = "Time of Construction", y = "Price", title = "Distribution of Price by Construction Time") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
 
 
@@ -918,8 +919,15 @@ ggplot(meanBathDistrict, aes(x=bathRoom, y=meanBathDistrictPrice))+
   facet_wrap(~district)
 ```
 
+### 3.2.24 price vs. building structure
 
+From the distribution of price by building structure, we can see that the most expensive listings are made of a mix of materials and the least expensive listings are made of other materials.
 
+```{r}
+ggplot(data2017, aes(x = buildingStructure, y = price)) +
+  geom_col(fill="lightblue") +
+  labs(x = "Building Structure", y = "Price", title = "Distribution of Price by Building Structure")
+```
 
 ### **Work Cited**
 #some online resources that I think might be helpful 
