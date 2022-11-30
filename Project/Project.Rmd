@@ -541,14 +541,7 @@ ggplot(data2017, aes(x=district,y=price))+
 ```
 
 
-### 3.2.3 price vs. construction time
 
-Let's divide construction time into 10 years interval. 
-
-```{r}
-
-
-```
 
 
 ### 3.2.4 construction time vs. district
@@ -901,6 +894,12 @@ ggplot(meanLivingDistrict, aes(x=livingRoom, y=meanLivingDistrictPrice))+
 ### 3.2.23 price vs. bathrooms
 
 ```{r}
+table(data2017$bathRoom)
+```
+
+Despite the fact that there are only 17 houses sold in 2017 with no bathroom, these 17 houses have the highest mean price and their mean is 10,000 yuan higher than the second one---houses with 1 bathroom. And the distribution is still skews right that more bathrooms indicate lower price. There is a sudden drop on the price between 1 and 2 bathrooms. There is no much difference between 3 and 4 bathrooms. Let's compare how number of bathrooms affect price within each district.
+
+```{r}
 meanBath <- data2017 %>%
   group_by(bathRoom) %>%
   summarise(meanBathPrice=mean(price))
@@ -908,6 +907,16 @@ ggplot(meanBath, aes(x=bathRoom, y=meanBathPrice))+
   geom_col(fill="lightblue")
 ```
 
+The highest mean price is either in no bathroom or 1 bathroom. For ChaoYang, DongCheng, HaiDian, and ShunYi, the distribution is bimodal that there is a second peak on price of houses with more bathrooms.
+
+```{r}
+meanBathDistrict <- data2017 %>%
+  group_by(bathRoom, district) %>%
+  summarise(meanBathDistrictPrice=mean(price))
+ggplot(meanBathDistrict, aes(x=bathRoom, y=meanBathDistrictPrice))+
+  geom_col(fill="lightblue")+
+  facet_wrap(~district)
+```
 
 
 
