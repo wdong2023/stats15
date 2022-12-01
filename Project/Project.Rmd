@@ -10,7 +10,7 @@ output: pdf_document
 
 ## **1.1 - Motivating Questions and Scope of Analysis**
 
-As one of the biggest cities in China, Beijing currently houses a population of 21.33 million residents. With the rapid rate of globalization, the movement of people selling and buying their property has risen as well. However, with the help of Lianjia, buyers and sellers are able to view and list properties with ease. In this project, we seek to answer the following motivating question: **what affects the price per square foot of a property?**
+As one of the biggest cities in China, Beijing currently houses a population of 21.33 million residents. With the rapid rate of globalization, the movement of people selling and buying their property has risen as well. However, with the help of Lianjia, buyers and sellers are able to view and list properties with ease. In this project, we seek to answer the following motivating question: **what affects the price per square meters of a property?**
 
 ## **1.2 - Background on Lianjia**
 
@@ -87,6 +87,8 @@ data2017 <- data %>%
 ## 2.2 Cleaning Floor Variable 
 
 The `floor` variable two piece of information. The first part, which is in Chinese character, informs the floor range of the apartment/house. The second part, which is a number, tells us the total number of floors the building has. Therefore, we need to separate these two information into two new variables (` totalFloor` and `floorRange`) to better analyze them. At the same time, we converted Chinese characters into English. 
+
+I hide code for this section because the file doesn't knit with Chinese characters in the code. 
 
 ```{r, echo=FALSE}
 data2017 <- data2017 %>% 
@@ -352,7 +354,7 @@ FangShan and MenTouGou have significant small amounts of houses transactions whe
 ```{r}
 ggplot(data2017, aes(x=district))+
   geom_bar(fill='lightblue', color='black') +
-  xlab("district")+ylab("Count")+theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
+  xlab("district")+ylab("Count")+theme(axis.text.x = element_text(angle = 45, vjust = 0.5))+
   ggtitle("District the House located Histogram") 
 
 table(data2017$district)/length(data2017$district) # percentage of houses sold in each district
@@ -556,9 +558,10 @@ We would expect the price to be lower if there were many followers on a property
 ```{r}
 ggplot(data2017, aes(x=followers, y=price))+ geom_point() + geom_smooth() +
   labs(title = "Price vs Followers")
+cor(data2017$followers, data2017$price)
 ```
 
-The above graph does show a slight negative trend between price and followers. As followers increase, the price of the perperty is lower, although this trend does not apply to houses with very few followers because many properties ranging from low price to high price had few followers. 
+The above graph does show a slight negative trend between price and followers. As followers increase, the price of the perperty is lower, although this trend does not apply to houses with very few followers because many properties ranging from low price to high price had few followers. The relationship is very week with a correlation of -0.066.
 
 ### 3.2.3 Days on Market vs Price 
 ```{r}
@@ -660,11 +663,12 @@ pivot <- full1 %>%
 ggplot(pivot,aes(x=reorder(district, value),y=value,fill=name))+
   geom_col()+
   facet_wrap(~name)+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) +
+  labs(title = "Small and Large Souses in Districts", x = "district")
 ```
 
 *Proportion of large and small houses within each district*
-The majority of houses for all districts are middle sized. ChangPing has the highest proportion of large houses followed by ShunYi which has relative even distributions of small and large houses. These 2 are suburb districts with large areas on the map. HaiDian is another district that has relative evenly distributed large and small houses. All core districts all have more small houses than large. FangShan has no small house and only 1 large house, but overall it has the least amounts of house transactions. 
+The majority of houses for all districts are middle sized. ChangPing and ChaoYang has the highest proportion of large houses followed by ShunYi which has the largest proportion of small houses. MenTouGou did not have extreme large and small houses. 
 ```{r}
 middle <- data2017 %>%
   filter(square>=38.63 & square<=149.97) %>%
@@ -676,7 +680,7 @@ pivot2 <- full2 %>%
   replace(is.na(.), 0)
 ggplot(pivot2,aes(x=district,y=value,fill=name))+
   geom_col(position="fill")+ # stacked proportion barplot
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
 ```
 
 ### 3.2.8 Square vs Price
@@ -1020,7 +1024,26 @@ I splited the data in half, into train and test data. Train data is used to trai
 linear_model <- lm(price~., data = train)
 summary(linear_model)
 ```
-In this model, I randomly split data into training set and testing set, which is the validation set approach. Based on the results of linear model, all the variables are important except for five year property and the day of month being sold.
+In this model, I randomly split data into training set and testing set, which is the validation set approach. Based on the results of linear model, all the variables are important except for five year property, the day in a month being sold, and building structure. 
+
+### Coefficient interpretation:
+- if days on market increase by 1, the average price increase by 12.18
+- if followers increase by 1, the average price decreases by 41.1
+- if square increases by 1, the average price decreases by 180
+- if number of bedroom increase by 1, the average price increases by 1312
+- if number of living room increase by 1, the average price increases by 1682
+- if number of bkitchen increase by 1, the average price increases by 10356
+- if number of bathroom increase by 1, the average price increases by 5761
+- if construction year increase by 1, the average price decreases by 136.8
+- if ladder ratio increase by 1, the average price increases by 12759
+- if total number of floors increase by 1, the average price decreases by 116
+- if the house is sold in April, we expect the price to be higher than houses sold in other months. 
+- if there is a subway near the house, we would expect the price to be 5116 Yuan higher than houses without a subway.
+- if there is a elevator near the house, we would expect the price to be 5500 Yuan higher than houses without a elevator
+- Being in ChaoYang, DongCheng, FengTai, HaiDian, ShiJingShan, TongZhou, and XiCheng increases the price with a significant amount compared to ChangPing because these are all core districts that are located in the center of Beijing.
+- Being in FangShan, MenTouGou and ShunYi significantly decreases the price compared to ChangPing because these are the rural districts. 
+- The price in DaXing is not significantly different from price in ChangPing since these two are both rural districts. 
+- If the apartment is at the top, we would expect the price to be 2354 Yuan lower than houses at the bottom. 
 
 ```{r}
 # training MSE
@@ -1069,14 +1092,6 @@ mean((pred_test_lm-test$price)^2)
 
 The resulting MSE from backward regression is larger than the MSE from simple linear regression that uses all the predictors, so we prefer the one with all predictors. 
 
-Coefficient interpretation:
-- if followers increase by 1, the average price decreases by 39.87
-- if square increases by 1, the average price decreases by 58.39
-- if there is a subway near the house, we would expect the price to be 5667 Yuan higher than houses without a subway.
-- Being in ChaoYang, DongCheng, FengTai, HaiDian, ShiJingShan, and XiCheng increases the price with a significant amount compared to ChangPing because these are all core districts that are located in the center of Beijing.
-- Being in FangShan and ShunYi significantly decreases the price compared to ChangPing because these are the rural districts. 
-- Being in DaXing and TongZhou increases the price in a small amount compared to ChangPing because these two rural areas are developing, but not as developed as core districts. (A few tech companies moved to DaXing and Beijing plans to develop TongZhou as its sub-center.)
-- The price in MenTouGou is not significantly different from price in ChangPing since these two are both rural districts. 
 
 
 
@@ -1108,13 +1123,64 @@ Random Forest significantly reduced the MSE for both prediction of training and 
 core_district <- data2017 %>%
   filter(district %in% c("XiCheng" , "DongCheng" , "ChaoYang" , "HaiDian" , "ShiJingShan" , "FengTai"))
 
+set.seed(428)
+index <- sample(nrow(core_district),15123,replace = FALSE)
+train <- core_district[index,c(2,3,5:22)] # exclude total price 
+test <- core_district[-index,c(2,3,5:22)] # exclude total price
 
+# training MSE for linear model
+pred_train_lm <- predict(linear_model, train, type="response")
+mean((pred_train_lm-train$price)^2)
+# testing MSE for linear model
+pred_test_lm <- predict(linear_model, test, type="response")
+mean((pred_test_lm-test$price)^2)
+
+# training MSE for random forest
+pred_train_rf <- predict(rf_model, train, type="response")
+mean((pred_train_rf-train$price)^2)
+# testing MSE for random forest
+pred_test_rf <- predict(rf_model, test, type="response")
+mean((pred_test_rf-test$price)^2)
+
+```
+Only fitting core districts in the linear model and random forest model does not improve MSE, and even generates larger MSE.
+
+
+## 4.7 Fitting Model for Rural Districts
+```{r}
 suburb <- data2017 %>%
   filter(district %in% c("DaXing", "ChangPing", "FangShan", "MenTouGou", "ShunYi", "TongZhou"))
+
+set.seed(428)
+index <- sample(nrow(suburb),5878,replace = FALSE)
+train <- suburb[index,c(2,3,5:22)] # exclude total price 
+test <- suburb[-index,c(2,3,5:22)] # exclude total price
+
+# training MSE for linear model
+pred_train_lm <- predict(linear_model, train, type="response")
+mean((pred_train_lm-train$price)^2)
+# testing MSE for linear model
+pred_test_lm <- predict(linear_model, test, type="response")
+mean((pred_test_lm-test$price)^2)
+
+# training MSE for random forest
+pred_train_rf <- predict(rf_model, train, type="response")
+mean((pred_train_rf-train$price)^2)
+# testing MSE for random forest
+pred_test_rf <- predict(rf_model, test, type="response")
+mean((pred_test_rf-test$price)^2)
+
 ```
+Fitting rural districts in the linear model significantly improves MSE, but not for random forest. Therefore, the linear model better predicts house prices in rural districts, while random forest better predicts house prices in all districts together. 
 
 
 # 5 Conclusion
+We found that people like to trade houses in the beginning of the year for 2017. Apartments with 2 bedrooms, 1 living room, 1 kitchen, 1 bathroom, and well renovated with elevator and subway near by was the most popular type of housing for transaction. \newline
+The most important predictors for price based on the Random Forest model and Backward Regression model are district, subway, square, and construction time, which is consistent with the relationships we investigated in section 3. \newline
+As we predicted, the core districts generally have higher price per square meter compared to rural districts. There is no denying that district is the most essential factor that affects the price. Thus, we need to consider districts while comparing other variables. Among those, ChaoYang is "special". It is a core district but has great amounts of transactions and also significant high amounts of houses with big square meters. The total prices have a wide range as well. That is, you could find almost every kind of house in ChaoYang. \newline
+The availability of a subway near by is associated with higher average price. The price also decreases as square meters goes up. As for construction time, the later the property was constructed, the lower the average price is. We were expecting "sold fast" and "have many followers" to indicate the popularity of the property. But the fact turns out to be there are actually many houses sold within a very short period of time that have no followers and there is actually not much trend observed between these 2 variables.\newline
+Despite *hardcover* representing the best renovation condition, *other* represents the worst renovation condition yet people are willing to pay a similar price to *hardcover*. Listings that have been previously occupied for more than five years are associated with higher prices.
+
 
 
 ### **Work Cited**
