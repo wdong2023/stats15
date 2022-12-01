@@ -499,7 +499,7 @@ ggplot(data2017, aes(x = elevator)) +
 
 ### 3.1.20 five years property
 
-The distribution shows that most sellers stay in their property for less than five years.
+The distribution shows that among the previous owners of the listings, a higher number of them have stayed in the listing for less than five years and a lower number of them have stayed in the listing for exactly five years or more than five years.
 
 ``` {r}
 ggplot(data2017, aes(x = fiveYearsProperty)) +
@@ -830,7 +830,7 @@ ggplot(meanBedDistrict, aes(x=bedRoom, y=meanBedDistrictPrice))+
 
 ### 3.2.18 five years property vs. district vs. price
 
-By using side by side bar graphs, we can see the relationship between the price of the listings compared to their corresponding districts and whether the owners have stayed in the listing for more than five years or less than five years. From the distribution, we can see that the most expensive listings are from the districts DongCheng, HaiDian and XiCheng and are usually stayed in for less than five years. Looking at the other end of the spectrum, we can see that the lower priced listings are found in districts FangShan and MenTouGou and are more likely to be stayed in for more than five years. This could be due to the affordability of the properties in the district. 
+From the distribution, we can see that for the districts FangShan, TongZhou, ChaoYang, DongCheng and XiCheng, the mean price for the listings where the previous owner has stayed in the property for less than five years is higher than if the previous owner has stayed in the property for more than five years. For the other districts including ShunYi, ChangPing, DaXing, ShiJingShan, FengTai and HaiDian, the mean price for the listings where the previous owner has stayed in the property for more than five years is higher than if the previous owner has stayed in the property for less than five years.
 
 ``` {r}
 data2017 %>% group_by(district, fiveYearsProperty) %>%
@@ -849,6 +849,8 @@ data2017 %>% group_by(district, fiveYearsProperty) %>%
 
 
 ### 3.2.19 district vs elevator vs price
+
+From the distribution, we can see that the districts ShunYi, MenTouGou, ChangPing, ShiJingShan, FengTai and DongCheng, the mean price for the listings are higher if there is no elevator in the building than if there was an elevator in the building. For the rest of the districts, DaXing, TongZhou, ChaoYang, HaiDian and XiCheng, the mean price for the listings are lower if there is no elevator in the building than if there was an elevator in the building.
 
 ``` {r}
 data2017 %>% group_by(district, elevator) %>%
