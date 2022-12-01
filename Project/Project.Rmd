@@ -64,6 +64,7 @@ library(stringr)
 library(ggplot2)
 library(naniar)
 library(waffle)
+library(tidyverse)
 ```
 
 ```{r}
@@ -379,7 +380,7 @@ ggplot(district_table, aes(x="", y=numbers, fill=district)) +
 ```
 
 
-# 3.1.13 kitchen
+### 3.1.13 kitchen
 
 The distribution for the number of kitchens shows that most listings have only one kitchen in their property.
 
@@ -489,7 +490,7 @@ ggplot(data2017, aes(x = ladderRatio)) +
   ggtitle("Ladder Ratio Summary") + xlab("Ladder Ratio") + ylab("Count")
 ```
 
-Now, the plot is unimodal and skews to the right.
+Now, the plot is unimodal and skews to the right, with most values ranging between 0 and 1. 
 
 ### 3.1.19 elevator
 
@@ -549,7 +550,57 @@ ggplot(data2017, aes(x=DOM,y=followers))+ # overall number of followers vs. DOM
 ```
 
 
-### 3.2.2 price vs. district
+### 3.2.2 Followers vs Price
+We would expect the price to be lower if there were many followers on a property because people like to keep an eye on things that are cheaper. 
+
+```{r}
+ggplot(data2017, aes(x=followers, y=price))+ geom_point() + geom_smooth() +
+  labs(title = "Price vs Followers")
+```
+
+The above graph does show a slight negative trend between price and followers. As followers increase, the price of the perperty is lower, although this trend does not apply to houses with very few followers because many properties ranging from low price to high price had few followers. 
+
+### 3.2.3 Days on Market vs Price 
+```{r}
+ggplot(data2017, aes(x = DOM, y = price)) +
+  geom_point() +
+  labs(x = "days on market", y = "Price", title = "Price vs Days on Market") +
+  geom_smooth()
+cor(data2017$price, data2017$DOM)
+```
+
+There is a slight decreasing trend for price as days on market increases. The correlation is as small as -0.03 and the fitting line is almost flat, so we predict days on market does not have significant relationship with average house price. 
+
+
+### 3.2.4 Month vs Price
+
+Overall, there is no huge differences on mean price per square on each month. As shown under the month variable section that March has the most transactions, the price is also at the peak on March. April and May also have relative higher price. After March, the price starts to decrease and reaches the bottom at December. 
+
+```{r}
+monthPrice <- data2017 %>% 
+  group_by(month) %>%
+  summarise(meanPrice=mean(price))
+ggplot(monthPrice,aes(x=month,y=meanPrice))+
+  geom_col(fill = "lightblue")+
+  scale_x_discrete(limits = month.name)
+```
+
+```{r}
+march_price <- data2017 %>%
+  filter(month== "March") %>%
+  select(price) %>% pull()
+dec_price <- data2017 %>%
+  filter(month== "December") %>%
+  select(price) %>% pull()
+t.test(march_price, dec_price)
+```
+
+The result of t-test is consistent with the graph, showing that the average house price sold in March is significantly higher than average house price sold in December. 
+
+
+
+
+### 3.2.5 District vs Price
 
 There is no doubt that the most essential factor that affects the price is the location of the property. XiCheng has the highest price which is above 105,000 yuan and DongCheng is the next, they are the most center districts of the city (Yellow). And then followed by other core districts (Red) HaiDian, ChaoYang, FengTai, and ShiJingShan. TongZhou has the highest price among other suburb districts, and then DaXing, ChangPing, MenTouGou, and ShunYi. Lastly, FangShan has the lowest price which is around 30,000 yuan. The highest price is more than 3 times higher than the lowest price. And the distribution of price is strictly following the location of the district that center districts have the highest prices, and then core districts, and lastly the suburb districts.
 
@@ -574,33 +625,20 @@ ggplot(data2017, aes(x=reorder(district, price),y=price))+
 ```
 
 
-### 3.2.4 construction time vs. district
+### 3.2.6 District vs Total Price
 
-From the distribution of time of construction by district, we see that for the district of ChaoYang, there is a gradual increase in the number of listings being constructed since 1950 and then a sharp decrease after it reached its peak. \newline
-For the district of ChangPing, there is a sharper increase in the number of listings being constructed since 1950 compared to ChaoYang but a more gradual decrease after it reached its peak. \newline
-For the other districts, the number of listings being constructed changes less drastically compared to ChaoYang and ChangPing.
+ChaoYang has the top 2 highest total prices. FangShan has the smallest range of total prices. From the boxplot, we can see that DongCheng, HaiDian, and XiCheng are the 3 districts that have relative high total prices.
 
-``` {r}
-ggplot(data2017, aes(x = constructionTime)) +
-  geom_bar(fill = "lightblue") +
-  ggtitle("Distribution of Time of Construction by District") + xlab("Time of Construction") + ylab("Count") +
-  facet_wrap(~ district)
-```
-
-### 3.2.5 renovationCondition vs. district
-
-From the distribution of renovation condition by district, we see that ChaoYang has the highest number of listings with the *hardcover* rating. ChaoYang had a lot of well-renovated properties being sold compared to other districts because ChaoYang is one of the core financial districts where many wealthy poeple live. 
-
-``` {r}
-ggplot(data2017, aes(x = renovationCondition)) +
-  geom_bar(fill = "lightblue") +
-  ggtitle("Distribution of Renovation Condition by District") + xlab("Renovation Condition") + ylab("Count") +
-  facet_wrap(~ district) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+```{r}
+ggplot(data2017, aes(x=reorder(district, totalPrice),y=totalPrice))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) +
+  labs(title = "District vs TotalPrice", x = "district")
 ```
 
 
-### 3.2.6 district vs. square
+
+### 3.2.7 District vs Square
 
 As indicated under the 'square' variable, the top 2.5% of houses sold have area over 166.6 square meters. Let's define them as "large houses". The bottom 2.5% of houses sold have less than 37.27 square meters. Let's define them as "small houses".
 
@@ -641,151 +679,21 @@ ggplot(pivot2,aes(x=district,y=value,fill=name))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
 
-### 3.2.6 elevator vs. building structure
-
-From the distribution of presence of elevator by building structure, we see that the greatest number of listings with the availability of an elevator are those that have a building structure of steel-concrete composite. For the greatest number of listings with the absence of an elevator, those would have a building structure of a mix of more than 3 distinguishable materials.
-
-``` {r}
-ggplot(data2017, aes(x = elevator, fill = elevator)) +
-  geom_bar(colour = "black") +
-  ggtitle("Distribution of Elevator by Building Structure") +
-  xlab("Building Structure") + ylab("Count") +
-  facet_wrap(~ buildingStructure)
-```
-
-### 3.2.7 five years property vs. district
-
-From the distribution of five years property by district, we see that the district of ChaoYang has the highest number of previous owners who stayed in their property for more than 5 years followed by ChangPing. On the other hand, ChaoYang also has the highest number of previous owners who stayed in their property for less than 5 years followed by ChangPing. This is because ChaoYang is the largest district compared to the others and thus in terms of the total number of people staying more than or less than 5 years in that district will be the highest overall.
-
-``` {r}
-ggplot(data2017, aes(x = fiveYearsProperty, fill = fiveYearsProperty)) +
-  geom_bar(colour = "black") +
-  ggtitle("Distribution of Five Years Property by District") +
-  xlab("Five Years Property") +ylab("Count") +
-  facet_wrap(~ district)
-```
-
-
-
-
-### 3.2.9 Price vs Ladder Ratio and Floor Range
-```{r}
-ggplot(data2017, aes(x = totalFloor, y = price, color = floorRange)) + 
-  geom_point()+
-  labs(x = "total number of floors", title = "Price vs Total Floor and Floor Range")
-```
-
-The floor range did not make a huge influence on the price of the house. However, the price drops when the total floor is above 30, with one exception, which is the property that has 63 floors. In general, the price per square meter is slightly lower for properties located in buildings higher than 30 floors. 
-
-### 3.2.10 Price vs Followers
-We would expect the price to be lower if there were many followers on a property because people like to keep an eye on things that are cheaper. 
+### 3.2.8 Square vs Price
 
 ```{r}
-ggplot(data2017, aes(x=followers, y=price))+ geom_point() + geom_smooth() +
-  labs(title = "Price vs Followers")
+ggplot(data2017, aes(x=square, y= price)) +
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(~district)
 ```
 
-The above graph does show a slight negative trend between price and followers. As followers increase, the price of the perperty is lower, although this trend does not apply to houses with very few followers because many properties ranging from low price to high price had few followers. 
-
-
-### 3.2.11 district vs. totalPrice
-
-ChaoYang has the top 2 highest total prices. FangShan has the smallest range of total prices. From the boxplot, we can see that DongCheng, HaiDian, and XiCheng are the 3 districts that have relative high total prices.
-
-```{r}
-ggplot(data2017, aes(x=reorder(district, totalPrice),y=totalPrice))+
-  geom_boxplot()+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) +
-  labs(title = "District vs TotalPrice", x = "district")
-```
+Even though the price is per square meter, it still has a relationship with square when we plot them by district. For most districts, price per square meter decreases as square increases, except for ChaoYang and ShiJingShan. Properties in medium sizes are more expensive probably because the demand is higher. 
 
 
 
-### 3.2.12 price vs. month 
 
-Overall, there is no huge differences on mean price per square on each month. As shown under the month variable section that March has the most transactions, the price is also at the peak on March. April and May also have relative higher price. After March, the price starts to decrease and reaches the bottom at December. 
-
-```{r}
-monthPrice <- data2017 %>% 
-  group_by(month) %>%
-  summarise(meanPrice=mean(price))
-ggplot(monthPrice,aes(x=month,y=meanPrice))+
-  geom_col(fill = "lightblue")+
-  scale_x_discrete(limits = month.name)
-```
-
-```{r}
-march_price <- data2017 %>%
-  filter(month== "March") %>%
-  select(price) %>% pull()
-dec_price <- data2017 %>%
-  filter(month== "December") %>%
-  select(price) %>% pull()
-t.test(march_price, dec_price)
-```
-
-The result of t-test is consistent with the graph, showing that the average house price sold in March is significantly higher than average house price sold in December. 
-
-
-### 3.2.13 price vs. floorRange
-
-There is a slight decreasing trend as properties are located higher. The higher the property is located, the lower the average price is. Medium and bottom floor ranges seem to have relative higher price whereas top floor range has the lowest.
-
-```{r}
-data2017 %>% 
-  group_by(floorRange) %>%
-  summarise(meanPrice2=mean(price))%>%
-  ggplot(aes(x=floorRange, y=meanPrice2))+
-  geom_col(fill="lightblue") 
-```
-
-```{r}
-bottom_price <- data2017 %>%
-  filter(floorRange== "bottom") %>%
-  select(price) %>% pull()
-top_price <- data2017 %>%
-  filter(floorRange== "top") %>%
-  select(price) %>% pull()
-t.test(bottom_price, top_price)
-```
-
-The result of t-test is consistent with the graph, showing that the average price of bottom properties is significantly different from average price of top houses. 
-
-
-
-### 3.2.14 Price vs subway vs district
-
-Subway is one of the most important transportation in Beijing. Near subway or not also shows if the property is located in a busy area.
-
-```{r, warning=FALSE, message=FALSE}
-data2017 %>%
-  group_by(district, subway) %>%
-  summarise(average_price = mean(price)) %>%
-  ggplot(aes(x = district, y = average_price, fill = subway)) +
-  geom_col(stat = "identity", position = position_dodge(), alpha = 0.75)  +
-  labs(x = "Districts", y = "price", title = "Price vs District vs Subway") +
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
-```
-*Is this affected by district?*
-Let's see how a house is near subway or not will affect the price within each district. The conclusion is that for most districts, mean price is higher if the house is near subway. However, DaXing is an exception where mean price seems to be lower for properties that are near a subway. 
-
-
-
-### 3.2.15 Price vs. Renovation vs. district
-
-For most districts, hardcover renovation has higher mean price than rough renovation condition with the exception of TongZhou, MenTouGou, and Haidian. 
-
-```{r, warning=FALSE, message=FALSE}
-meanRenov <- data2017 %>%
-  group_by(renovationCondition, district) %>%
-  summarise(meanRenovPrice=mean(price))
-ggplot(meanRenov, aes(x=district, y=meanRenovPrice, fill=renovationCondition))+
-  geom_col(stat = "identity", position = position_dodge(), alpha = 0.75)+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
-```
-
-
-### 3.2.16 price vs. kitchen
+### 3.2.9 Kitchen vs Price
 
 Houses with more kitchens have higher mean prices. The difference between 0 and 1 kitchen is about 10,000 yuan, but the difference between 1 and 2 kitchens is not significant. Let's compare how the number of kitchens affect prices within each district.
 
@@ -809,7 +717,7 @@ ggplot(meanKitchenDistrict, aes(x=kitchen, y=meanKitchenDistrictPrice))+
 ```
 
 
-### 3.2.17 price vs. bedRoom
+### 3.2.10 Bedroom vs Price
 
 The more bedrooms indicates the lower mean house price is. However, simply look at the mean price for all houses is not enough because district plays the key role. Let's compare how the number of bedrooms affect price within each district.
 
@@ -832,65 +740,8 @@ ggplot(meanBedDistrict, aes(x=bedRoom, y=meanBedDistrictPrice))+
   geom_col(fill="lightblue")
 ```
 
-### 3.2.18 five years property vs. district vs. price
 
-From the distribution, we see that most of the listings are more expensive when the previous owner has stayed in the listing for more than five years except for  ShiJingShan, FengTai and DongCheng.
-
-``` {r}
-data2017 %>% group_by(district, fiveYearsProperty) %>%
-  summarise(mean_price = mean(price)) %>%
-  ggplot(aes(x = reorder(district, mean_price), y = mean_price, fill = fiveYearsProperty)) +
-  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
-  ggtitle("Distribution of Mean Price by District and Five Years Property") +
-  labs(x = "District", y = "Mean Price") +
-  theme(plot.title = element_text(hjust = 0.5, face="bold"), 
-        axis.title.x = element_text(face="bold", size = 12),
-        axis.title.y = element_text(face="bold", size = 12),
-        legend.title = element_text(face="bold", size = 10)) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
-
-```
-
-
-### 3.2.19 district vs elevator vs price
-
-From the distribution, we can see that most of the listings are more expensive when there is an elevator available in the building with the exception of HaiDian, DongCheng, XiCheng.
-
-``` {r}
-data2017 %>% group_by(district, elevator) %>%
-  summarise(mean_price = mean(price)) %>%
-  ggplot(aes(x = reorder(district, mean_price), y = mean_price, fill = elevator)) +
-  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
-  ggtitle("Distribution of Price by District and Presence of Elevator") +
-  labs(x = "District", y = "Price") +
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"), 
-        axis.title.x = element_text(face="bold", size = 12),
-        axis.title.y = element_text(face="bold", size = 12),
-        legend.title = element_text(face="bold", size = 10))+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
-```
-
-
-
-### 3.2.20 construction time vs elevator vs price
-
-
-``` {r}
-data2017 %>% group_by(constructionTime, elevator) %>%
-  summarise(mean_price = mean(price)) %>%
-  ggplot(aes(x = constructionTime, y = mean_price, color = elevator)) +
-  geom_line() +
-  ggtitle("Mean Price Change with Construction Time and Presence of Elevator") +
-  labs(x = "Time of Construction", y = "Mean Price") +
-  theme(plot.title = element_text(hjust = 0.5, face = "bold"), 
-        axis.title.x = element_text(face="bold", size = 12),
-        axis.title.y = element_text(face="bold", size = 12),
-        legend.title = element_text(face="bold", size = 10))
-```
-From the graph, we can see that as properties are constructed in later years, the mean price drops. In othe words, the newer the property is, the lower the average price. For some reason, houses construced during 1970-1980 are exceptionally expensive. The presence of elevator emerged for properties built after 1970 in Beijing. Consistent with previous findings, mean price is higher for properties with elevators compared to those without elevator that are constructed in the same year. 
-
-
-### 3.2.22 price vs. living room
+### 3.2.11 Living room vs Price
 
 The graph shows that there is a decreasing trend for price as number of bedrooms increase. Houses sold with no living room have the highest mean price. As shown under the living room variable section, most houses have 1 living room. The price of houses with 1 living room is slightly lower. However, the mean price slightly increases for 4-bedrooms. Let's compare how the number of living rooms affect house price within each district.
 
@@ -914,7 +765,7 @@ ggplot(meanLivingDistrict, aes(x=livingRoom, y=meanLivingDistrictPrice))+
 ```
 
 
-### 3.2.23 price vs. bathrooms
+### 3.2.12 Bathroom vs Price
 
 ```{r}
 table(data2017$bathRoom==0)
@@ -942,29 +793,44 @@ ggplot(meanBathDistrict, aes(x=bathRoom, y=meanBathDistrictPrice))+
   facet_wrap(~district)
 ```
 
-### 3.2.24 price vs. building structure
 
-From the distribution of price by building structure, we can see that the most expensive listings are made of a mix of materials and the least expensive listings are made of other materials.
-
+### 3.2.13 Ladder Ratio and Floor Range vs Price
 ```{r}
-ggplot(data2017, aes(x = buildingStructure, y = price)) +
-  geom_col(fill="lightblue") +
-  labs(x = "Building Structure", y = "Price", title = "Distribution of Price by Building Structure")
+ggplot(data2017, aes(x = totalFloor, y = price, color = floorRange)) + 
+  geom_point()+
+  labs(x = "total number of floors", title = "Price vs Total Floor and Floor Range")
 ```
 
+It's hard to see any relationships between these three from this graph. However, the price drops when the total floor is above 30, with one exception, which is the property that has 63 floors. In general, the price per square meter is slightly lower for properties located in buildings higher than 30 floors. Next, lets' take a look at them with price separately. 
 
-### 3.2.25 Price vs Days on Market
+
+
+### 3.2.14 Floor Range vs Price
+
+There is a slight decreasing trend as properties are located higher. The higher the property is located, the lower the average price is. Medium and bottom floor ranges seem to have relative higher price whereas top floor range has the lowest.
+
 ```{r}
-ggplot(data2017, aes(x = DOM, y = price)) +
-  geom_point() +
-  labs(x = "days on market", y = "Price", title = "Price vs Days on Market") +
-  geom_smooth()
-cor(data2017$price, data2017$DOM)
+data2017 %>% 
+  group_by(floorRange) %>%
+  summarise(meanPrice2=mean(price))%>%
+  ggplot(aes(x=floorRange, y=meanPrice2))+
+  geom_col(fill="lightblue") 
 ```
 
-There is a slight decreasing trend for price as days on market increases. The correlation is as small as -0.03 and the fitting line is almost flat, so we predict days on market does not have significant relationship with average house price. 
+```{r}
+bottom_price <- data2017 %>%
+  filter(floorRange== "bottom") %>%
+  select(price) %>% pull()
+top_price <- data2017 %>%
+  filter(floorRange== "top") %>%
+  select(price) %>% pull()
+t.test(bottom_price, top_price)
+```
 
-### 3.2.26 Price vs Ladder Ratio vs District
+The result of t-test is consistent with the graph, showing that the average price of bottom properties is significantly different from average price of top houses. 
+
+
+### 3.2.15 Ladder Ratio vs District vs Price
 ```{r}
 ggplot(data2017, aes(x = ladderRatio, y = price)) +
   geom_point(color = "blue") +
@@ -978,11 +844,164 @@ There isn't a significant relationship between ladder ratio and price. The corre
 Most districts have ladder ratio between 0 to 1, while ChaoYang has the most properties with higher than 1 ladder ratio. 
 
 
+### 3.2.16 Elevator vs District vs Price
 
-### **Work Cited**
-#some online resources that I think might be helpful 
-1. It mentions the price drop on beijing houses in 2017 because of some regulations
-  http://www.xinhuanet.com/english/2018-01/29/c_136933533.htm
+From the distribution, we can see that most of the listings are more expensive when there is an elevator available in the building with the exception of HaiDian, DongCheng, XiCheng.
+
+``` {r}
+data2017 %>% group_by(district, elevator) %>%
+  summarise(mean_price = mean(price)) %>%
+  ggplot(aes(x = reorder(district, mean_price), y = mean_price, fill = elevator)) +
+  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
+  ggtitle("Distribution of Price by District and Presence of Elevator") +
+  labs(x = "District", y = "Price") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"), 
+        axis.title.x = element_text(face="bold", size = 12),
+        axis.title.y = element_text(face="bold", size = 12),
+        legend.title = element_text(face="bold", size = 10))+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+```
+
+
+
+### 3.2.17 Subway vs District vs Price
+
+Subway is one of the most important transportation in Beijing. Near subway or not also shows if the property is located in a busy area.
+
+```{r, warning=FALSE, message=FALSE}
+data2017 %>%
+  group_by(district, subway) %>%
+  summarise(average_price = mean(price)) %>%
+  ggplot(aes(x = district, y = average_price, fill = subway)) +
+  geom_col(stat = "identity", position = position_dodge(), alpha = 0.75)  +
+  labs(x = "Districts", y = "price", title = "Price vs District vs Subway") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+```
+*Is this affected by district?*
+Let's see how a house is near subway or not will affect the price within each district. The conclusion is that for most districts, mean price is higher if the house is near subway. However, DaXing is an exception where mean price seems to be lower for properties that are near a subway. 
+
+
+### 3.2.18 Construction time vs District
+
+From the distribution of time of construction by district, we see that for the district of ChaoYang, there is a gradual increase in the number of listings being constructed since 1950 and then a sharp decrease after it reached its peak. \newline
+For the district of ChangPing, there is a sharper increase in the number of listings being constructed since 1950 compared to ChaoYang but a more gradual decrease after it reached its peak. \newline
+For the other districts, the number of listings being constructed changes less drastically compared to ChaoYang and ChangPing.
+
+``` {r}
+ggplot(data2017, aes(x = constructionTime)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Distribution of Time of Construction by District") + xlab("Time of Construction") + ylab("Count") +
+  facet_wrap(~ district)
+```
+
+
+
+### 3.2.19 Construction time vs Elevator vs Price
+
+
+``` {r}
+data2017 %>% group_by(constructionTime, elevator) %>%
+  summarise(mean_price = mean(price)) %>%
+  ggplot(aes(x = constructionTime, y = mean_price, color = elevator)) +
+  geom_line() +
+  ggtitle("Mean Price Change with Construction Time and Presence of Elevator") +
+  labs(x = "Time of Construction", y = "Mean Price") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"), 
+        axis.title.x = element_text(face="bold", size = 12),
+        axis.title.y = element_text(face="bold", size = 12),
+        legend.title = element_text(face="bold", size = 10))
+```
+From the graph, we can see that as properties are constructed in later years, the mean price drops. In othe words, the newer the property is, the lower the average price. For some reason, houses construced during 1970-1980 are exceptionally expensive. The presence of elevator emerged for properties built after 1970 in Beijing. Consistent with previous findings, mean price is higher for properties with elevators compared to those without elevator that are constructed in the same year. 
+
+
+### 3.2.20 Renovation Condition vs District
+
+From the distribution of renovation condition by district, we see that ChaoYang has the highest number of listings with the *hardcover* rating. ChaoYang had a lot of well-renovated properties being sold compared to other districts because ChaoYang is one of the core financial districts where many wealthy poeple live. 
+
+``` {r}
+ggplot(data2017, aes(x = renovationCondition)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Distribution of Renovation Condition by District") + xlab("Renovation Condition") + ylab("Count") +
+  facet_wrap(~ district) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+```
+
+
+
+### 3.2.21 Renovation Condition vs District vs Price
+
+For most districts, hardcover renovation has higher mean price than rough renovation condition with the exception of TongZhou, MenTouGou, and Haidian. 
+
+```{r, warning=FALSE, message=FALSE}
+meanRenov <- data2017 %>%
+  group_by(renovationCondition, district) %>%
+  summarise(meanRenovPrice=mean(price))
+ggplot(meanRenov, aes(x=district, y=meanRenovPrice, fill=renovationCondition))+
+  geom_col(stat = "identity", position = position_dodge(), alpha = 0.75)+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+```
+
+
+
+### 3.2.22 Elevator vs. Building structure
+
+From the distribution of presence of elevator by building structure, we see that the greatest number of listings with the availability of an elevator are those that have a building structure of steel-concrete composite. For the greatest number of listings with the absence of an elevator, those would have a building structure of a mix of more than 3 distinguishable materials.
+
+``` {r}
+ggplot(data2017, aes(x = elevator, fill = elevator)) +
+  geom_bar(colour = "black") +
+  ggtitle("Distribution of Elevator by Building Structure") +
+  xlab("Building Structure") + ylab("Count") +
+  facet_wrap(~ buildingStructure)
+```
+
+
+
+
+### 3.2.23 Building structure vs Price
+
+From the distribution of price by building structure, we can see that the most expensive listings are made of a mix of materials and the least expensive listings are made of other materials.
+
+```{r}
+ggplot(data2017, aes(x = buildingStructure, y = price)) +
+  geom_col(fill="lightblue") +
+  labs(x = "Building Structure", y = "Price", title = "Distribution of Price by Building Structure")
+```
+
+
+
+
+
+### 3.2.24 Five years property vs District
+
+From the distribution of five years property by district, we see that the district of ChaoYang has the highest number of previous owners who stayed in their property for more than 5 years followed by ChangPing. On the other hand, ChaoYang also has the highest number of previous owners who stayed in their property for less than 5 years followed by ChangPing. This is because ChaoYang is the largest district compared to the others and thus in terms of the total number of people staying more than or less than 5 years in that district will be the highest overall.
+
+``` {r}
+ggplot(data2017, aes(x = fiveYearsProperty, fill = fiveYearsProperty)) +
+  geom_bar(colour = "black") +
+  ggtitle("Distribution of Five Years Property by District") +
+  xlab("Five Years Property") +ylab("Count") +
+  facet_wrap(~ district)
+```
+
+### 3.2.25 Five years property vs District vs Price
+
+From the distribution, we see that most of the listings are more expensive when the previous owner has stayed in the listing for more than five years except for  ShiJingShan, FengTai and DongCheng.
+
+``` {r}
+data2017 %>% group_by(district, fiveYearsProperty) %>%
+  summarise(mean_price = mean(price)) %>%
+  ggplot(aes(x = reorder(district, mean_price), y = mean_price, fill = fiveYearsProperty)) +
+  geom_bar(stat = "identity", position = position_dodge(), alpha = 0.75) +
+  ggtitle("Distribution of Mean Price by District and Five Years Property") +
+  labs(x = "District", y = "Mean Price") +
+  theme(plot.title = element_text(hjust = 0.5, face="bold"), 
+        axis.title.x = element_text(face="bold", size = 12),
+        axis.title.y = element_text(face="bold", size = 12),
+        legend.title = element_text(face="bold", size = 10)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+
+```
 
 
 
@@ -1015,7 +1034,7 @@ After putting test data into linear model, the mean squared error for both test 
 
 
 ## 4.3 Linear Model (k-fold cross validation, k=10)
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(caret)
 set.seed(428) 
 train.kfold <- trainControl(method = "cv", number = 10)
@@ -1041,14 +1060,14 @@ Based on the plot and model summary, the best backward regression model includes
 backward_model <- lm(price~followers+square+subway+district, data = train)
 summary(backward_model)
 # training MSE
-pred_train_lm <- predict(linear_model, train, type="response")
+pred_train_lm <- predict(backward_model, train, type="response")
 mean((pred_train_lm-train$price)^2)
 # testing MSE
-pred_test_lm <- predict(linear_model, test, type="response")
+pred_test_lm <- predict(backward_model, test, type="response")
 mean((pred_test_lm-test$price)^2)
 ```
 
-Since the resulting backward model MSE for both training and testing data are very close to the MSE of linear regression using all variables, we can choose to use the simpler model with followers, square, subway, and district as the predictors. 
+The resulting MSE from backward regression is larger than the MSE from simple linear regression that uses all the predictors, so we prefer the one with all predictors. 
 
 Coefficient interpretation:
 - if followers increase by 1, the average price decreases by 39.87
@@ -1084,8 +1103,22 @@ mean((pred_test_rf-test$price)^2)
 
 Random Forest significantly reduced the MSE for both prediction of training and testing dataset. The MSE for testing dataset is much larger than training dataset because of overfitting effect, but it's still better than linear models. Because we have a smaller MSE, random forest is so far the best model in predicting house price per square meter, with district, subway, contruction time, square as some of the most important predictor. 
 
-# 5 Conckusion
+## 4.6 Fitting Model For Core Districts
+```{r}
+core_district <- data2017 %>%
+  filter(district %in% c("XiCheng" , "DongCheng" , "ChaoYang" , "HaiDian" , "ShiJingShan" , "FengTai"))
 
 
+suburb <- data2017 %>%
+  filter(district %in% c("DaXing", "ChangPing", "FangShan", "MenTouGou", "ShunYi", "TongZhou"))
+```
 
+
+# 5 Conclusion
+
+
+### **Work Cited**
+some online resources that we used
+1. It mentions the price drop on beijing houses in 2017 because of some regulations
+  http://www.xinhuanet.com/english/2018-01/29/c_136933533.htm
 
