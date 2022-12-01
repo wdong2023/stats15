@@ -379,8 +379,7 @@ ggplot(district_table, aes(x="", y=numbers, fill=district)) +
 ```
 
 
-
-### 3.1.13 kitchen
+# 3.1.13 kitchen
 
 The distribution for the number of kitchens shows that most listings have only one kitchen in their property.
 
@@ -427,13 +426,12 @@ data2017 <- data2017 %>% filter(!id %in% c("101092296449", "101101797841", "1011
 ### 3.1.15 construction time
 
 ``` {r}
-median(data2017$constructionTime)
-mean(data2017$constructionTime)
+quantile(data2017$constructionTime, c(0, .025, .25, .5, .75, .975, 1))
 ```
 
-The year of construction of the listings that were transacted in 2017 ranges from the year 1950 to the year 2013.
+The year of construction of the listings that were transacted in 2017 ranges from the year 1950 to the year 2016.
 
-The distribution skews to the left as the median of the year 1995 and mean of the year 1993 both lie to the left of the mode of the year 2000.
+The median is 2002. Approximately 2.5% of values are above 2014. Approximately 2.5% of values are below 1980. 
 
 ``` {r}
 ggplot(data2017, aes(x = constructionTime)) +
@@ -467,11 +465,10 @@ table(data2017$buildingStructure)
 ### 3.1.18 ladder ratio
 
 ``` {r}
-median(data2017$ladderRatio)
-mean(data2017$ladderRatio)
+quantile(data2017$ladderRatio, c(0, .025, .25, .5, .75, .975, 1))
 ```
 
-The distribution for the ladder ratio shows that most listings have 2 residents to one elevator per floor. This distribution skews heavily to the right.
+The median is 0.333. Approximately 2.5% of values are above 0.667. Approximately 2.5% of values are below 0.121.
 
 ``` {r}
 ggplot(data2017, aes(x = ladderRatio)) +
@@ -485,6 +482,14 @@ The maximum value for ladderRatio is 10009400, which seems like a typo, so we de
 data2017 <- data2017 %>% 
   filter(ladderRatio < 5)
 ```
+
+``` {r}
+ggplot(data2017, aes(x = ladderRatio)) +
+  geom_histogram(fill = "lightblue") +
+  ggtitle("Ladder Ratio Summary") + xlab("Ladder Ratio") + ylab("Count")
+```
+
+Now, the plot is unimodal and skews to the right.
 
 ### 3.1.19 elevator
 
@@ -598,7 +603,7 @@ ggplot(data2017, aes(x = renovationCondition)) +
 
 ### 3.2.6 district vs. square
 
-As indicated under the 'square' variable, the top 2.5% of houses sold have area over 166.6 square meters. Let's define them as "large houses". The bottom 2.5% of houses sold have less than 37.27 square meters. Let's define them as "small houses". 
+As indicated under the 'square' variable, the top 2.5% of houses sold have area over 166.6 square meters. Let's define them as "large houses". The bottom 2.5% of houses sold have less than 37.27 square meters. Let's define them as "small houses".
 
 *Districts with most large and small houses*
 ChaoYang and ChangPing has the significant highest amounts of large houses sold and XiCheng has the significant highest amounts of small houses sold. 
@@ -830,7 +835,7 @@ ggplot(meanBedDistrict, aes(x=bedRoom, y=meanBedDistrictPrice))+
 
 ### 3.2.18 five years property vs. district vs. price
 
-From the distribution, we can see that for the districts FangShan, TongZhou, ChaoYang, DongCheng and XiCheng, the mean price for the listings where the previous owner has stayed in the property for less than five years is higher than if the previous owner has stayed in the property for more than five years. For the other districts including ShunYi, ChangPing, DaXing, ShiJingShan, FengTai and HaiDian, the mean price for the listings where the previous owner has stayed in the property for more than five years is higher than if the previous owner has stayed in the property for less than five years.
+From the distribution, we see that most of the listings are more expensive when the previous owner has stayed in the listing for more than five years except for  ShiJingShan, FengTai and DongCheng.
 
 ``` {r}
 data2017 %>% group_by(district, fiveYearsProperty) %>%
@@ -850,7 +855,7 @@ data2017 %>% group_by(district, fiveYearsProperty) %>%
 
 ### 3.2.19 district vs elevator vs price
 
-From the distribution, we can see that the districts ShunYi, MenTouGou, ChangPing, ShiJingShan, FengTai and DongCheng, the mean price for the listings are higher if there is no elevator in the building than if there was an elevator in the building. For the rest of the districts, DaXing, TongZhou, ChaoYang, HaiDian and XiCheng, the mean price for the listings are lower if there is no elevator in the building than if there was an elevator in the building.
+From the distribution, we can see that most of the listings are more expensive when there is an elevator available in the building with the exception of HaiDian, DongCheng, XiCheng.
 
 ``` {r}
 data2017 %>% group_by(district, elevator) %>%
