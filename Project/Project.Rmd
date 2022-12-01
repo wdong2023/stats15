@@ -886,7 +886,7 @@ From the graph, we can see that as properties are constructed in later years, th
 
 ### 3.2.22 price vs. living room
 
-The graph shows that the more living rooms are the lower price is. Houses sold with no living room have the highest mean price. As shown under the living room variable section, most houses have 1 living room. The price of houses with 1 living room is slightly lower, however, as the number of living rooms increase to 2, the mean price drops for nearly 20,000 yuan. Let's compare how the number of living rooms affect house price within each district.
+The graph shows that there is a decreasing trend for price as number of bedrooms increase. Houses sold with no living room have the highest mean price. As shown under the living room variable section, most houses have 1 living room. The price of houses with 1 living room is slightly lower. However, the mean price slightly increases for 4-bedrooms. Let's compare how the number of living rooms affect house price within each district.
 
 ```{r}
 meanLiving <- data2017 %>%
@@ -896,7 +896,7 @@ ggplot(meanLiving, aes(x=livingRoom, y=meanLivingPrice))+
   geom_col(fill="lightblue")
 ```
 
-For most district, houses with 0 or 1 living room still have relative higher price. Except for ShiJingShan, which has higher mean price for houses with more bedrooms, mainly because ShiJingShan is the smallest district in Beijing. It's more expensive to buy big houses in ShiJingShan. 
+For most district, houses with 0 or 1 living room still have relative higher price. Except for ShiJingShan, which has higher mean price for houses with 4 bedrooms, mainly because ShiJingShan is the smallest district in Beijing. It's more expensive to buy big houses in ShiJingShan. 
 
 ```{r}
 meanLivingDistrict <- data2017 %>%
@@ -908,7 +908,7 @@ ggplot(meanLivingDistrict, aes(x=livingRoom, y=meanLivingDistrictPrice))+
 ```
 
 
-### 3.2.23 price vs. bathrooms
+### 3.2.23 price vs. bathrooms !!
 
 
 Despite the fact that there are only 17 houses sold in 2017 with no bathroom, these 17 houses have the highest mean price and their mean is 10,000 yuan higher than the second one---houses with 1 bathroom. And the distribution is still skews right that more bathrooms indicate lower price. There is a sudden drop on the price between 1 and 2 bathrooms. There is no much difference between 3 and 4 bathrooms. Let's compare how number of bathrooms affect price within each district.
@@ -943,14 +943,29 @@ ggplot(data2017, aes(x = buildingStructure, y = price)) +
 ```
 
 
-### 3.2.25 price vs. followers
+### 3.2.25 Price vs Days on Market
 ```{r}
-ggplot(data2017, aes(x = followers, y = price)) +
+ggplot(data2017, aes(x = DOM, y = price)) +
   geom_point() +
-  labs(x = "Building Structure", y = "Price", title = "Distribution of Price by Building Structure")
+  labs(x = "days on market", y = "Price", title = "Price vs Days on Market") +
+  geom_smooth()
+cor(data2017$price, data2017$DOM)
 ```
 
+There is a slight decreasing trend for price as days on market increases. The correlation is as small as -0.03 and the fitting line is almost flat, so we predict days on market does not have significant relationship with average house price. 
 
+### 3.2.26 Price vs Ladder Ratio vs District
+```{r}
+ggplot(data2017, aes(x = ladderRatio, y = price)) +
+  geom_point(color = "blue") +
+  facet_wrap(~district)+
+  labs(x = "Ladder Ratio", y = "Price", title = "Price vs Ladder Ratio and Districts") +
+  geom_smooth(color = "black")
+cor(data2017$price, data2017$ladderRatio)
+```
+
+There isn't a significant relationship between ladder ratio and price. The correlation is only -0.13. Therefore, we predict that the ladder ratio will not significantly influence price. \newline
+Most districts have ladder ratio between 0 to 1, while ChaoYang has the most properties with higher than 1 ladder ratio. 
 
 
 
