@@ -920,7 +920,7 @@ ggplot(meanLivingDistrict, aes(x=livingRoom, y=meanLivingDistrictPrice))+
 table(data2017$bathRoom==0)
 ```
 
-The distribution is bimodal that the first peak of mean price is for houses with 1 bathroom and the second peak is for houses with 5 bathrooms. Price slightly changes as the number of bathrooms increase from 2 to 4. There is a sudden drop on price for houses with 6 bathrooms. It has mean price below 30,000 yuan, which is nealy 50% lower than the second lowest price, which is houses with no bathroom.
+Houses with 1 bathroom have the highest mean price and houses with 5 bathrooms have the second highest price. Price slightly changes as the number of bathrooms increase from 2 to 4. There is a sudden drop on price for houses with 6 bathrooms. It has mean price below 30,000 yuan, which is nealy 50% lower than the second lowest price, which is houses with no bathroom.
 
 ```{r}
 meanBath <- data2017 %>%
@@ -930,7 +930,9 @@ ggplot(meanBath, aes(x=bathRoom, y=meanBathPrice))+
   geom_col(fill="lightblue")
 ```
 
-Let's compare how number of bathrooms affect price within each district. For most districts, houses with 0 or 1 bathroom have the highest price, except for ShiJingShan that does not have houses with no bathroom and the mean price increases as the number of bathroom increase. And for FengTai, the peak is at 3 and DaXing has the peak at 3.
+Let's compare how number of bathrooms affect price within each district. For most districts, houses with 1 or 5 bathroom have the highest price. 
+HaiDian is the special case that houses with either no bathroom or the maximum number of bathrooms have the highest prices. For ShiJingShan and TongZhou, more bathrooms indicate higher prices.
+
 ```{r}
 meanBathDistrict <- data2017 %>%
   group_by(bathRoom, district) %>%
@@ -1081,3 +1083,9 @@ mean((pred_test_rf-test$price)^2)
 ```
 
 Random Forest significantly reduced the MSE for both prediction of training and testing dataset. The MSE for testing dataset is much larger than training dataset because of overfitting effect, but it's still better than linear models. Because we have a smaller MSE, random forest is so far the best model in predicting house price per square meter, with district, subway, contruction time, square as some of the most important predictor. 
+
+# 5 Conckusion
+
+
+
+
